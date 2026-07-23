@@ -1,47 +1,47 @@
 ---
-title: "Sharing and Feedback"
+title: "Feedback & Sharing"
 date: 2024-01-01
 weight: 7
 chapter: false
 pre: " <b> 7. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
+> Below are my personal reflections on the First Cloud AI Journey (FCAJ) program experience:
 
-> Here, you can freely share your personal opinions about your experience participating in the First Cloud AI Journey program. This will help the FCAJ team improve any shortcomings based on the following aspects:
+### General Assessment
 
-### Overall Evaluation
+**1. Working Environment**
+The working environment at FCAJ is highly professional and open. Having direct access to real AWS services with a dedicated AWS account for hands-on practice was invaluable. The workspace is comfortable, and team members always support each other. Working in a team of 4 on the NewsRAG project helped me develop real-world collaboration skills.
 
-**1. Working Environment**  
-The working environment is very friendly and open. FCAJ members are always willing to help whenever I encounter difficulties, even outside working hours. The workspace is tidy and comfortable, helping me focus better. However, I think it would be nice to have more social gatherings or team bonding activities to strengthen relationships.
+**2. Mentor / Team Admin Support**
+The mentor guidance was exceptionally dedicated, especially in reviewing system architecture and suggesting improvements (e.g., transitioning from Kafka to SQS for cost optimization). The admin team provided quick support with AWS accounts, learning materials, and administrative procedures. The mentor encouraged self-research before asking questions, helping me develop self-learning skills.
 
-**2. Support from Mentor / Team Admin**  
-The mentor provides very detailed guidance, explains clearly when I don’t understand, and always encourages me to ask questions. The admin team supports administrative tasks, provides necessary documents, and creates favorable conditions for me to work effectively. I especially appreciate that the mentor allows me to try and solve problems myself instead of just giving the answer.
+**3. Alignment between Work and Academic Major**
+The NewsRAG project perfectly aligns with my Information Technology major. I applied my Python programming, database (PostgreSQL), Docker knowledge while expanding into new areas like AWS Cloud, serverless architecture, and RAG/LLM — highly valuable skills in today's job market.
 
-**3. Relevance of Work to Academic Major**  
-The tasks I was assigned align well with the knowledge I learned at university, while also introducing me to new areas I had never encountered before. This allowed me to both strengthen my foundational knowledge and gain practical skills.
+**4. Learning & Skill Development Opportunities**
+During the 8-week internship, I acquired many new skills:
+- **Technical**: Scrapy, Docker, Terraform, AWS ECS/SQS/ECR/EventBridge, Infrastructure as Code
+- **Soft skills**: Teamwork, technical documentation writing, progress presentation
+- **DevOps**: CI/CD mindset, container orchestration, cloud deployment
 
-**4. Learning & Skill Development Opportunities**  
-During the internship, I learned many new skills such as using project management tools, teamwork skills, and professional communication in a corporate environment. The mentor also shared valuable real-world experiences that helped me better plan my career path.
+**5. Culture & Team Spirit**
+The FCAJ work culture is very positive: mutual respect for opinions, constructive code reviews, and willingness to support cross-module work. When facing integration issues between Crawler and Consumer, the entire team debugged together rather than placing blame.
 
-**5. Company Culture & Team Spirit**  
-The company culture is very positive: everyone respects each other, works seriously but still keeps things enjoyable. When there are urgent projects, everyone works together and supports one another regardless of their position. This made me feel like a real part of the team, even as an intern.
+**6. Intern Policies / Benefits**
+The FCAJ program provides excellent conditions: AWS accounts, learning materials, hands-on workshops, and opportunities to attend AWS Vietnam tech events. Flexible scheduling suits student schedules well.
 
-**6. Internship Policies / Benefits**  
-The company provides an internship allowance and offers flexible working hours when needed. In addition, having the opportunity to join internal training sessions is a big plus.
-
----
 
 ### Additional Questions
-- What did you find **most satisfying** during your internship?  
-- What do you think the company **should improve** for future interns?  
-- If recommending to a friend, would you **suggest they intern here**? Why or why not?  
 
----
+- **Most satisfying aspect**: Working on a real project from start to finish, from architecture design to production deployment on AWS. This experience is invaluable.
+- **Area for improvement**: Could add mid-term product demo sessions for earlier feedback.
+- **Would you recommend this internship to friends?**: Absolutely. The FCAJ program provides valuable real-world AWS Cloud experience, perfect for IT students looking to develop in Cloud/DevOps directions.
 
-### Suggestions & Expectations
-- Do you have any suggestions to improve the internship experience?  
-- Would you like to continue this program in the future?  
-- Any other comments (free sharing):
+
+### Suggestions & Wishes
+
+- Add more sharing sessions between project teams for mutual learning
+- Provide additional AWS credits for practicing more services
+- Organize a mini hackathon at the end to strengthen team bonding
+- I wish to continue developing the NewsRAG project after the internship ends

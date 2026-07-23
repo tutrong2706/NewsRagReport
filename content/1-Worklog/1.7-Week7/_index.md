@@ -1,57 +1,53 @@
 ---
 title: "Week 7 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 7
 chapter: false
 pre: " <b> 1.7. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 7 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Run integration tests across the full pipeline: Crawl → ETL → Vectorize → RAG API.
+* Debug and handle edge cases during crawling (author, date, encoding).
+* Study the Ragas evaluation framework and compare NewsRAG with FlashRAG.
+* Optimize crawling performance and error handling.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                              | Start Date   | End Date        | Resources                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Integration test: run full pipeline `python main.py --mode full` <br> - Verify flow: Spider → Kafka → Consumer → PostgreSQL → ETL → Vectorize <br> - Monitor CloudWatch logs      | 28/07/2025   | 28/07/2025      |                                           |
+| Tue | - Debug edge cases in spider: <br>&emsp; + Author containing URLs, dates, special chars <br>&emsp; + Articles with no title or content < 100 chars <br>&emsp; + Non-standard date formats from different newspapers <br>&emsp; + UTF-8 encoding issues with Vietnamese | 29/07/2025   | 29/07/2025      |                                           |
+| Wed | - Improve author validation in spider: <br>&emsp; + Add `fake_authors` list (vietnamnet news, ban bien tap,...) <br>&emsp; + Enhance `is_valid_author()`: filter names with bad_words (weekdays, dates,...) <br>&emsp; + Add bottom paragraph scanning for "Theo: ..." pattern | 30/07/2025   | 30/07/2025      |                                           |
+| Thu | - Study Ragas evaluation framework: <br>&emsp; + Faithfulness: truthfulness against context <br>&emsp; + Answer Relevancy: relevance to question <br>&emsp; + Context Precision: document ranking <br>&emsp; + Context Recall: document coverage <br> - Compare NewsRAG vs FlashRAG results | 31/07/2025   | 31/07/2025      | Pipeline_v3.md                            |
+| Fri | - Optimize Crawler: <br>&emsp; + Adjust CONCURRENT_REQUESTS, DOWNLOAD_DELAY per OS <br>&emsp; + Improve retry handling on request failure <br>&emsp; + Add ROBOTSTXT_OBEY config <br> - Re-test full pipeline after optimization | 01/08/2025   | 01/08/2025      |                                           |
 
 
-### Week 7 Achievements:
+### Week 7 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Successful integration test on full pipeline:
+  * Crawls ~500 articles per run from 3 newspapers
+  * ETL processes: clean HTML → chunk 800 chars (overlap 150) → insert Star Schema
+  * Vectorize: embedding with `BAAI/bge-small-en-v1.5` → upsert to Qdrant
+  * RAG API: query → embed → search top-k → LLM generates answer
 
-* Successfully created and configured an AWS Free Tier account.
+* Handled critical edge cases:
+  * **Invalid author**: Detected and removed 15+ types of fake authors (URLs, dates, newspaper names, special chars)
+  * **Date parsing**: Supports 3 formats (ISO, VN dd/mm/yyyy, date-only) + fallback through 10 CSS selectors
+  * **Empty content**: Skips articles with content < 100 characters
+  * **ETL author cleanup**: Removes authors > 40 chars, containing http/|/@
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+* Ragas evaluation results:
+  | Metric                | NewsRAG        | FlashRAG       |
+  |----------------------|----------------|----------------|
+  | **Context Precision** | **Higher**     | Average        |
+  | **Context Recall**    | Average        | **Higher**     |
+  | **Faithfulness**      | Average        | **Higher**     |
+  | **Answer Relevancy**  | Comparable     | Comparable     |
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
+  > Overall metrics are modest (below 0.5) because the RAG prompt is configured to provide detailed, comprehensive answers → reduces cosine similarity when Ragas reverse-translates to questions.
 
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* Crawler performance optimization:
+  * Windows: CONCURRENT_REQUESTS=16, DOWNLOAD_DELAY=1.0
+  * Linux (Fargate): CONCURRENT_REQUESTS=32, DOWNLOAD_DELAY=0.5
+  * OS-specific User-Agent customization

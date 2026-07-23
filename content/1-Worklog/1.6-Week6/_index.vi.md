@@ -1,58 +1,52 @@
 ---
 title: "Worklog Tuần 6"
 date: 2024-01-01
-weight: 1
+weight: 6
 chapter: false
 pre: " <b> 1.6. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 
 ### Mục tiêu tuần 6:
 
-* Kết nối, làm quen với các thành viên trong First Cloud AI Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
+* Viết Terraform `main.tf` để provisioning toàn bộ infrastructure trên AWS.
+* Cấu hình EventBridge Scheduler để tự động chạy pipeline theo lịch.
+* Thiết lập IAM Roles, Security Groups, VPC cho ECS + RDS.
+* Test terraform apply và kiểm tra tài nguyên trên AWS Console.
 
 ### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCAJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 11/08/2025   | 11/08/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 12/08/2025   | 12/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 13/08/2025   | 13/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 14/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| Thứ | Công việc                                                                                                                                                                              | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| 2   | - Viết Terraform — VPC & Networking: <br>&emsp; + VPC `newsrag-vpc` (CIDR 10.0.0.0/16) <br>&emsp; + 2 Public Subnets (ap-southeast-2a, 2b) <br>&emsp; + Internet Gateway + Route Table <br>&emsp; + Security Groups: `ecs_sg` (egress all), `rds_sg` (ingress 5432 from ECS) | 21/07/2025   | 21/07/2025      | main.tf                                   |
+| 3   | - Viết Terraform — RDS Aurora PostgreSQL: <br>&emsp; + Cluster: `newsrag-postgres`, engine aurora-postgresql 15.4 <br>&emsp; + Instance: `db.t4g.medium` (2 vCPU, 4GB RAM) <br>&emsp; + DB Subnet Group cho multi-AZ | 22/07/2025   | 22/07/2025      | main.tf                                   |
+| 4   | - Viết Terraform — ECS + ECR: <br>&emsp; + ECR Repository: `newsrag-api` <br>&emsp; + ECS Cluster: `newsrag-cluster` <br>&emsp; + 3 Task Definitions: crawler (256 CPU/512 MB), etl (512/1024), vectorize (512/1024) <br>&emsp; + IAM Roles: execution role + task role <br>&emsp; + CloudWatch Log Group: `/ecs/newsrag-project` | 23/07/2025   | 23/07/2025      | main.tf                                   |
+| 5   | - Viết Terraform — EventBridge Scheduler: <br>&emsp; + Crawler: `cron(0 1 * * ? *)` — 01:00 UTC hàng ngày <br>&emsp; + ETL: `cron(0 2 * * ? *)` — 02:00 UTC <br>&emsp; + Vectorize: `cron(0 3 * * ? *)` — 03:00 UTC <br>&emsp; + Mỗi rule target tới ECS Fargate Task tương ứng | 24/07/2025   | 24/07/2025      | main.tf                                   |
+| 6   | - `terraform init` & `terraform plan` — review changes <br> - `terraform apply` — deploy infrastructure <br> - Kiểm tra tài nguyên trên AWS Console <br> - Test EventBridge trigger manual | 25/07/2025   | 25/07/2025      |                                           |
 
 
 ### Kết quả đạt được tuần 6:
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
 
-* Đã tạo và cấu hình AWS Free Tier account thành công.
+* Hoàn thành `main.tf` (371 dòng) quản lý toàn bộ infrastructure:
+  * **VPC**: 1 VPC, 2 public subnets, Internet Gateway, Route Table
+  * **Security Groups**: ECS (egress all), RDS (ingress 5432 chỉ từ ECS SG)
+  * **RDS**: Aurora PostgreSQL 15.4, instance `db.t4g.medium`, skip final snapshot
+  * **ECR**: Repository `newsrag-api`
+  * **ECS**: Cluster + 3 Task Definitions (crawler, etl, vectorize)
+  * **IAM**: Execution role (ECS Task Execution Policy) + Task role
+  * **CloudWatch**: Log group `/ecs/newsrag-project`, retention 7 ngày
+  * **EventBridge**: 3 scheduled rules
 
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
+* Cấu hình EventBridge Scheduler:
+  | Tên rule                | Cron expression        | Thời gian (UTC) | Target Task        |
+  |------------------------|----------------------|-----------------|-------------------|
+  | `newsrag-crawler-rule`  | `cron(0 1 * * ? *)`  | 01:00           | newsrag-crawler   |
+  | `newsrag-etl-rule`      | `cron(0 2 * * ? *)`  | 02:00           | newsrag-etl       |
+  | `newsrag-vectorize-rule`| `cron(0 3 * * ? *)`  | 03:00           | newsrag-vectorize |
 
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
+* Environment variables được quản lý qua `locals.common_env`:
+  * DB credentials → tự động lấy RDS endpoint
+  * Qdrant, Kafka, Embedding, LLM configs
+  * Sensitive values (passwords, API keys) → Terraform variables (type=string, sensitive=true)
 
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
+* Outputs: `rds_endpoint`, `ecr_repository_url`, `ecs_cluster_name`
 
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
-
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
-
-
+* `terraform apply` thành công, tất cả tài nguyên được tạo trên AWS

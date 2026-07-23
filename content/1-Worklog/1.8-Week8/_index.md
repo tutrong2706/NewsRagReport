@@ -1,57 +1,56 @@
 ---
 title: "Week 8 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 8
 chapter: false
 pre: " <b> 1.8. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 8 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Finalize code, clean up and optimize.
+* Detailed comparison of architecture v1 vs v2 (cost reduction ~30%).
+* Write technical documentation `Pipeline_v3.md`.
+* Complete the internship report.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                              | Start Date   | End Date        | Resources                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Code review and clean up: <br>&emsp; + Remove dead code, unnecessary comments <br>&emsp; + Standardize coding style (PEP 8) <br>&emsp; + Verify `.env.example` has all variables  | 04/08/2025   | 04/08/2025      |                                           |
+| Tue | - Detailed v1 vs v2 comparison: <br>&emsp; + Crawler: Lambda (15 min timeout) → Fargate (unlimited) <br>&emsp; + Stream: Kafka → SQS (~$0) <br>&emsp; + Embedding: bge-m3 local → Bedrock API <br>&emsp; + Vector DB: Qdrant Cloud → Aurora pgvector <br>&emsp; + Cost: ~$35/month → ~$21-26/month (reduced ~30%) | 05/08/2025   | 05/08/2025      | Pipeline_v3.md                            |
+| Wed | - Write technical documentation `Pipeline_v3.md`: <br>&emsp; + Overall architecture (text diagram) <br>&emsp; + v1 vs v2 comparison table <br>&emsp; + Component map <br>&emsp; + Technical details for each module <br>&emsp; + Operational costs <br>&emsp; + Ragas evaluation results | 06/08/2025   | 06/08/2025      |                                           |
+| Thu | - Write team task distribution & timeline in Pipeline_v3.md <br> - Write future development directions <br> - Write deployment and local development guide                           | 07/08/2025   | 07/08/2025      |                                           |
+| Fri | - Complete internship report (Hugo report) <br> - Review all 8 weeks of worklog content <br> - Prepare presentation slides (if needed) <br> - Submit report                          | 08/08/2025   | 08/08/2025      |                                           |
 
 
-### Week 8 Achievements:
+### Week 8 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Finalized production-quality code:
+  * All modules have error handling, logging
+  * `.env.example` with all 50 environment variables
+  * `Makefile` with 12 convenient commands (setup, up, down, full, auto, crawl, etl,...)
+  * `deploy.sh` for automated deployment
 
-* Successfully created and configured an AWS Free Tier account.
+* Architecture v1 vs v2 comparison:
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+  | Component       | v1 (Thesis)                       | v2 (Improved)                     | Reason                                |
+  |----------------|----------------------------------|----------------------------------|---------------------------------------|
+  | Crawler         | Lambda + CrawlSpider (15 min)    | **Fargate + SitemapSpider**      | No timeout, crawls old articles       |
+  | Stream          | Kafka on Docker                  | **SQS Standard (~$0)**           | Overkill for batch pipeline           |
+  | Embedding       | BAAI/bge-m3 (1024d, local)       | **Bedrock Titan Embed v2**       | Serverless, no model loading          |
+  | Vector DB       | Qdrant Cloud (3rd party)         | **Aurora pgvector**              | Leverage RDS, no external dependency  |
+  | **Total Cost**  | **~$35/month**                   | **~$21-26/month**                | **Reduced ~30%**                      |
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
+* Completed `Pipeline_v3.md` documentation (460 lines) including:
+  * Overall architecture with text diagram
+  * 5 technical module details with code samples
+  * SQL Schema (Star Schema + pgvector)
+  * Detailed operational costs
+  * Ragas evaluation results and FlashRAG comparison
+  * Future development directions
 
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* Completed internship report:
+  * 8 weeks of detailed worklog
+  * NewsRAG project proposal
+  * Hands-on workshop
+  * Self-evaluation and feedback

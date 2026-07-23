@@ -6,34 +6,24 @@ chapter: false
 pre: " <b> 1. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
+Throughout **8 weeks** of internship in the **First Cloud AI Journey** program (from June 15, 2025 to August 14, 2025), I participated in building the **NewsRAG** project — an intelligent news aggregation and analysis system based on RAG (Retrieval-Augmented Generation) architecture, fully deployed on AWS.
 
-**On this page**, you will need to introduce your worklog. **How** did you complete it? How many weeks did you take to complete the program? **What** did you do in those weeks?
+My primary role in the team was to develop the **Crawl + Queue** module, including: writing Scrapy Spiders to crawl news from 3 Vietnamese news outlets, packaging Docker containers for the Fargate Crawler, configuring SQS + Dead Letter Queue, and deploying to ECR/ECS.
 
-Typically, and as a standard, a worklog is carried out over about 3 months (throughout the internship period) with weekly contents as follows:
+Below is the detailed worklog for each week:
 
-**Week 1:** [Getting familiar with AWS and basic AWS services](1.1-week1/)
+**Week 1:** [Getting Started with AWS & Understanding NewsRAG Project](1.1-week1/)
 
-**Week 2:** [Doing task A...](1.2-week2/)
+**Week 2:** [Researching Scrapy Framework & Docker](1.2-week2/)
 
-**Week 3:** [Doing task B...](1.3-week3/)
+**Week 3:** [Developing Scrapy Spider for NewsRAG](1.3-week3/)
 
-**Week 4:** [Doing task C...](1.4-week4/)
+**Week 4:** [Dockerizing Crawler & Integrating with ECS Fargate](1.4-week4/)
 
-**Week 5:** [Doing task D...](1.5-week5/)
+**Week 5:** [Configuring SQS & Pipeline Integration](1.5-week5/)
 
-**Week 6:** [Doing task E...](1.6-week6/)
+**Week 6:** [Terraform Infrastructure & EventBridge Schedule](1.6-week6/)
 
-**Week 7:** [Doing task G...](1.7-week7/)
+**Week 7:** [System Integration & Comprehensive Testing](1.7-week7/)
 
-**Week 8:** [Doing task H...](1.8-week8/)
-
-**Week 9:** [Doing task I...](1.9-week9/)
-
-**Week 10:** [Doing task L...](1.10-week10/)
-
-**Week 11:** [Doing task M...](1.11-week11/)
-
-**Week 12:** [Doing task N...](1.12-week12/)
+**Week 8:** [Finalization, Optimization & Report Writing](1.8-week8/)

@@ -1,57 +1,57 @@
 ---
 title: "Week 4 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 4
 chapter: false
 pre: " <b> 1.4. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 4 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Package the Crawler into a Docker container.
+* Build and push Docker image to Amazon ECR.
+* Configure ECS Task Definition for Fargate Crawler.
+* Test running the Crawler on Fargate instead of locally.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                              | Start Date   | End Date        | Resources                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Write Dockerfile for Crawler: <br>&emsp; + Base image: `python:3.10-slim` <br>&emsp; + Install system deps: `build-essential`, `libpq-dev` <br>&emsp; + COPY requirements.txt & pip install <br>&emsp; + CMD: `python main.py --mode crawl` | 07/07/2025   | 07/07/2025      | Dockerfile                                |
+| Tue | - Build Docker image locally: `docker build -t news-crawler .` <br> - Test container run: `docker run news-crawler` <br> - Debug issues: PYTHONPATH, encoding, env variables          | 08/07/2025   | 08/07/2025      |                                           |
+| Wed | - Create ECR repository: `newsrag-api` <br> - Push image to ECR: <br>&emsp; + `aws ecr get-login-password` <br>&emsp; + `docker tag` & `docker push` <br> - Verify image on AWS Console | 09/07/2025   | 09/07/2025      | <https://docs.aws.amazon.com/ecr/>        |
+| Thu | - Configure ECS Task Definition for Fargate: <br>&emsp; + CPU: 256 (0.25 vCPU), Memory: 512 MB <br>&emsp; + Network mode: awsvpc <br>&emsp; + Container command: `python main.py --mode crawl` <br>&emsp; + Environment variables from `.env` <br>&emsp; + Log driver: awslogs → CloudWatch | 10/07/2025   | 10/07/2025      | main.tf                                   |
+| Fri | - Create ECS Cluster: `newsrag-cluster` <br> - Manually test Fargate Task run <br> - Check logs on CloudWatch <br> - Debug networking issues (Security Groups, VPC, Public IP)        | 11/07/2025   | 11/07/2025      |                                           |
 
 
-### Week 4 Achievements:
+### Week 4 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Completed optimized Dockerfile:
+  ```dockerfile
+  FROM python:3.10-slim
+  WORKDIR /app
+  RUN apt-get update && apt-get install -y build-essential libpq-dev curl
+  COPY requirements.txt .
+  RUN pip install --no-cache-dir -r requirements.txt
+  COPY . .
+  ENV PYTHONPATH=/app
+  CMD ["python", "main.py", "--mode", "full"]
+  ```
 
-* Successfully created and configured an AWS Free Tier account.
+* Docker image builds successfully, runs stably on local
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+* Successfully pushed image to ECR:
+  * Repository: `newsrag-api`
+  * Tag: `latest`
+  * Size: ~350 MB (after optimization)
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
+* Completed ECS Task Definition configuration:
+  * Family: `newsrag-crawler`
+  * Fargate compatibility, CPU 256, Memory 512
+  * awsvpc network mode for private networking
+  * CloudWatch Logs with `crawler` prefix
+  * Environment variables injected from Terraform locals
 
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* ECS Cluster `newsrag-cluster` operational, Fargate Task running successfully:
+  * Crawler runs inside container on Fargate
+  * Logs appearing in CloudWatch
+  * Security Group configured to allow egress (page downloads, Kafka communication)

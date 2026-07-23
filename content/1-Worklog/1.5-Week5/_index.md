@@ -1,57 +1,50 @@
 ---
 title: "Week 5 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 5
 chapter: false
 pre: " <b> 1.5. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 5 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Configure Amazon SQS Standard Queue to replace Kafka (cost reduction, simplification).
+* Set up Dead Letter Queue (DLQ) for error handling.
+* Integrate the Crawler → SQS → Lambda Consumer → PostgreSQL flow.
+* End-to-end testing of crawl + consumer flow.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                              | Start Date   | End Date        | Resources                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Create SQS Standard Queue: `newsrag-articles` <br> - Configure message retention: 4 days <br> - Create Dead Letter Queue: `newsrag-articles-dlq` <br> - Configure redrive policy: maxReceiveCount=3 | 14/07/2025   | 14/07/2025      | <https://docs.aws.amazon.com/sqs/>        |
+| Tue | - Convert `KafkaPipeline` to `SQSPipeline` (v2): <br>&emsp; + Use `boto3.client('sqs')` <br>&emsp; + `send_message()` instead of Kafka produce <br> - Compare SQS vs Kafka for this use case | 15/07/2025   | 15/07/2025      |                                           |
+| Wed | - Study Lambda Consumer (team member B's module): <br>&emsp; + Trigger from SQS event <br>&emsp; + SHA256 hash URL for deduplication <br>&emsp; + Insert into `article_metadata` table <br>&emsp; + ON CONFLICT DO NOTHING | 16/07/2025   | 16/07/2025      | consumer.py                               |
+| Thu | - End-to-end integration: Crawler → SQS → Consumer → PostgreSQL <br> - Test flow: crawl 100 articles → check SQS messages → verify database <br> - Debug: message format, encoding, date parsing | 17/07/2025   | 17/07/2025      |                                           |
+| Fri | - Study ETL pipeline (team member C's module): <br>&emsp; + `clean_text()`: remove HTML tags, junk patterns <br>&emsp; + `RecursiveCharacterTextSplitter`: chunk 800 chars, overlap 150 <br>&emsp; + Star Schema: `dim_source`, `dim_time`, `dim_author`, `dim_content`, `fact_articles`, `fact_chunks` | 18/07/2025   | 18/07/2025      | etl_warehouse.py, warehouse.sql           |
 
 
-### Week 5 Achievements:
+### Week 5 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Successfully configured SQS:
+  * **SQS Standard Queue**: `newsrag-articles` — cost ~$0/month (vs Kafka requiring management overhead)
+  * **Dead Letter Queue**: `newsrag-articles-dlq` — catches failed messages after 3 retries
+  * Message retention: 4 days, visibility timeout: 30 seconds
 
-* Successfully created and configured an AWS Free Tier account.
+* Clear understanding of Kafka → SQS migration rationale:
+  | Criteria        | Kafka (v1)            | SQS (v2)               |
+  |-----------------|----------------------|------------------------|
+  | Cost            | Container overhead    | ~$0/month              |
+  | Management      | Maintain broker       | Fully managed          |
+  | Use case        | Real-time streaming   | Daily batch crawl      |
+  | Conclusion      | Overkill              | **Best fit**           |
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+* Successfully integrated end-to-end flow:
+  * Crawler crawls articles → serializes JSON → pushes to SQS
+  * Lambda Consumer triggered by SQS → parses JSON → SHA256 hashes URL → INSERTs article_metadata
+  * Deduplication works: `ON CONFLICT (url_hash) DO NOTHING`
+  * Test with 100 articles: 95 successfully inserted, 5 duplicates skipped
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
-
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* Understood Star Schema warehouse design:
+  * **Dimension tables**: `dim_source` (news source), `dim_time` (date), `dim_author` (author), `dim_content` (raw content)
+  * **Fact tables**: `fact_articles` (articles), `fact_chunks` (chunks after splitting), `fact_article_authors` (M:N)
+  * Indexes: HNSW for vector search, B-tree for url_hash, domain, date

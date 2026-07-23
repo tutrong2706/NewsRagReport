@@ -1,37 +1,65 @@
 ---
-title : "Dọn dẹp tài nguyên"
-date : 2024-01-01
+title : "Deploy"
+date : 2024-01-01 
 weight : 6
 chapter : false
 pre : " <b> 5.6. </b> "
 ---
 
-#### Dọn dẹp tài nguyên
+#### Triển khai Infrastructure as Code với Terraform
 
-Xin chúc mừng bạn đã hoàn thành xong lab này!
-Trong lab này, bạn đã học về các mô hình kiến trúc để truy cập Amazon S3 mà không sử dụng Public Internet.
+Thay vì cấu hình thủ công từng dịch vụ trên AWS Console, dự án NewsRAG sử dụng Terraform để tự động hóa việc khởi tạo toàn bộ hạ tầng (Infrastructure as Code - IaC).
 
-+ Bằng cách tạo Gateway endpoint, bạn đã cho phép giao tiếp trực tiếp giữa các tài nguyên EC2 và Amazon S3, mà không đi qua Internet Gateway.
-Bằng cách tạo Interface endpoint, bạn đã mở rộng kết nối S3 đến các tài nguyên chạy trên trung tâm dữ liệu trên chỗ của bạn thông qua AWS Site-to-Site VPN hoặc Direct Connect.
+**1. Cấu trúc Terraform**
 
-#### Dọn dẹp
-1. Điều hướng đến Hosted Zones trên phía trái của bảng điều khiển Route 53. Nhấp vào tên của  s3.us-east-1.amazonaws.com zone. Nhấp vào Delete và xác nhận việc xóa bằng cách nhập từ khóa "delete".
+File `main.tf` (hơn 370 dòng) quản lý tất cả các tài nguyên:
+- **Networking**: VPC (`10.0.0.0/16`), 2 Public Subnets (multi-AZ), Internet Gateway, Route Tables.
+- **Security Groups**: Phân quyền truy cập nguyên tắc đặc quyền tối thiểu (Least Privilege) — ví dụ RDS chỉ nhận traffic từ ECS Security Group.
+- **Database**: Cụm RDS Aurora PostgreSQL Serverless.
+- **Compute**: ECS Cluster, ECR Repository, và các Task Definitions cho Crawler, ETL, Vectorize chạy trên nền Fargate.
+- **Scheduling**: EventBridge Rules để trigger các ECS Tasks theo cron schedule (01:00, 02:00, 03:00 UTC).
 
-![hosted zone](/images/5-Workshop/5.6-Cleanup/delete-zone.png)
+**2. Triển khai lên AWS**
 
-2. Disassociate Route 53 Resolver Rule - myS3Rule from "VPC Onprem" and Delete it. 
+Để triển khai hệ thống, bạn chỉ cần cấu hình AWS CLI và chạy các lệnh:
 
-![hosted zone](/images/5-Workshop/5.6-Cleanup/vpc.png)
+```bash
+# Khởi tạo Terraform provider
+terraform init
 
-4.Mở console của CloudFormation và xóa hai stack CloudFormation mà bạn đã tạo cho bài thực hành này:
-+ PLOnpremSetup
-+ PLCloudSetup
+# Xem trước các tài nguyên sẽ được tạo
+terraform plan
 
-![delete stack](/images/5-Workshop/5.6-Cleanup/delete-stack.png)
+# Thực thi tạo tài nguyên trên AWS
+terraform apply -auto-approve
+```
 
-5. Xóa các S3 bucket
+**3. Tự động hóa Deployment (CI/CD)**
 
-+ Mở bảng điều khiển S3
-+ Chọn bucket chúng ta đã tạo cho lab, nhấp chuột và xác nhận là empty. Nhấp Delete và xác nhận delete.
-+ 
-![delete s3](/images/5-Workshop/5.6-Cleanup/delete-s3.png)
+Script `deploy.sh` được cung cấp để tự động build Docker images, tag và push lên Amazon ECR, sau đó update ECS service để force deployment phiên bản mới nhất:
+
+```bash
+#!/bin/bash
+# deploy.sh
+
+# 1. Lấy thông tin xác thực ECR
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.ap-southeast-2.amazonaws.com
+
+# 2. Build Docker images
+docker build -t newsrag-crawler -f crawler/Dockerfile .
+docker build -t newsrag-etl -f etl/Dockerfile .
+
+# 3. Tag và Push lên ECR
+docker tag newsrag-crawler:latest $ACCOUNT_ID.dkr.ecr.ap-southeast-2.amazonaws.com/newsrag-api:crawler-latest
+docker push $ACCOUNT_ID.dkr.ecr.ap-southeast-2.amazonaws.com/newsrag-api:crawler-latest
+```
+
+**4. Dọn dẹp tài nguyên (Cleanup)**
+
+Khi không sử dụng hệ thống để tránh phát sinh chi phí, bạn có thể xóa toàn bộ tài nguyên bằng 1 lệnh duy nhất:
+
+```bash
+terraform destroy
+```
+
+> **Lưu ý**: Lệnh này sẽ xóa tất cả VPC, ECS, RDS, EventBridge được định nghĩa trong `main.tf`. Dữ liệu trong database sẽ bị mất nếu bạn không cấu hình snapshot.

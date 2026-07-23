@@ -1,57 +1,51 @@
 ---
 title: "Week 3 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 3
 chapter: false
 pre: " <b> 1.3. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 3 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Develop the complete `NewsRAGSpider` — the main spider for news crawling.
+* Implement article information extraction logic: title, content, author, publish_date.
+* Write `KafkaPipeline` to push crawled data into Kafka topic.
+* Test crawling locally.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                              | Start Date   | End Date        | Resources                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Write `NewsRAGSpider` class inheriting `scrapy.Spider` <br> - Implement `parse()` method: filter internal URLs, classify article links (.html, .htm) and category links <br> - Configure `custom_settings`: CONCURRENT_REQUESTS, DOWNLOAD_DELAY, DEPTH_LIMIT | 30/06/2025   | 30/06/2025      | spider.py                                 |
+| Tue | - Implement `parse_article()`: use `newspaper3k` to parse HTML <br> - Filter articles with content < 100 characters <br> - Extract author from `article.authors`                     | 01/07/2025   | 01/07/2025      |                                           |
+| Wed | - Advanced author extraction: <br>&emsp; + Fallback through multiple CSS selectors (`.author-name`, `.tac-gia`, `a[rel="author"]`,...) <br>&emsp; + Validate author: filter out fake authors (URLs, dates, newspaper names) <br>&emsp; + `is_valid_author()` function: check length, special characters, bad words | 02/07/2025   | 02/07/2025      |                                           |
+| Thu | - Publish_date parsing: <br>&emsp; + Parse ISO format: `2025-07-01T14:30` <br>&emsp; + Parse VN format: `01/07/2025 14:30` <br>&emsp; + Fallback through multiple CSS selectors + `article.publish_date` <br> - Write `KafkaPipeline`: serialize item to JSON → push to Kafka topic `news_raw` | 03/07/2025   | 03/07/2025      | pipelines.py                              |
+| Fri | - Test local crawl: `scrapy crawl news_rag_spider` <br> - Verify output: correct JSON format, valid author, proper dates <br> - Debug and fix CSS selectors for each newspaper       | 04/07/2025   | 04/07/2025      |                                           |
 
 
-### Week 3 Achievements:
+### Week 3 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Completed `NewsRAGSpider` (`crawler/spiders/spider.py`) with features:
+  * **parse()**: Traverses all links on page, filters same-domain URLs, classifies articles vs category pages
+  * **parse_article()**: Uses `newspaper3k` combined with CSS Selectors
+  * **Custom settings**: CONCURRENT_REQUESTS=16 (Windows) / 32 (Linux), DOWNLOAD_DELAY=1.0/0.5, DEPTH_LIMIT=5
 
-* Successfully created and configured an AWS Free Tier account.
+* Built complex author extraction system with multi-level fallback:
+  1. Extract from `newspaper3k` → validate
+  2. Fallback through 12+ CSS selectors: `.author-name`, `.tac-gia`, `a[href*="tac-gia"]`,...
+  3. Scan bottom paragraphs for patterns like "Theo: ..." / "Nguon: ..."
+  4. Final fallback to `meta[name="author"]`
+  * `is_valid_author()` checks: length 2-100 chars, no URLs/emails, no date patterns, no bad words (newspaper names, generic labels)
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+* Handled diverse date parsing:
+  * ISO format: `2025-07-01T14:30:00`
+  * VN format: `01/07/2025 14:30` or `01-07-2025`
+  * Fallback through 10 CSS selectors + `article.publish_date`
+  * Standardized output: `YYYY-MM-DD HH:MM:SS`
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
+* Completed `KafkaPipeline` (`crawler/pipelines.py`):
+  * Serializes item to JSON (ensure_ascii=False for Vietnamese)
+  * Pushes to Kafka topic `news_raw`
+  * Producer flush after each item
 
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* Successfully tested local crawling with valid output format

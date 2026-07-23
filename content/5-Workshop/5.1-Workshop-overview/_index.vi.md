@@ -6,14 +6,36 @@ chapter : false
 pre : " <b> 5.1. </b> "
 ---
 
-#### Giới thiệu về VPC Endpoint
+#### Tổng quan kiến trúc NewsRAG
 
-+ Điểm cuối VPC (endpoint) là thiết bị ảo. Chúng là các thành phần VPC có thể mở rộng theo chiều ngang, dự phòng và có tính sẵn sàng cao. Chúng cho phép giao tiếp giữa tài nguyên điện toán của bạn và dịch vụ AWS mà không gây ra rủi ro về tính sẵn sàng.
-+ Tài nguyên điện toán đang chạy trong VPC có thể truy cập Amazon S3 bằng cách sử dụng điểm cuối Gateway. Interface Endpoint  PrivateLink có thể được sử dụng bởi tài nguyên chạy trong VPC hoặc tại TTDL.
+Hệ thống NewsRAG được thiết kế theo kiến trúc pipeline gồm 5 module chính:
 
-#### Tổng quan về workshop
-Trong workshop này, bạn sẽ sử dụng hai VPC.
-+ **"VPC Cloud"** dành cho các tài nguyên cloud như Gateway endpoint và EC2 instance để kiểm tra.
-+ **"VPC On-Prem"** mô phỏng môi trường truyền thống như nhà máy hoặc trung tâm dữ liệu của công ty. Một EC2 Instance chạy phần mềm StrongSwan VPN đã được triển khai trong "VPC On-prem" và được cấu hình tự động để thiết lập đường hầm VPN Site-to-Site với AWS Transit Gateway. VPN này mô phỏng kết nối từ một vị trí tại TTDL (on-prem) với AWS cloud. Để giảm thiểu chi phí, chỉ một phiên bản VPN được cung cấp để hỗ trợ workshop này. Khi lập kế hoạch kết nối VPN cho production workloads của bạn, AWS khuyên bạn nên sử dụng nhiều thiết bị VPN để có tính sẵn sàng cao.
+1. **Crawler** (ECS Fargate): Scrapy Spider crawl tin tức từ 3 báo qua sitemap XML
+2. **Consumer** (Lambda): Nhận message từ SQS, dedup URL bằng SHA256, insert vào PostgreSQL
+3. **ETL** (Fargate): Clean HTML, chunk text 800 chars, transform theo Star Schema
+4. **Vectorize** (Fargate): Embedding bằng BAAI/bge-small-en-v1.5, upsert vào Qdrant Cloud
+5. **RAG API** (Lambda + API Gateway): Embed query → vector search → LLM generate answer
 
-![overview](/images/5-Workshop/5.1-Workshop-overview/diagram1.png)
+#### Công nghệ sử dụng
+
+| Component       | Công nghệ                              |
+|----------------|----------------------------------------|
+| Crawler         | Python, Scrapy, newspaper3k            |
+| Queue           | Amazon SQS (thay Kafka từ v1)          |
+| Database        | Aurora PostgreSQL + pgvector           |
+| ETL             | Python, RecursiveCharacterTextSplitter |
+| Embedding       | BAAI/bge-small-en-v1.5 (384d)         |
+| Vector DB       | Qdrant Cloud                           |
+| LLM             | Groq (Qwen3-8B), Gemini 2.0 Flash     |
+| Frontend        | Next.js + React + Tailwind CSS         |
+| Infrastructure  | Terraform, Docker, ECS Fargate         |
+| Monitoring      | CloudWatch Logs                        |
+
+#### Phân chia module theo nhóm
+
+| Thành viên | Module              | Trách nhiệm chính                            |
+| ---------- | ------------------- | --------------------------------------------- |
+| **A (Tôi)**| Crawl + Queue       | Scrapy Spider, Dockerfile, SQS, ECR, Fargate  |
+| **B**      | Consumer + Database | Lambda Consumer, Aurora, Star Schema SQL       |
+| **C**      | ETL + Embedding     | Clean text, chunk, embedding, insert vector    |
+| **D**      | RAG API + Frontend  | RAG search, API Gateway, Next.js Dashboard     |

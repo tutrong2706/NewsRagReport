@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 4.1. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 # Bài thu hoạch “GenAI-powered App-DB Modernization workshop”
 
 ### Mục Đích Của Sự Kiện
@@ -27,99 +23,47 @@ pre: " <b> 4.1. </b> "
 
 ### Nội Dung Nổi Bật
 
-#### Đưa ra các ảnh hưởng tiêu cực của kiến trúc ứng dụng cũ
-
-- Thời gian release sản phẩm lâu → Mất doanh thu/bỏ lỡ cơ hội
-- Hoạt động kém hiệu quả → Mất năng suất, tốn kém chi phí
-- Không tuân thủ các quy định về bảo mật → Mất an ninh, uy tín
-
 #### Chuyển đổi sang kiến trúc ứng dụng mới - Microservice Architecture
-
 Chuyển đổi thành hệ thống modular – từng chức năng là một **dịch vụ độc lập** giao tiếp với nhau qua **sự kiện** với 3 trụ cột cốt lõi:
-
-- **Queue Management**: Xử lý tác vụ bất đồng bộ
+- **Queue Management**: Xử lý tác vụ bất đồng bộ (Amazon SQS)
 - **Caching Strategy:** Tối ưu performance
 - **Message Handling:** Giao tiếp linh hoạt giữa services
 
-#### Domain-Driven Design (DDD)
-
-- **Phương pháp 4 bước**: Xác định domain events → sắp xếp timeline → identify actors → xác định bounded contexts
-- **Case study bookstore**: Minh họa cách áp dụng DDD thực tế
-- **Context mapping**: 7 patterns tích hợp bounded contexts
-
 #### Event-Driven Architecture
-
 - **3 patterns tích hợp**: Publish/Subscribe, Point-to-point, Streaming
 - **Lợi ích**: Loose coupling, scalability, resilience
 - **So sánh sync vs async**: Hiểu rõ trade-offs (sự đánh đổi)
 
 #### Compute Evolution
-
 - **Shared Responsibility Model**: Từ EC2 → ECS → Fargate → Lambda
-- **Serverless benefits**: No server management, auto-scaling, pay-for-value
-- **Functions vs Containers**: Criteria lựa chọn phù hợp
+- **Serverless benefits**: Không cần quản lý server, auto-scaling, chỉ trả phí khi sử dụng
+- **Functions vs Containers**: Tiêu chí lựa chọn phù hợp cho từng workload
 
-#### Amazon Q Developer
+### Ứng Dụng Vào Công Việc (Dự án NewsRAG)
 
-- **SDLC automation**: Từ planning đến maintenance
-- **Code transformation**: Java upgrade, .NET modernization
-- **AWS Transform agents**: VMware, Mainframe, .NET migration
-
-### Những Gì Học Được
-
-#### Tư Duy Thiết Kế
-
-- **Business-first approach**: Luôn bắt đầu từ business domain, không phải technology
-- **Ubiquitous language**: Importance của common vocabulary giữa business và tech teams
-- **Bounded contexts**: Cách identify và manage complexity trong large systems
-
-#### Kiến Trúc Kỹ Thuật
-
-- **Event storming technique**: Phương pháp thực tế để mô hình hóa quy trình kinh doanh
-- Sử dụng **Event-driven communication** thay vì synchronous calls
-- **Integration patterns**: Hiểu khi nào dùng sync, async, pub/sub, streaming
-- **Compute spectrum**: Criteria chọn từ VM → containers → serverless
-
-#### Chiến Lược Hiện Đại Hóa
-
-- **Phased approach**: Không rush, phải có roadmap rõ ràng
-- **7Rs framework**: Nhiều con đường khác nhau tùy thuộc vào đặc điểm của mỗi ứng dụng
-- **ROI measurement**: Cost reduction + business agility
-
-### Ứng Dụng Vào Công Việc
-
-- **Áp dụng DDD** cho project hiện tại: Event storming sessions với business team
-- **Refactor microservices**: Sử dụng bounded contexts để identify service boundaries
-- **Implement event-driven patterns**: Thay thế một số sync calls bằng async messaging
-- **Serverless adoption**: Pilot AWS Lambda cho một số use cases phù hợp
-- **Try Amazon Q Developer**: Integrate vào development workflow để boost productivity
+- **Implement event-driven patterns**: Ứng dụng SQS làm queue trung gian giữa Crawler và Consumer trong pipeline NewsRAG, giúp loose coupling hai thành phần này.
+- **Serverless adoption**: Sử dụng ECS Fargate cho module Crawler và ETL, và AWS Lambda cho module Consumer và RAG API, tận dụng tối đa kiến trúc serverless để tối ưu chi phí (giảm 30% so với v1).
+- **Compute selection**: Áp dụng bài học Functions vs Containers để quyết định chuyển Crawler từ Lambda sang ECS Fargate để tránh lỗi timeout 15 phút.
 
 ### Trải nghiệm trong event
 
 Tham gia workshop **“GenAI-powered App-DB Modernization”** là một trải nghiệm rất bổ ích, giúp tôi có cái nhìn toàn diện về cách hiện đại hóa ứng dụng và cơ sở dữ liệu bằng các phương pháp và công cụ hiện đại. Một số trải nghiệm nổi bật:
 
 #### Học hỏi từ các diễn giả có chuyên môn cao
-- Các diễn giả đến từ AWS và các tổ chức công nghệ lớn đã chia sẻ **best practices** trong thiết kế ứng dụng hiện đại.
-- Qua các case study thực tế, tôi hiểu rõ hơn cách áp dụng **Domain-Driven Design (DDD)** và **Event-Driven Architecture** vào các project lớn.
+- Các diễn giả đến từ AWS đã chia sẻ **best practices** trong thiết kế ứng dụng hiện đại, đặc biệt là cách tận dụng GenAI để tối ưu hóa quy trình.
 
 #### Trải nghiệm kỹ thuật thực tế
-- Tham gia các phiên trình bày về **event storming** giúp tôi hình dung cách **mô hình hóa quy trình kinh doanh** thành các domain events.
-- Học cách **phân tách microservices** và xác định **bounded contexts** để quản lý sự phức tạp của hệ thống lớn.
-- Hiểu rõ trade-offs giữa **synchronous và asynchronous communication** cũng như các pattern tích hợp như **pub/sub, point-to-point, streaming**.
-
-#### Ứng dụng công cụ hiện đại
-- Trực tiếp tìm hiểu về **Amazon Q Developer**, công cụ AI hỗ trợ SDLC từ lập kế hoạch đến maintenance.
-- Học cách **tự động hóa code transformation** và pilot serverless với **AWS Lambda**, từ đó nâng cao năng suất phát triển.
+- Hiểu rõ trade-offs giữa **synchronous và asynchronous communication** cũng như các pattern tích hợp, từ đó tự tin áp dụng SQS cho dự án NewsRAG.
+- Phân biệt rõ ưu nhược điểm giữa **ECS Fargate và Lambda**, một kiến thức then chốt giúp nhóm tái cấu trúc hệ thống NewsRAG v2.
 
 #### Kết nối và trao đổi
-- Workshop tạo cơ hội trao đổi trực tiếp với các chuyên gia, đồng nghiệp và team business, giúp **nâng cao ngôn ngữ chung (ubiquitous language)** giữa business và tech.
-- Qua các ví dụ thực tế, tôi nhận ra tầm quan trọng của **business-first approach**, luôn bắt đầu từ nhu cầu kinh doanh thay vì chỉ tập trung vào công nghệ.
+- Workshop tạo cơ hội trao đổi trực tiếp với các chuyên gia và học viên khác trong chương trình FCAJ, giúp giải đáp nhiều thắc mắc về serverless architecture.
 
 #### Bài học rút ra
-- Việc áp dụng DDD và event-driven patterns giúp giảm **coupling**, tăng **scalability** và **resilience** cho hệ thống.
-- Chiến lược hiện đại hóa cần **phased approach** và đo lường **ROI**, không nên vội vàng chuyển đổi toàn bộ hệ thống.
-- Các công cụ AI như Amazon Q Developer có thể **boost productivity** nếu được tích hợp vào workflow phát triển hiện tại.
+- Việc áp dụng event-driven patterns giúp giảm **coupling**, tăng **scalability** và **resilience** cho hệ thống.
+- Lựa chọn đúng Compute Service (Fargate vs Lambda) là yếu tố sống còn cho sự ổn định và chi phí của hệ thống.
 
-#### Một số hình ảnh khi tham gia sự kiện
-* Thêm các hình ảnh của các bạn tại đây
-> Tổng thể, sự kiện không chỉ cung cấp kiến thức kỹ thuật mà còn giúp tôi thay đổi cách tư duy về thiết kế ứng dụng, hiện đại hóa hệ thống và phối hợp hiệu quả hơn giữa các team.
+#### Hình ảnh sự kiện
+*Thêm hình ảnh thực tế của bạn tại đây*
+
+> Tổng thể, sự kiện không chỉ cung cấp kiến thức kỹ thuật mà còn giúp tôi thay đổi cách tư duy về thiết kế hệ thống, đóng góp trực tiếp vào thành công của dự án NewsRAG.

@@ -1,126 +1,56 @@
 ---
 title: "Event 2"
 date: 2024-01-01
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 4.2. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy it verbatim** into your report, including this warning.
-{{% /notice %}}
-
-# Summary Report: “GenAI-powered App-DB Modernization workshop”
+# Summary Report: “AWS Serverless & Container Day”
 
 ### Event Objectives
 
-- Share best practices in modern application design
-- Introduce Domain-Driven Design (DDD) and event-driven architecture
-- Provide guidance on selecting the right compute services
-- Present AI tools to support the development lifecycle
-
-### Speakers
-
-- **Jignesh Shah** – Director, Open Source Databases
-- **Erica Liu** – Sr. GTM Specialist, AppMod
-- **Fabrianne Effendi** – Assc. Specialist SA, Serverless Amazon Web Services
+- Introduce the latest trends in Serverless and Container technologies on AWS.
+- Deep dive into Amazon ECS, EKS, and AWS Fargate.
+- Guide on building microservices architectures optimized for cost and performance.
+- Share practical experiences from AWS experts and customers.
 
 ### Key Highlights
 
-#### Identifying the drawbacks of legacy application architecture
+#### 1. Container Optimization with AWS Fargate
+- **No server management**: Fargate allows developers to focus on the application rather than worrying about managing EC2 instances.
+- **Right-sizing feature**: Configuring precise CPU and Memory for each task to save costs.
+- **Graviton Integration**: Running Fargate on ARM-based processors (Graviton) boosts performance by 40% at a 20% lower cost.
 
-- Long product release cycles → Lost revenue/missed opportunities  
-- Inefficient operations → Reduced productivity, higher costs  
-- Non-compliance with security regulations → Security breaches, loss of reputation  
+#### 2. Event-Driven Architecture with EventBridge
+- Using Amazon EventBridge to schedule or respond to events from other services (S3, SQS).
+- How EventBridge reduces the need for integration code between microservices.
 
-#### Transitioning to modern application architecture – Microservices
+#### 3. AWS Lambda Best Practices
+- **Cold Start** Management: Using Provisioned Concurrency.
+- Choosing the right memory size to achieve the perfect balance between performance and cost.
+- Timeout limits: Keeping in mind Lambda's 15-minute limit for long-running tasks.
 
-Migrating to a modular system — each function is an **independent service** communicating via **events**, built on three core pillars:
+### Applying to Work (NewsRAG Project)
 
-- **Queue Management**: Handle asynchronous tasks  
-- **Caching Strategy**: Optimize performance  
-- **Message Handling**: Flexible inter-service communication  
-
-#### Domain-Driven Design (DDD)
-
-- **Four-step method**: Identify domain events → arrange timeline → identify actors → define bounded contexts  
-- **Bookstore case study**: Demonstrates real-world DDD application  
-- **Context mapping**: 7 patterns for integrating bounded contexts  
-
-#### Event-Driven Architecture
-
-- **3 integration patterns**: Publish/Subscribe, Point-to-point, Streaming  
-- **Benefits**: Loose coupling, scalability, resilience  
-- **Sync vs async comparison**: Understanding the trade-offs  
-
-#### Compute Evolution
-
-- **Shared Responsibility Model**: EC2 → ECS → Fargate → Lambda  
-- **Serverless benefits**: No server management, auto-scaling, pay-for-value  
-- **Functions vs Containers**: Criteria for appropriate choice  
-
-#### Amazon Q Developer
-
-- **SDLC automation**: From planning to maintenance  
-- **Code transformation**: Java upgrade, .NET modernization  
-- **AWS Transform agents**: VMware, Mainframe, .NET migration  
-
-### Key Takeaways
-
-#### Design Mindset
-
-- **Business-first approach**: Always start from the business domain, not the technology  
-- **Ubiquitous language**: Importance of a shared vocabulary between business and tech teams  
-- **Bounded contexts**: Identifying and managing complexity in large systems  
-
-#### Technical Architecture
-
-- **Event storming technique**: Practical method for modeling business processes  
-- Use **event-driven communication** instead of synchronous calls  
-- **Integration patterns**: When to use sync, async, pub/sub, streaming  
-- **Compute spectrum**: Criteria for choosing between VM, containers, and serverless  
-
-#### Modernization Strategy
-
-- **Phased approach**: No rushing — follow a clear roadmap  
-- **7Rs framework**: Multiple modernization paths depending on the application  
-- **ROI measurement**: Cost reduction + business agility  
-
-### Applying to Work
-
-- **Apply DDD** to current projects: Event storming sessions with business teams  
-- **Refactor microservices**: Use bounded contexts to define service boundaries  
-- **Implement event-driven patterns**: Replace some sync calls with async messaging  
-- **Adopt serverless**: Pilot AWS Lambda for suitable use cases  
-- **Try Amazon Q Developer**: Integrate into the dev workflow to boost productivity  
+- **Crawler Architecture Transition**: The knowledge about Lambda's 15-minute limit made me realize that NewsRAG v1's architecture (using Lambda for web crawling) was unviable for SitemapSpider. From this event, I proposed and directly transitioned the Crawler to run on containers using **AWS Fargate**, completely resolving the timeout issue.
+- **Pipeline Automation**: Applied **Amazon EventBridge Scheduler** to automatically trigger the Fargate Crawler daily at 01:00 UTC instead of running it manually.
+- **Docker Cost Optimization**: Based on best practices from the event, I optimized the Dockerfile for the Crawler (using `python:3.10-slim`) and set Fargate configuration to the smallest footprint (0.25 vCPU, 512MB RAM) since the I/O bound task didn't require much compute.
 
 ### Event Experience
 
-Attending the **“GenAI-powered App-DB Modernization”** workshop was extremely valuable, giving me a comprehensive view of modernizing applications and databases using advanced methods and tools. Key experiences included:
+The **"AWS Serverless & Container Day"** event took place right when the NewsRAG team was stuck with Lambda Crawler timeout errors. The knowledge gained acted as a literal lifesaver.
 
-#### Learning from highly skilled speakers
-- Experts from AWS and major tech organizations shared **best practices** in modern application design.  
-- Through real-world case studies, I gained a deeper understanding of applying **DDD** and **Event-Driven Architecture** to large projects.  
+#### Interaction & Q&A
+- I had the opportunity to ask AWS Solutions Architects directly about long-running web scraping problems and received clear advice: *"Use ECS Fargate instead of Lambda for tasks with unpredictable completion times"*.
 
-#### Hands-on technical exposure
-- Participating in **event storming** sessions helped me visualize how to **model business processes** into domain events.  
-- Learned how to **split microservices** and define **bounded contexts** to manage large-system complexity.  
-- Understood trade-offs between **synchronous and asynchronous communication** and integration patterns like **pub/sub, point-to-point, streaming**.  
+#### Technical Networking
+- Met many other developers and heard their stories about container configuration mistakes, helping me avoid similar pitfalls when writing the `main.tf` Terraform file for my project.
 
-#### Leveraging modern tools
-- Explored **Amazon Q Developer**, an AI tool for SDLC support from planning to maintenance.  
-- Learned to **automate code transformation** and pilot serverless with **AWS Lambda** to improve productivity.  
+#### Core Takeaway
+- Every technology has its specific use case. Lambda is fantastic for APIs (like our RAG API), but Fargate is the true solution for long-running batch jobs like Crawler and ETL.
 
-#### Networking and discussions
-- The workshop offered opportunities to exchange ideas with experts, peers, and business teams, enhancing the **ubiquitous language** between business and tech.  
-- Real-world examples reinforced the importance of the **business-first approach** rather than focusing solely on technology.  
+#### Event photos
+*Add your real event photos here*
 
-#### Lessons learned
-- Applying DDD and event-driven patterns reduces **coupling** while improving **scalability** and **resilience**.  
-- Modernization requires a **phased approach** with **ROI measurement**; rushing the process can be risky.  
-- AI tools like Amazon Q Developer can significantly **boost productivity** when integrated into the current workflow.  
-
-#### Some event photos
-*Add your event photos here*  
-
-> Overall, the event not only provided technical knowledge but also helped me reshape my thinking about application design, system modernization, and cross-team collaboration.
+> The event was a major turning point in designing the NewsRAG v2 system, bringing stability and superior performance to the entire data pipeline.

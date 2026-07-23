@@ -1,31 +1,62 @@
 ---
 title: "Blog 3"
 date: 2024-01-01
-weight: 1
+weight: 3
 chapter: false
 pre: " <b> 3.3. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-# SESSION POLICIES TRONG AMAZON EKS POD IDENTITY
+# Triển khai Infrastructure as Code với Terraform cho Dự án AWS
 
-Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+Trong dự án NewsRAG, toàn bộ infrastructure AWS được quản lý bằng **Terraform** — công cụ Infrastructure as Code (IaC) phổ biến nhất. Bài viết chia sẻ cách tổ chức Terraform config cho một dự án thực tế với VPC, RDS, ECS, EventBridge.
 
-Các điểm chính cần nắm:
+### Tại sao Infrastructure as Code?
 
-* Session policy là một IAM policy inline được chỉ định khi tạo hoặc cập nhật Pod Identity association.
-* Quyền hiệu quả = intersection (giao) giữa permissions của IAM role và session policy → session policy chỉ có thể thu hẹp, không thể mở rộng quyền.
-* Giúp tránh tình trạng over-permissioning khi reuse chung một IAM role cho nhiều workloads có nhu cầu khác nhau.
-* Hỗ trợ cả same-account và cross-account (qua IAM role chaining).
-* Giảm đáng kể số lượng IAM roles cần quản lý, tránh chạm giới hạn quota IAM trong cluster lớn.
-* Cấu hình dễ dàng qua AWS Management Console, AWS CLI hoặc AWS SDK khi tạo association giữa Kubernetes ServiceAccount và IAM role.
+- **Reproducible**: Tạo lại toàn bộ infrastructure bằng 1 lệnh `terraform apply`
+- **Version control**: Track thay đổi qua Git
+- **Tự động hóa**: Không cần click thủ công trên AWS Console
+- **Team collaboration**: Review infrastructure changes qua Pull Request
 
-Tính năng này đặc biệt hữu ích khi bạn có nhiều ứng dụng chạy trên cùng một IAM role nhưng cần giới hạn quyền khác nhau (ví dụ: một pod chỉ đọc S3 bucket cụ thể, pod khác chỉ gọi một số API nhất định).
+### Cấu trúc Terraform cho NewsRAG
+
+```
+main.tf (371 lines)
+├── Provider: aws (ap-southeast-2)
+├── Variables: db_password, qdrant_api_key, model_api_keys (sensitive)
+├── VPC & Networking
+│   ├── VPC (10.0.0.0/16)
+│   ├── 2 Public Subnets (2a, 2b)
+│   ├── Internet Gateway + Route Table
+│   └── Security Groups (ECS, RDS)
+├── RDS Aurora PostgreSQL
+│   ├── Cluster: aurora-postgresql 15.4
+│   └── Instance: db.t4g.medium
+├── ECS + ECR
+│   ├── ECR Repository
+│   ├── ECS Cluster
+│   ├── 3 Task Definitions (crawler, etl, vectorize)
+│   └── IAM Roles
+├── EventBridge Scheduler
+│   ├── Crawler: 01:00 UTC
+│   ├── ETL: 02:00 UTC
+│   └── Vectorize: 03:00 UTC
+└── Outputs: rds_endpoint, ecr_url, cluster_name
+```
+
+### Best Practices áp dụng
+
+1. **Sensitive variables**: Dùng `type = string, sensitive = true` cho passwords và API keys
+2. **Locals block**: Quản lý environment variables chung qua `locals.common_env`
+3. **Security Groups**: Principle of least privilege — RDS chỉ accept từ ECS SG
+4. **CloudWatch Logs**: Retention 7 ngày để tiết kiệm chi phí
+5. **Outputs**: Export RDS endpoint, ECR URL để dùng trong CI/CD
+
+### Kết quả
+
+- 1 file `main.tf` quản lý toàn bộ 20+ AWS resources
+- Deploy/destroy infrastructure trong < 10 phút
+- Dễ dàng tái tạo môi trường mới
 
 ...Hình ảnh...
 
-...Link...
-
-...Hướng dẫn...
+...Link bài blog...

@@ -1,20 +1,63 @@
 ---
-title : "Access S3 from on-premises"
-date : 2024-01-01
+title : "ETL & Vectorize Module"
+date : 2024-01-01 
 weight : 4
 chapter : false
 pre : " <b> 5.4. </b> "
 ---
 
-#### Overview
+#### Data Normalization and Vector Embedding
 
-+ In this section, you will create an Interface endpoint to access Amazon S3 from a simulated on-premises environment. The Interface endpoint will allow you to route to Amazon S3 over a VPN connection from your simulated on-premises environment.
+Raw data from the Crawler needs to be cleaned, chunked, and transformed into vectors to support semantic search.
 
-+ Why using **Interface endpoint**: 
-    + Gateway endpoints only work with resources running in the VPC where they are created. Interface endpoints work with resources running in VPC, and also resources running in on-premises environments. Connectivty from your on-premises environment to the cloud can be provided by AWS Site-to-Site VPN or AWS Direct Connect.
-    + Interface endpoints allow you to connect to services powered by AWS PrivateLink. These services include some AWS services, services hosted by other AWS customers and partners in their own VPCs (referred to as PrivateLink Endpoint Services), and supported AWS Marketplace Partner services. For this workshop, we will focus on connecting to Amazon S3.
+**1. Data Cleaning & Star Schema**
 
-![Interface endpoint architecture](/images/5-Workshop/5.4-S3-onprem/diagram3.png)
+Data is stripped of redundant HTML tags, date formats are normalized, and stored in RDS Aurora PostgreSQL following the Star Schema model:
 
+- `dim_source`: Contains newspaper information
+- `dim_time`: Detailed split of day/month/year
+- `dim_author`: Manages normalized author information
+- `fact_articles`: Central table containing articles
+- `fact_chunks`: Contains text chunks split from articles
 
+**2. Chunking with Langchain**
 
+Articles are split into chunks with a maximum length of 800 characters and a 150-character overlap to preserve context between segments.
+
+```python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=800,
+    chunk_overlap=150,
+    separators=["\n\n", "\n", ".", " ", ""]
+)
+
+chunks = text_splitter.split_text(article_content)
+```
+
+**3. Vector Embedding with Amazon Bedrock**
+
+NewsRAG v2 uses Amazon Bedrock with the `amazon.titan-embed-text-v2:0` model (1024 dimensions) to generate vectors instead of hosting a local `BAAI/bge-m3` model like in v1. This reduces container load and saves resources.
+
+```python
+import boto3
+import json
+
+bedrock_runtime = boto3.client('bedrock-runtime', region_name='ap-southeast-2')
+
+def get_embedding(text):
+    body = json.dumps({"inputText": text})
+    response = bedrock_runtime.invoke_model(
+        modelId='amazon.titan-embed-text-v2:0',
+        contentType='application/json',
+        accept='application/json',
+        body=body
+    )
+    response_body = json.loads(response.get('body').read())
+    return response_body.get('embedding')
+```
+
+**4. Vector Database (Qdrant & pgvector)**
+
+Vectors are upserted into Qdrant Cloud or stored directly in Aurora via the `pgvector` extension with HNSW (Hierarchical Navigable Small World) index to ensure `Top-K` query speeds remain under 50ms even with millions of vectors.

@@ -1,59 +1,57 @@
 ---
 title: "Worklog Tuần 4"
 date: 2024-01-01
-weight: 1
+weight: 4
 chapter: false
 pre: " <b> 1.4. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 
 ### Mục tiêu tuần 4:
 
-* Kết nối, làm quen với các thành viên trong First Cloud AI Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
+* Đóng gói Crawler thành Docker container.
+* Build và push Docker image lên Amazon ECR.
+* Cấu hình ECS Task Definition cho Fargate Crawler.
+* Test chạy Crawler trên Fargate thay vì local.
 
 ### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCAJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 11/08/2025   | 11/08/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 12/08/2025   | 12/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 13/08/2025   | 13/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 14/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| Thứ | Công việc                                                                                                                                                                              | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| 2   | - Viết Dockerfile cho Crawler: <br>&emsp; + Base image: `python:3.10-slim` <br>&emsp; + Cài đặt system deps: `build-essential`, `libpq-dev` <br>&emsp; + COPY requirements.txt & pip install <br>&emsp; + CMD: `python main.py --mode crawl` | 07/07/2025   | 07/07/2025      | Dockerfile                                |
+| 3   | - Build Docker image local: `docker build -t news-crawler .` <br> - Test chạy container: `docker run news-crawler` <br> - Debug issues: PYTHONPATH, encoding, env variables              | 08/07/2025   | 08/07/2025      |                                           |
+| 4   | - Tạo ECR repository: `newsrag-api` <br> - Push image lên ECR: <br>&emsp; + `aws ecr get-login-password` <br>&emsp; + `docker tag` & `docker push` <br> - Verify image trên AWS Console  | 09/07/2025   | 09/07/2025      | <https://docs.aws.amazon.com/ecr/>        |
+| 5   | - Cấu hình ECS Task Definition cho Fargate: <br>&emsp; + CPU: 256 (0.25 vCPU), Memory: 512 MB <br>&emsp; + Network mode: awsvpc <br>&emsp; + Container command: `python main.py --mode crawl` <br>&emsp; + Environment variables từ `.env` <br>&emsp; + Log driver: awslogs → CloudWatch | 10/07/2025   | 10/07/2025      | main.tf                                   |
+| 6   | - Tạo ECS Cluster: `newsrag-cluster` <br> - Test chạy Fargate Task manually <br> - Kiểm tra logs trên CloudWatch <br> - Debug networking issues (Security Groups, VPC, Public IP)        | 11/07/2025   | 11/07/2025      |                                           |
 
 
 ### Kết quả đạt được tuần 4:
 
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Hoàn thành Dockerfile tối ưu:
+  ```dockerfile
+  FROM python:3.10-slim
+  WORKDIR /app
+  RUN apt-get update && apt-get install -y build-essential libpq-dev curl
+  COPY requirements.txt .
+  RUN pip install --no-cache-dir -r requirements.txt
+  COPY . .
+  ENV PYTHONPATH=/app
+  CMD ["python", "main.py", "--mode", "full"]
+  ```
 
-* Đã tạo và cấu hình AWS Free Tier account thành công.
+* Docker image build thành công, chạy ổn định trên local
 
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
+* Push image lên ECR thành công:
+  * Repository: `newsrag-api`
+  * Tag: `latest`
+  * Size: ~350 MB (sau tối ưu)
 
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
+* Cấu hình ECS Task Definition hoàn chỉnh:
+  * Family: `newsrag-crawler`
+  * Fargate compatibility, CPU 256, Memory 512
+  * awsvpc network mode cho private networking
+  * CloudWatch Logs với prefix `crawler`
+  * Environment variables inject từ Terraform locals
 
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
-
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
-
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
-
-
+* ECS Cluster `newsrag-cluster` hoạt động, Fargate Task chạy thành công:
+  * Crawler chạy trong container trên Fargate
+  * Logs xuất hiện trên CloudWatch
+  * Cần cấu hình Security Group cho phép egress (download pages, gọi Kafka)

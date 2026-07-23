@@ -1,99 +1,47 @@
 ---
-title : "VPC Endpoint Policies"
-date : 2024-01-01
+title : "RAG API Module"
+date : 2024-01-01 
 weight : 5
 chapter : false
 pre : " <b> 5.5. </b> "
 ---
 
-When you create an interface or gateway endpoint, you can attach an endpoint policy to it that controls access to the service to which you are connecting. A VPC endpoint policy is an IAM resource policy that you attach to an endpoint. If you do not attach a policy when you create an endpoint, AWS attaches a default policy for you that allows full access to the service through the endpoint.
+#### Intelligent Assistant with News-based Q&A
 
-You can create a policy that restricts access to specific S3 buckets only. This is useful if you only want certain S3 Buckets to be accessible through the endpoint.
+The RAG (Retrieval-Augmented Generation) module is the heart of the system, combining the semantic search capabilities of Qdrant/pgvector and the reasoning power of LLMs to answer user questions based on actual news.
 
-In this section you will create a VPC endpoint policy that restricts access to the S3 bucket specified in the VPC endpoint policy.
+**1. RAG Processing Flow**
 
-![endpoint diagram](/images/5-Workshop/5.5-Policy/s3-bucket-policy.png)
+When a user asks a question (e.g., *"What is the situation with Typhoon Yagi today?"*), the system executes:
+1. **Query Embedding**: Transforms the question into a 1024-dimensional vector using Amazon Bedrock.
+2. **Vector Search (Retrieval)**: Uses cosine similarity to find the Top-K (e.g., 5) most relevant text chunks from Qdrant/pgvector.
+3. **Prompt Engineering**: Combines these Top-K chunks into a "Context" along with the user's question into the Prompt.
+4. **LLM Generation**: Sends the Prompt to Groq (Qwen3-8B) or Gemini Flash to generate a natural answer with source citations.
 
-#### Connect to an EC2 instance and verify connectivity to S3
+**2. System Prompt Configuration**
 
-1. Start a new AWS Session Manager session on the instance named Test-Gateway-Endpoint. From the session, verify that you can list the contents of the bucket you created in Part 1: Access S3 from VPC:
+To prevent LLM hallucinations or fabrication of information, the Prompt is strictly designed:
 
-```
-aws s3 ls s3://\<your-bucket-name\>
-```
-![test](/images/5-Workshop/5.5-Policy/test1.png)
-
-The bucket contents include the two 1 GB files uploaded in earlier.
-
-2. Create a new S3 bucket; follow the naming pattern you used in Part 1, but add a '-2' to the name. Leave other fields as default and click create
-
-![create bucket](/images/5-Workshop/5.5-Policy/create-bucket.png)
-
-Successfully create bucket
-
-![Success](/images/5-Workshop/5.5-Policy/create-bucket-success.png)
-
-3. Navigate to: Services > VPC > Endpoints, then select the Gateway VPC endpoint you created earlier. Click the Policy tab. Click Edit policy.
-
-![policy](/images/5-Workshop/5.5-Policy/policy1.png)
-
-The default policy allows access to all S3 Buckets through the VPC endpoint.
-
-4. In Edit Policy console, copy & Paste the following policy, then replace yourbucketname-2 with your 2nd bucket name. This policy will allow access through the VPC endpoint to your new bucket, but not any other bucket in Amazon S3. Click Save to apply the policy.
-
-```
-{
-  "Id": "Policy1631305502445",
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Stmt1631305501021",
-      "Action": "s3:*",
-      "Effect": "Allow",
-      "Resource": [
-      				"arn:aws:s3:::yourbucketname-2",
-       				"arn:aws:s3:::yourbucketname-2/*"
-       ],
-      "Principal": "*"
-    }
-  ]
-}
+```python
+# search/prompts.py
+NEWS_RAG_SYSTEM_PROMPT = """You are a Senior News Analyst, capable of professional, honest, and objective analysis.
+Response style:
+- Objective, honest, based ENTIRELY on the provided data. Absolutely do not use external knowledge to fabricate information.
+- Always cite sources clearly and accurately (e.g.: According to the article [Article Title]).
+- If the CONTEXT has absolutely no relevant information, reply: "Based on the provided documents, there is not enough information to accurately answer about..."
+"""
 ```
 
-![custom policy](/images/5-Workshop/5.5-Policy/policy2.png)
+**3. Multi-LLM Architecture**
 
-Successfully customize policy
+The system is configured to support multiple different LLMs for fallback purposes or quality comparison:
+- **Model 1 (Primary)**: Groq API with `qwen-2.5-32b` or `llama-3.1-8b-instant` — ultra-fast speed.
+- **Model 2 (Fallback)**: Google Gemini `gemini-2.0-flash-exp` — excellent long-context handling.
 
-![success](/static/images/5-Workshop/5.5-Policy/success.png)
+**4. RAG Quality Evaluation (Ragas)**
 
-5. From your session on the Test-Gateway-Endpoint instance, test access to the S3 bucket you created in Part 1: Access S3 from VPC
-```
-aws s3 ls s3://<yourbucketname>
-```
-
-This command will return an error because access to this bucket is not permitted by your new VPC endpoint policy:
-
-![error](/static/images/5-Workshop/5.5-Policy/error.png)
-
-6. Return to your home directory on your EC2 instance ` cd~ `
-
-+ Create a file ```fallocate -l 1G test-bucket2.xyz ```
-+ Copy file to 2nd bucket ```aws s3 cp test-bucket2.xyz s3://<your-2nd-bucket-name>```
-
-![success](/static/images/5-Workshop/5.5-Policy/test2.png)
-
-This operation succeeds because it is permitted by the VPC endpoint policy.
-
-![success](/static/images/5-Workshop/5.5-Policy/test2-success.png)
-
-+ Then we test access to the first bucket by copy the file to 1st bucket `aws s3 cp test-bucket2.xyz s3://<your-1st-bucket-name>`
-
-![fail](/static/images/5-Workshop/5.5-Policy/test2-fail.png)
-
-This command will return an error because access to this bucket is not permitted by your new VPC endpoint policy.
-
-#### Part 3 Summary:
-
-In this section, you created a VPC endpoint policy for Amazon S3, and used the AWS CLI to test the policy. AWS CLI actions targeted to your original S3 bucket failed because you applied a policy that only allowed access to the second bucket you created. AWS CLI actions targeted for your second bucket succeeded because the policy allowed them. These policies can be useful in situations where you need to control access to resources through VPC endpoints.
-
-
+The quality of the RAG pipeline is measured using the Ragas framework with metrics:
+- **Context Precision**: Are the most relevant documents ranked highly?
+- **Context Recall**: Did the system retrieve enough information to answer?
+- **Faithfulness**: Is the LLM faithful to the context (or hallucinating)?
+- **Answer Relevancy**: Is the answer focused on the question?

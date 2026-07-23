@@ -1,31 +1,51 @@
 ---
 title: "Blog 2"
 date: 2024-01-01
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-# SESSION POLICIES TRONG AMAZON EKS POD IDENTITY
+# So sánh Kafka và Amazon SQS: Khi nào nên dùng cái nào?
 
-Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+Trong dự án NewsRAG, nhóm đã chuyển đổi từ **Apache Kafka** (v1) sang **Amazon SQS** (v2) cho phần message queue. Bài viết này chia sẻ phân tích chi tiết và kinh nghiệm thực tế khi đưa ra quyết định này.
 
-Các điểm chính cần nắm:
+### Bối cảnh
 
-* Session policy là một IAM policy inline được chỉ định khi tạo hoặc cập nhật Pod Identity association.
-* Quyền hiệu quả = intersection (giao) giữa permissions của IAM role và session policy → session policy chỉ có thể thu hẹp, không thể mở rộng quyền.
-* Giúp tránh tình trạng over-permissioning khi reuse chung một IAM role cho nhiều workloads có nhu cầu khác nhau.
-* Hỗ trợ cả same-account và cross-account (qua IAM role chaining).
-* Giảm đáng kể số lượng IAM roles cần quản lý, tránh chạm giới hạn quota IAM trong cluster lớn.
-* Cấu hình dễ dàng qua AWS Management Console, AWS CLI hoặc AWS SDK khi tạo association giữa Kubernetes ServiceAccount và IAM role.
+- **v1**: Sử dụng Kafka chạy trên Docker container, cần quản lý broker, ZooKeeper
+- **v2**: Chuyển sang SQS Standard — fully managed, chi phí gần như $0
 
-Tính năng này đặc biệt hữu ích khi bạn có nhiều ứng dụng chạy trên cùng một IAM role nhưng cần giới hạn quyền khác nhau (ví dụ: một pod chỉ đọc S3 bucket cụ thể, pod khác chỉ gọi một số API nhất định).
+### So sánh chi tiết
+
+| Tiêu chí              | Kafka                              | Amazon SQS                       |
+|-----------------------|-------------------------------------|----------------------------------|
+| **Kiến trúc**         | Distributed log, multi-broker       | Managed message queue            |
+| **Message ordering**  | Có (theo partition)                 | Best-effort (Standard)           |
+| **Throughput**        | Rất cao (100K+ msg/s)              | Cao (3000 msg/s per queue)       |
+| **Message retention** | Cấu hình (mặc định 7 ngày)        | Tối đa 14 ngày                  |
+| **Consumer groups**   | Native support                      | Không có                         |
+| **Chi phí**           | Infrastructure + management         | Pay-per-request (~$0 cho <1M)    |
+| **Quản lý**           | Self-managed hoặc MSK              | Fully managed                    |
+| **Dead Letter Queue** | Phải tự implement                   | Native support                   |
+
+### Khi nào nên dùng Kafka?
+
+- Real-time streaming với throughput cực cao
+- Cần event replay (đọc lại message)
+- Microservices phức tạp với nhiều consumer groups
+- Log aggregation quy mô lớn
+
+### Khi nào nên dùng SQS?
+
+- Batch processing (crawl 1 lần/ngày)
+- Pipeline đơn giản (1 producer, 1 consumer)
+- Muốn giảm chi phí vận hành
+- Cần DLQ sẵn có cho error handling
+
+### Kết luận từ NewsRAG
+
+Với use case crawl tin tức 1 lần/ngày (~500 bài), Kafka là **overkill**. SQS đáp ứng hoàn toàn yêu cầu với chi phí gần $0 và không cần quản lý.
 
 ...Hình ảnh...
 
-...Link...
-
-...Hướng dẫn...
+...Link bài blog...

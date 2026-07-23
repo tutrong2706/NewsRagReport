@@ -5,55 +5,43 @@ weight: 1
 chapter: false
 pre: " <b> 1.1. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 
 ### Mục tiêu tuần 1:
 
-* Kết nối, làm quen với các thành viên trong First Cloud AI Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
+* Làm quen với chương trình First Cloud AI Journey (FCAJ) và các thành viên trong nhóm.
+* Tìm hiểu các dịch vụ AWS cơ bản liên quan đến dự án.
+* Đọc hiểu kiến trúc tổng thể của dự án NewsRAG (phiên bản khóa luận gốc — v1).
+* Clone repository và thiết lập môi trường phát triển local.
 
 ### Các công việc cần triển khai trong tuần này:
 | Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCAJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 11/08/2025   | 11/08/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 12/08/2025   | 12/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 13/08/2025   | 13/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 14/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| 2   | - Làm quen với các thành viên FCAJ <br> - Đọc nội quy, quy định của chương trình thực tập <br> - Nhận nhiệm vụ và phân chia nhóm dự án                                                     | 16/06/2025   | 16/06/2025      |                                           |
+| 3   | - Tìm hiểu tổng quan AWS và các nhóm dịch vụ: <br>&emsp; + Compute (EC2, ECS, Fargate, Lambda) <br>&emsp; + Storage (S3) <br>&emsp; + Database (RDS, Aurora) <br>&emsp; + Networking (VPC, SG) <br>&emsp; + Messaging (SQS, Kafka) | 17/06/2025   | 17/06/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| 4   | - Tạo AWS Free Tier account <br> - Cài đặt AWS CLI & cấu hình credentials <br> - Tìm hiểu AWS Management Console                                                                          | 18/06/2025   | 18/06/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| 5   | - Đọc tài liệu kiến trúc NewsRAG v1 (khóa luận gốc) <br> - Tìm hiểu kiến trúc RAG (Retrieval-Augmented Generation) <br> - Nghiên cứu các thành phần: Crawler, Kafka, ETL, Vector DB, LLM  | 19/06/2025   | 19/06/2025      | Pipeline_v3.md                            |
+| 6   | - Clone repository NewsRAG về máy <br> - Cài đặt Python virtual environment <br> - Chạy `docker-compose up -d` để khởi tạo PostgreSQL + Kafka local <br> - Đọc hiểu cấu trúc source code    | 20/06/2025   | 20/06/2025      | README.md, Makefile                       |
 
 
 ### Kết quả đạt được tuần 1:
 
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Hiểu được tổng quan về AWS và các nhóm dịch vụ liên quan đến dự án NewsRAG:
+  * **Compute**: EC2, ECS Fargate (chạy container), Lambda (serverless functions)
+  * **Database**: RDS Aurora PostgreSQL (lưu trữ bài viết + vector search)
+  * **Messaging**: SQS (hàng đợi tin nhắn), Kafka (streaming — dùng trong v1)
+  * **Container**: ECR (registry), ECS (orchestration)
 
-* Đã tạo và cấu hình AWS Free Tier account thành công.
+* Đã tạo và cấu hình AWS Free Tier account thành công, bao gồm:
+  * Access Key / Secret Key
+  * Region mặc định: `ap-southeast-2`
+  * AWS CLI hoạt động trên terminal
 
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
+* Hiểu được kiến trúc tổng thể NewsRAG:
+  * **v1 (Khóa luận)**: Lambda Crawler + Kafka + BAAI/bge-m3 + Qdrant Cloud + FastAPI/Next.js
+  * **v2 (Cải tiến)**: Fargate Crawler + SQS + Bedrock Titan Embed + Aurora pgvector
+  * Phân chia module: Crawl+Queue (A), Consumer+DB (B), ETL+Embed (C), RAG+Frontend (D)
 
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
-
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
-
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
-
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
-
-
+* Clone repo thành công, thiết lập môi trường local:
+  * Python 3.10 virtual environment
+  * PostgreSQL + Kafka chạy qua Docker Compose
+  * Đọc hiểu cấu trúc thư mục: `crawler/`, `consumer/`, `etl/`, `vectorize/`, `search/`, `database/`

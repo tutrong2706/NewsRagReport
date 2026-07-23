@@ -5,104 +5,131 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-Tại phần này, bạn cần tóm tắt các nội dung trong workshop mà bạn **dự tính** sẽ làm.
+# News RAG — Hệ thống Tổng hợp và Phân tích Tin tức Thông minh
+## Giải pháp AWS Serverless cho tổng hợp tin tức với kiến trúc RAG
 
-# IoT Weather Platform for Lab Research  
-## Giải pháp AWS Serverless hợp nhất cho giám sát thời tiết thời gian thực  
+### 1. Tóm tắt điều hành
 
-### 1. Tóm tắt điều hành  
-IoT Weather Platform được thiết kế dành cho nhóm *ITea Lab* tại TP. Hồ Chí Minh nhằm nâng cao khả năng thu thập và phân tích dữ liệu thời tiết. Nền tảng hỗ trợ tối đa 5 trạm thời tiết, có khả năng mở rộng lên 10–15 trạm, sử dụng thiết bị biên Raspberry Pi kết hợp cảm biến ESP32 để truyền dữ liệu qua MQTT. Nền tảng tận dụng các dịch vụ AWS Serverless để cung cấp giám sát thời gian thực, phân tích dự đoán và tiết kiệm chi phí, với quyền truy cập giới hạn cho 5 thành viên phòng lab thông qua Amazon Cognito.  
+**News RAG** là hệ thống tổng hợp và phân tích tin tức thông minh, ứng dụng kiến trúc RAG (Retrieval-Augmented Generation) để tự động thu thập tin tức từ các báo điện tử Việt Nam (VnExpress, Thanh Niên, VietnamNet), xử lý và lưu trữ dữ liệu theo mô hình Star Schema, tạo embedding vector và cho phép người dùng đặt câu hỏi bằng ngôn ngữ tự nhiên — hệ thống sẽ truy xuất các đoạn tin tức liên quan và tổng hợp câu trả lời thông qua các mô hình ngôn ngữ lớn (LLM) như Groq Qwen3, Gemini Flash.
 
-### 2. Tuyên bố vấn đề  
-*Vấn đề hiện tại*  
-Các trạm thời tiết hiện tại yêu cầu thu thập dữ liệu thủ công, khó quản lý khi có nhiều trạm. Không có hệ thống tập trung cho dữ liệu hoặc phân tích thời gian thực, và các nền tảng bên thứ ba thường tốn kém và quá phức tạp.  
+Dự án được phát triển bởi nhóm 4 thành viên trong chương trình thực tập **First Cloud AI Journey** tại **AWS Vietnam**, triển khai hoàn toàn trên AWS với kiến trúc serverless, tối ưu chi phí (~$21-26/tháng).
 
-*Giải pháp*  
-Nền tảng sử dụng AWS IoT Core để tiếp nhận dữ liệu MQTT, AWS Lambda và API Gateway để xử lý, Amazon S3 để lưu trữ (bao gồm data lake), và AWS Glue Crawlers cùng các tác vụ ETL để trích xuất, chuyển đổi, tải dữ liệu từ S3 data lake sang một S3 bucket khác để phân tích. AWS Amplify với Next.js cung cấp giao diện web, và Amazon Cognito đảm bảo quyền truy cập an toàn. Tương tự như Thingsboard và CoreIoT, người dùng có thể đăng ký thiết bị mới và quản lý kết nối, nhưng nền tảng này hoạt động ở quy mô nhỏ hơn và phục vụ mục đích sử dụng nội bộ. Các tính năng chính bao gồm bảng điều khiển thời gian thực, phân tích xu hướng và chi phí vận hành thấp.  
+### 2. Tuyên bố vấn đề
 
-*Lợi ích và hoàn vốn đầu tư (ROI)*  
-Giải pháp tạo nền tảng cơ bản để các thành viên phòng lab phát triển một nền tảng IoT lớn hơn, đồng thời cung cấp nguồn dữ liệu cho những người nghiên cứu AI phục vụ huấn luyện mô hình hoặc phân tích. Nền tảng giảm bớt báo cáo thủ công cho từng trạm thông qua hệ thống tập trung, đơn giản hóa quản lý và bảo trì, đồng thời cải thiện độ tin cậy dữ liệu. Chi phí hàng tháng ước tính 0,66 USD (theo AWS Pricing Calculator), tổng cộng 7,92 USD cho 12 tháng. Tất cả thiết bị IoT đã được trang bị từ hệ thống trạm thời tiết hiện tại, không phát sinh chi phí phát triển thêm. Thời gian hoàn vốn 6–12 tháng nhờ tiết kiệm đáng kể thời gian thao tác thủ công.  
+*Vấn đề hiện tại*
+Người dùng Việt Nam gặp khó khăn trong việc theo dõi và phân tích thông tin từ nhiều nguồn báo khác nhau. Việc đọc thủ công hàng trăm bài báo mỗi ngày tốn rất nhiều thời gian. Chưa có hệ thống nào cho phép hỏi đáp thông minh dựa trên dữ liệu tin tức tiếng Việt sử dụng công nghệ RAG.
 
-### 3. Kiến trúc giải pháp  
-Nền tảng áp dụng kiến trúc AWS Serverless để quản lý dữ liệu từ 5 trạm dựa trên Raspberry Pi, có thể mở rộng lên 15 trạm. Dữ liệu được tiếp nhận qua AWS IoT Core, lưu trữ trong S3 data lake và xử lý bởi AWS Glue Crawlers và ETL jobs để chuyển đổi và tải vào một S3 bucket khác cho mục đích phân tích. Lambda và API Gateway xử lý bổ sung, trong khi Amplify với Next.js cung cấp bảng điều khiển được bảo mật bởi Cognito.  
+*Giải pháp*
+Hệ thống NewsRAG tự động:
+1. **Crawl** tin tức từ 3 báo điện tử qua Scrapy SitemapSpider trên ECS Fargate
+2. **Stream** dữ liệu qua SQS → Lambda Consumer → PostgreSQL
+3. **ETL** chuẩn hóa dữ liệu theo Star Schema, chunk text 800 chars
+4. **Vectorize** embedding qua Bedrock Titan Embed v2 (1024 chiều)
+5. **RAG** cho phép hỏi đáp thông minh: embed query → vector search → LLM generate
 
-![IoT Weather Station Architecture](/images/2-Proposal/edge_architecture.jpeg)
+*Lợi ích*
+- Tiết kiệm thời gian theo dõi tin tức cho người dùng
+- Cung cấp trả lời có trích dẫn nguồn, tăng độ tin cậy
+- Chi phí vận hành thấp (~$21-26/tháng) nhờ kiến trúc serverless
+- Có thể mở rộng thêm nguồn tin và ngôn ngữ
 
-![IoT Weather Platform Architecture](/images/2-Proposal/platform_architecture.jpeg)
+### 3. Kiến trúc giải pháp
 
-*Dịch vụ AWS sử dụng*  
-- *AWS IoT Core*: Tiếp nhận dữ liệu MQTT từ 5 trạm, mở rộng lên 15.  
-- *AWS Lambda*: Xử lý dữ liệu và kích hoạt Glue jobs (2 hàm).  
-- *Amazon API Gateway*: Giao tiếp với ứng dụng web.  
-- *Amazon S3*: Lưu trữ dữ liệu thô (data lake) và dữ liệu đã xử lý (2 bucket).  
-- *AWS Glue*: Crawlers lập chỉ mục dữ liệu, ETL jobs chuyển đổi và tải dữ liệu.  
-- *AWS Amplify*: Lưu trữ giao diện web Next.js.  
-- *Amazon Cognito*: Quản lý quyền truy cập cho người dùng phòng lab.  
+```text
+EventBridge Scheduler (01:00, 02:00, 03:00 UTC)
+       │
+       ├──[01:00]──► Fargate Crawler ──► SQS ──► Lambda Consumer
+       │               (Scrapy Sitemap)            (SHA256 + insert Aurora)
+       │
+       ├──[02:00]──► Fargate ETL
+       │               (clean → chunk → Star Schema)
+       │
+       └──[03:00]──► Fargate Vectorize
+                       (Bedrock Embed → Qdrant)
 
-*Thiết kế thành phần*  
-- *Thiết bị biên*: Raspberry Pi thu thập và lọc dữ liệu cảm biến, gửi tới IoT Core.  
-- *Tiếp nhận dữ liệu*: AWS IoT Core nhận tin nhắn MQTT từ thiết bị biên.  
-- *Lưu trữ dữ liệu*: Dữ liệu thô lưu trong S3 data lake; dữ liệu đã xử lý lưu ở một S3 bucket khác.  
-- *Xử lý dữ liệu*: AWS Glue Crawlers lập chỉ mục dữ liệu; ETL jobs chuyển đổi để phân tích.  
-- *Giao diện web*: AWS Amplify lưu trữ ứng dụng Next.js cho bảng điều khiển và phân tích thời gian thực.  
-- *Quản lý người dùng*: Amazon Cognito giới hạn 5 tài khoản hoạt động.  
+                              ▲
+                              │ top-k chunks
+                     Lambda RAG API ◄── API Gateway ◄── Client
+                     (Embed query → vector search → Groq/Gemini LLM)
+```
 
-### 4. Triển khai kỹ thuật  
-*Các giai đoạn triển khai*  
-Dự án gồm 2 phần — thiết lập trạm thời tiết biên và xây dựng nền tảng thời tiết — mỗi phần trải qua 4 giai đoạn:  
-1. *Nghiên cứu và vẽ kiến trúc*: Nghiên cứu Raspberry Pi với cảm biến ESP32 và thiết kế kiến trúc AWS Serverless (1 tháng trước kỳ thực tập).  
-2. *Tính toán chi phí và kiểm tra tính khả thi*: Sử dụng AWS Pricing Calculator để ước tính và điều chỉnh (Tháng 1).  
-3. *Điều chỉnh kiến trúc để tối ưu chi phí/giải pháp*: Tinh chỉnh (ví dụ tối ưu Lambda với Next.js) để đảm bảo hiệu quả (Tháng 2).  
-4. *Phát triển, kiểm thử, triển khai*: Lập trình Raspberry Pi, AWS services với CDK/SDK và ứng dụng Next.js, sau đó kiểm thử và đưa vào vận hành (Tháng 2–3).  
+*Dịch vụ AWS sử dụng*
+- **ECS Fargate**: Chạy container Crawler, ETL, Vectorize (không quản lý server)
+- **Amazon SQS**: Hàng đợi tin nhắn thay Kafka (~$0/tháng)
+- **Amazon ECR**: Docker image registry
+- **RDS Aurora PostgreSQL**: Lưu trữ bài viết + Star Schema warehouse
+- **Amazon Bedrock**: Titan Embed Text v2 (1024 chiều) — serverless embedding
+- **EventBridge Scheduler**: Tự động chạy pipeline theo lịch
+- **CloudWatch**: Monitoring logs
+- **VPC + Security Groups**: Networking an toàn
 
-*Yêu cầu kỹ thuật*  
-- *Trạm thời tiết biên*: Cảm biến (nhiệt độ, độ ẩm, lượng mưa, tốc độ gió), vi điều khiển ESP32, Raspberry Pi làm thiết bị biên. Raspberry Pi chạy Raspbian, sử dụng Docker để lọc dữ liệu và gửi 1 MB/ngày/trạm qua MQTT qua Wi-Fi.  
-- *Nền tảng thời tiết*: Kiến thức thực tế về AWS Amplify (lưu trữ Next.js), Lambda (giảm thiểu do Next.js xử lý), AWS Glue (ETL), S3 (2 bucket), IoT Core (gateway và rules), và Cognito (5 người dùng). Sử dụng AWS CDK/SDK để lập trình (ví dụ IoT Core rules tới S3). Next.js giúp giảm tải Lambda cho ứng dụng web fullstack.  
+*Dịch vụ bên ngoài*
+- **Qdrant Cloud**: Vector database cho similarity search
+- **Groq API** (Qwen3-8B): LLM chính cho RAG
+- **Google Gemini 2.0 Flash**: LLM fallback
 
-### 5. Lộ trình & Mốc triển khai  
-- *Trước thực tập (Tháng 0)*: 1 tháng lên kế hoạch và đánh giá trạm cũ.  
-- *Thực tập (Tháng 1–3)*:  
-    - Tháng 1: Học AWS và nâng cấp phần cứng.  
-    - Tháng 2: Thiết kế và điều chỉnh kiến trúc.  
-    - Tháng 3: Triển khai, kiểm thử, đưa vào sử dụng.  
-- *Sau triển khai*: Nghiên cứu thêm trong vòng 1 năm.  
+### 4. Triển khai kỹ thuật
 
-### 6. Ước tính ngân sách  
-Có thể xem chi phí trên [AWS Pricing Calculator](https://calculator.aws/#/estimate?id=621f38b12a1ef026842ba2ddfe46ff936ed4ab01)  
-Hoặc tải [tệp ước tính ngân sách](../attachments/budget_estimation.pdf).  
+*Phân chia công việc theo nhóm*
 
-*Chi phí hạ tầng*  
-- AWS Lambda: 0,00 USD/tháng (1.000 request, 512 MB lưu trữ).  
-- S3 Standard: 0,15 USD/tháng (6 GB, 2.100 request, 1 GB quét).  
-- Truyền dữ liệu: 0,02 USD/tháng (1 GB vào, 1 GB ra).  
-- AWS Amplify: 0,35 USD/tháng (256 MB, request 500 ms).  
-- Amazon API Gateway: 0,01 USD/tháng (2.000 request).  
-- AWS Glue ETL Jobs: 0,02 USD/tháng (2 DPU).  
-- AWS Glue Crawlers: 0,07 USD/tháng (1 crawler).  
-- MQTT (IoT Core): 0,08 USD/tháng (5 thiết bị, 45.000 tin nhắn).  
+| Thành viên | Module              | AWS Services                                 | Công việc chính                                          |
+| ---------- | ------------------- | -------------------------------------------- | -------------------------------------------------------- |
+| **A (Tôi)**| Crawl + Queue       | ECS Fargate, SQS, ECR, Docker                | Dockerfile, SQS + DLQ, ECR deploy, Sitemap Spider        |
+| **B**      | Consumer + Database | Lambda, Aurora, pgvector, Secrets Manager    | Lambda Consumer, Aurora cluster, Star Schema SQL          |
+| **C**      | ETL + Embedding     | Lambda, Bedrock, S3                          | Clean HTML, chunk text, Bedrock Embed, insert vector      |
+| **D**      | RAG API + Frontend  | Lambda, API Gateway, Groq/Gemini, Next.js    | RAG search, API Gateway, Frontend Dashboard               |
 
-*Tổng*: 0,7 USD/tháng, 8,40 USD/12 tháng  
-- *Phần cứng*: 265 USD một lần (Raspberry Pi 5 và cảm biến).  
+*Công nghệ sử dụng*
+- **Backend**: Python 3.10, Scrapy, psycopg2, boto3, sentence-transformers
+- **Frontend**: Next.js, React, Tailwind CSS, FastAPI
+- **Infrastructure**: Terraform, Docker, Docker Compose
+- **Database**: PostgreSQL 15 + pgvector extension
+- **LLM**: LangChain + Groq + Google GenAI
 
-### 7. Đánh giá rủi ro  
-*Ma trận rủi ro*  
-- Mất mạng: Ảnh hưởng trung bình, xác suất trung bình.  
-- Hỏng cảm biến: Ảnh hưởng cao, xác suất thấp.  
-- Vượt ngân sách: Ảnh hưởng trung bình, xác suất thấp.  
+### 5. Lộ trình & Timeline (8 tuần)
 
-*Chiến lược giảm thiểu*  
-- Mạng: Lưu trữ cục bộ trên Raspberry Pi với Docker.  
-- Cảm biến: Kiểm tra định kỳ, dự phòng linh kiện.  
-- Chi phí: Cảnh báo ngân sách AWS, tối ưu dịch vụ.  
+| Tuần    | Công việc chính                                          |
+| ------- | -------------------------------------------------------- |
+| **1**   | Làm quen AWS, tìm hiểu kiến trúc NewsRAG, setup môi trường |
+| **2**   | Nghiên cứu Scrapy, Docker, phân tích sitemap XML        |
+| **3**   | Phát triển NewsRAGSpider, KafkaPipeline                  |
+| **4**   | Dockerize Crawler, push ECR, cấu hình ECS Fargate       |
+| **5**   | SQS + DLQ, tích hợp Crawler → Consumer → PostgreSQL     |
+| **6**   | Terraform infrastructure, EventBridge Schedule           |
+| **7**   | Integration test, debug edge cases, đánh giá Ragas       |
+| **8**   | Hoàn thiện code, viết tài liệu, báo cáo thực tập       |
 
-*Kế hoạch dự phòng*  
-- Quay lại thu thập thủ công nếu AWS gặp sự cố.  
-- Sử dụng CloudFormation để khôi phục cấu hình liên quan đến chi phí.  
+### 6. Ước tính chi phí
 
-### 8. Kết quả kỳ vọng  
-*Cải tiến kỹ thuật*: Dữ liệu và phân tích thời gian thực thay thế quy trình thủ công. Có thể mở rộng tới 10–15 trạm.  
-*Giá trị dài hạn*: Nền tảng dữ liệu 1 năm cho nghiên cứu AI, có thể tái sử dụng cho các dự án tương lai.
+| Nhóm              | Component                                              | Giá/tháng         |
+| ----------------- | ------------------------------------------------------ | ----------------- |
+| **Crawl + Queue** | Fargate (0.25 vCPU, 512 MB, ~30 phút/ngày) + SQS + Consumer | **~$3–5**     |
+| **ETL + Embed**   | Fargate ETL + Bedrock Titan Embed                      | **~$1–3**         |
+| **Database**      | Aurora Serverless v2 (2 ACU) + pgvector                | **~$14**          |
+| **RAG API**       | Lambda RAG + API Gateway                               | **~$3–4**         |
+| **Tổng**          |                                                        | **~$21–26/tháng** |
+
+### 7. Đánh giá rủi ro
+
+*Ma trận rủi ro*
+- Crawl bị chặn (rate limit, anti-bot): Ảnh hưởng cao, xác suất trung bình
+- API LLM ngừng hoạt động: Ảnh hưởng cao, xác suất thấp
+- Vượt ngân sách AWS: Ảnh hưởng trung bình, xác suất thấp
+
+*Chiến lược giảm thiểu*
+- Crawl: Tuân thủ `ROBOTSTXT_OBEY`, `DOWNLOAD_DELAY`, User-Agent hợp lệ
+- LLM: Fallback pattern (Qwen3 → Llama 3.1 → Gemini Flash)
+- Chi phí: AWS Budget Alerts, Fargate spot instances khi có thể
+
+### 8. Kết quả kỳ vọng
+
+*Cải tiến kỹ thuật*:
+- Pipeline tự động crawl + xử lý ~500 bài/ngày từ 3 nguồn báo
+- Chi phí giảm ~30% so với phiên bản v1 (~$35 → ~$21-26)
+- Hệ thống RAG hỏi đáp tiếng Việt dựa trên tin tức thực
+
+*Giá trị dài hạn*:
+- Nền tảng dữ liệu tin tức có thể mở rộng thêm nguồn
+- Kinh nghiệm thực tế với AWS serverless architecture
+- Có thể tái sử dụng cho các use case RAG khác

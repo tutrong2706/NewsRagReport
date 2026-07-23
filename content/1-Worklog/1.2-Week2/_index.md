@@ -1,57 +1,50 @@
 ---
 title: "Week 2 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 1.2. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 2 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Deep-dive into Scrapy framework — the main tool for news crawling.
+* Understand the differences between CrawlSpider (v1) and SitemapSpider (v2).
+* Master Docker, Dockerfile, docker-compose for containerization preparation.
+* Analyze sitemap XML structure of 3 Vietnamese news outlets.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                            | Start Date   | End Date        | Resources                                 |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Study Scrapy framework: <br>&emsp; + Scrapy project structure <br>&emsp; + Spider, Pipeline, Settings <br>&emsp; + Middleware and Item Pipeline                                 | 23/06/2025   | 23/06/2025      | <https://docs.scrapy.org/>                |
+| Tue | - Compare CrawlSpider vs SitemapSpider: <br>&emsp; + CrawlSpider: relies on DEPTH_LIMIT, misses old articles <br>&emsp; + SitemapSpider: reads all URLs from sitemap, navigation-independent | 24/06/2025   | 24/06/2025      | <https://docs.scrapy.org/>                |
+| Wed | - Analyze sitemap XML structure of 3 news outlets: <br>&emsp; + VnExpress: `sitemap_news.xml` <br>&emsp; + Thanh Niên: `sitemap.xml` <br>&emsp; + VietnamNet: `sitemap_news.xml`   | 25/06/2025   | 25/06/2025      |                                           |
+| Thu | - Learn Docker basics: <br>&emsp; + Dockerfile: FROM, WORKDIR, COPY, RUN, CMD <br>&emsp; + docker-compose.yml: services, volumes, environment <br>&emsp; + Multi-stage build      | 26/06/2025   | 26/06/2025      | <https://docs.docker.com/>                |
+| Fri | - Study `newspaper3k` library for article content extraction <br> - Research Kafka Producer/Consumer pattern <br> - Learn `confluent_kafka` Python client                          | 27/06/2025   | 27/06/2025      | <https://newspaper.readthedocs.io/>       |
 
 
-### Week 2 Achievements:
+### Week 2 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Mastered Scrapy project structure:
+  * `spiders/`: contains spider classes
+  * `pipelines.py`: processes items after spider yields
+  * `settings.py`: configures CONCURRENT_REQUESTS, DOWNLOAD_DELAY, DEPTH_LIMIT,...
 
-* Successfully created and configured an AWS Free Tier account.
+* Understood the key differences between 2 spider types:
+  * **CrawlSpider (v1)**: Uses `DEPTH_LIMIT=5`, only crawls pages within link scope → misses old articles not linked from homepage
+  * **SitemapSpider (v2)**: Reads directly from sitemap XML file → crawls all articles including old ones, avoids Lambda's 15-minute timeout
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+* Analyzed sitemap XML of 3 news outlets:
+  * VnExpress: `https://vnexpress.net/sitemap_news.xml`
+  * Thanh Niên: `https://thanhnien.vn/sitemap.xml`
+  * VietnamNet: `https://vietnamnet.vn/sitemap_news.xml`
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
+* Acquired necessary Docker knowledge:
+  * How to write optimized Dockerfile (base image `python:3.10-slim`, multi-layer caching)
+  * Docker Compose to run PostgreSQL + Kafka locally
+  * Understanding `.env` files and how to inject into containers
 
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* Studied `newspaper3k`:
+  * Python library for extracting title, content, author, publish_date from HTML
+  * Uses `article.set_html()` + `article.parse()` instead of direct download
+  * Combined with Scrapy's CSS Selectors for improved accuracy

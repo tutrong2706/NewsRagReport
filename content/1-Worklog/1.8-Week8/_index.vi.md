@@ -1,59 +1,56 @@
 ---
 title: "Worklog Tuần 8"
 date: 2024-01-01
-weight: 1
+weight: 8
 chapter: false
 pre: " <b> 1.8. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 
 ### Mục tiêu tuần 8:
 
-* Kết nối, làm quen với các thành viên trong First Cloud AI Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
+* Hoàn thiện code, clean up và tối ưu.
+* So sánh chi tiết kiến trúc v1 vs v2 (chi phí giảm ~30%).
+* Viết tài liệu kỹ thuật `Pipeline_v3.md`.
+* Hoàn thiện báo cáo thực tập.
 
 ### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCAJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 11/08/2025   | 11/08/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 12/08/2025   | 12/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 13/08/2025   | 13/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 14/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| Thứ | Công việc                                                                                                                                                                              | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| 2   | - Code review và clean up: <br>&emsp; + Xóa code thừa, comments không cần thiết <br>&emsp; + Thống nhất coding style (PEP 8) <br>&emsp; + Kiểm tra `.env.example` đầy đủ biến         | 04/08/2025   | 04/08/2025      |                                           |
+| 3   | - So sánh chi tiết v1 vs v2: <br>&emsp; + Crawler: Lambda (15 phút timeout) → Fargate (không giới hạn) <br>&emsp; + Stream: Kafka → SQS (~$0) <br>&emsp; + Embedding: bge-m3 local → Bedrock API <br>&emsp; + Vector DB: Qdrant Cloud → Aurora pgvector <br>&emsp; + Chi phí: ~$35/tháng → ~$21-26/tháng (giảm ~30%) | 05/08/2025   | 05/08/2025      | Pipeline_v3.md                            |
+| 4   | - Viết tài liệu kỹ thuật `Pipeline_v3.md`: <br>&emsp; + Kiến trúc tổng thể (text diagram) <br>&emsp; + Bảng so sánh v1 vs v2 <br>&emsp; + Component map <br>&emsp; + Chi tiết kỹ thuật từng module <br>&emsp; + Chi phí vận hành <br>&emsp; + Kết quả đánh giá Ragas | 06/08/2025   | 06/08/2025      |                                           |
+| 5   | - Viết phần phân chia công việc & timeline trong Pipeline_v3.md <br> - Viết hướng phát triển tương lai <br> - Viết hướng dẫn deploy và phát triển local                                  | 07/08/2025   | 07/08/2025      |                                           |
+| 6   | - Hoàn thiện báo cáo thực tập (Hugo report) <br> - Kiểm tra lại toàn bộ nội dung worklog 8 tuần <br> - Chuẩn bị slide trình bày (nếu cần) <br> - Nộp báo cáo                           | 08/08/2025   | 08/08/2025      |                                           |
 
 
 ### Kết quả đạt được tuần 8:
 
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Hoàn thiện code chất lượng sản xuất:
+  * Tất cả module đều có error handling, logging
+  * `.env.example` đầy đủ 50 biến môi trường
+  * `Makefile` với 12 commands tiện lợi (setup, up, down, full, auto, crawl, etl,...)
+  * `deploy.sh` cho automated deployment
 
-* Đã tạo và cấu hình AWS Free Tier account thành công.
+* Bảng so sánh kiến trúc v1 vs v2:
 
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
+  | Component       | v1 (Khóa luận)                    | v2 (Cải tiến)                     | Lý do                                |
+  |----------------|----------------------------------|----------------------------------|--------------------------------------|
+  | Crawler         | Lambda + CrawlSpider (15 phút)   | **Fargate + SitemapSpider**      | Không bị timeout, crawl bài cũ       |
+  | Stream          | Kafka trên Docker                | **SQS Standard (~$0)**           | Overkill cho batch pipeline          |
+  | Embedding       | BAAI/bge-m3 (1024d, local)       | **Bedrock Titan Embed v2**       | Serverless, không tải model          |
+  | Vector DB       | Qdrant Cloud (bên thứ ba)        | **Aurora pgvector**              | Tận dụng RDS, không phụ thuộc ngoài  |
+  | **Tổng chi phí**| **~$35/tháng**                   | **~$21-26/tháng**                | **Giảm ~30%**                        |
 
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
+* Hoàn thành tài liệu `Pipeline_v3.md` (460 dòng) bao gồm:
+  * Kiến trúc tổng thể với text diagram
+  * Chi tiết 5 module kỹ thuật với code samples
+  * Schema SQL (Star Schema + pgvector)
+  * Chi phí vận hành chi tiết
+  * Kết quả đánh giá Ragas và so sánh với FlashRAG
+  * Hướng phát triển tương lai
 
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
-
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
-
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
-
-
+* Hoàn thiện báo cáo thực tập:
+  * 8 tuần worklog chi tiết
+  * Proposal dự án NewsRAG
+  * Workshop thực tế
+  * Tự đánh giá và phản hồi

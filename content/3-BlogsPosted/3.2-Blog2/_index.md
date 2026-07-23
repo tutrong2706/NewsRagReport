@@ -1,31 +1,51 @@
 ---
 title: "Blog 2"
 date: 2024-01-01
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
 
-# SESSION POLICIES IN AMAZON EKS POD IDENTITY
+# Comparing Kafka and Amazon SQS: When to Use Which?
 
-Amazon EKS Pod Identity has recently added the session policies feature, allowing you to narrow IAM permissions flexibly and precisely for each pod without needing to create many separate IAM roles. This is an important step forward that helps apply the principle of least privilege more effectively in large-scale Kubernetes environments.
+In the NewsRAG project, our team transitioned from **Apache Kafka** (v1) to **Amazon SQS** (v2) for the message queue component. This blog shares the detailed analysis and real-world experience behind this decision.
 
-Key points to know:
+### Context
 
-* A session policy is an inline IAM policy specified when creating or updating a Pod Identity association.
-* Effective permissions = intersection between the IAM role permissions and the session policy → the session policy can only narrow permissions, not expand them.
-* Helps avoid over-permissioning when reusing a single IAM role for multiple workloads with different needs.
-* Supports both same-account and cross-account (via IAM role chaining).
-* Significantly reduces the number of IAM roles that need to be managed, helping avoid hitting IAM quota limits in large clusters.
-* Easily configured through the AWS Management Console, AWS CLI, or AWS SDK when creating an association between a Kubernetes ServiceAccount and an IAM role.
+- **v1**: Used Kafka running on Docker containers, required managing broker, ZooKeeper
+- **v2**: Switched to SQS Standard — fully managed, cost near $0
 
-This feature is especially useful when you have many applications running on the same IAM role but need different permission restrictions (for example: one pod only reads a specific S3 bucket, another pod only calls certain APIs).
+### Detailed Comparison
 
-...Image...
+| Criteria              | Kafka                               | Amazon SQS                       |
+|-----------------------|-------------------------------------|----------------------------------|
+| **Architecture**      | Distributed log, multi-broker       | Managed message queue            |
+| **Message ordering**  | Yes (per partition)                 | Best-effort (Standard)           |
+| **Throughput**        | Very high (100K+ msg/s)            | High (3000 msg/s per queue)      |
+| **Message retention** | Configurable (default 7 days)      | Max 14 days                      |
+| **Consumer groups**   | Native support                      | Not available                    |
+| **Cost**              | Infrastructure + management         | Pay-per-request (~$0 for <1M)    |
+| **Management**        | Self-managed or MSK                | Fully managed                    |
+| **Dead Letter Queue** | Must self-implement                 | Native support                   |
 
-...Link...
+### When to Use Kafka?
 
-...Guide...
+- Real-time streaming with extremely high throughput
+- Need event replay (re-read messages)
+- Complex microservices with multiple consumer groups
+- Large-scale log aggregation
+
+### When to Use SQS?
+
+- Batch processing (crawl once per day)
+- Simple pipeline (1 producer, 1 consumer)
+- Want to reduce operational costs
+- Need built-in DLQ for error handling
+
+### Conclusion from NewsRAG
+
+For the use case of crawling news once daily (~500 articles), Kafka is **overkill**. SQS fully meets the requirements at near-zero cost with no management needed.
+
+...Images...
+
+...Blog link...

@@ -1,57 +1,52 @@
 ---
 title: "Week 6 Worklog"
 date: 2024-01-01
-weight: 1
+weight: 6
 chapter: false
 pre: " <b> 1.6. </b> "
 ---
-{{% notice warning %}} 
-⚠️ **Note:** The following information is for reference purposes only. Please **do not copy verbatim** for your own report, including this warning.
-{{% /notice %}}
-
 
 ### Week 6 Objectives:
 
-* Connect and get acquainted with members of First Cloud AI Journey.
-* Understand basic AWS services, how to use the console & CLI.
+* Write Terraform `main.tf` to provision all AWS infrastructure.
+* Configure EventBridge Scheduler for automated pipeline execution.
+* Set up IAM Roles, Security Groups, VPC for ECS + RDS.
+* Test terraform apply and verify resources on AWS Console.
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCAJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+### Tasks for this week:
+| Day | Tasks                                                                                                                                                                              | Start Date   | End Date        | Resources                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
+| Mon | - Write Terraform — VPC & Networking: <br>&emsp; + VPC `newsrag-vpc` (CIDR 10.0.0.0/16) <br>&emsp; + 2 Public Subnets (ap-southeast-2a, 2b) <br>&emsp; + Internet Gateway + Route Table <br>&emsp; + Security Groups: `ecs_sg` (egress all), `rds_sg` (ingress 5432 from ECS) | 21/07/2025   | 21/07/2025      | main.tf                                   |
+| Tue | - Write Terraform — RDS Aurora PostgreSQL: <br>&emsp; + Cluster: `newsrag-postgres`, engine aurora-postgresql 15.4 <br>&emsp; + Instance: `db.t4g.medium` (2 vCPU, 4GB RAM) <br>&emsp; + DB Subnet Group for multi-AZ | 22/07/2025   | 22/07/2025      | main.tf                                   |
+| Wed | - Write Terraform — ECS + ECR: <br>&emsp; + ECR Repository: `newsrag-api` <br>&emsp; + ECS Cluster: `newsrag-cluster` <br>&emsp; + 3 Task Definitions: crawler (256 CPU/512 MB), etl (512/1024), vectorize (512/1024) <br>&emsp; + IAM Roles: execution role + task role <br>&emsp; + CloudWatch Log Group: `/ecs/newsrag-project` | 23/07/2025   | 23/07/2025      | main.tf                                   |
+| Thu | - Write Terraform — EventBridge Scheduler: <br>&emsp; + Crawler: `cron(0 1 * * ? *)` — daily at 01:00 UTC <br>&emsp; + ETL: `cron(0 2 * * ? *)` — 02:00 UTC <br>&emsp; + Vectorize: `cron(0 3 * * ? *)` — 03:00 UTC <br>&emsp; + Each rule targets the corresponding ECS Fargate Task | 24/07/2025   | 24/07/2025      | main.tf                                   |
+| Fri | - `terraform init` & `terraform plan` — review changes <br> - `terraform apply` — deploy infrastructure <br> - Verify resources on AWS Console <br> - Test manual EventBridge trigger | 25/07/2025   | 25/07/2025      |                                           |
 
 
-### Week 6 Achievements:
+### Week 6 Results:
 
-* Understood what AWS is and mastered the basic service groups: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* Completed `main.tf` (371 lines) managing all infrastructure:
+  * **VPC**: 1 VPC, 2 public subnets, Internet Gateway, Route Table
+  * **Security Groups**: ECS (egress all), RDS (ingress 5432 only from ECS SG)
+  * **RDS**: Aurora PostgreSQL 15.4, instance `db.t4g.medium`, skip final snapshot
+  * **ECR**: Repository `newsrag-api`
+  * **ECS**: Cluster + 3 Task Definitions (crawler, etl, vectorize)
+  * **IAM**: Execution role (ECS Task Execution Policy) + Task role
+  * **CloudWatch**: Log group `/ecs/newsrag-project`, retention 7 days
+  * **EventBridge**: 3 scheduled rules
 
-* Successfully created and configured an AWS Free Tier account.
+* EventBridge Scheduler configuration:
+  | Rule Name                | Cron Expression       | Time (UTC) | Target Task        |
+  |--------------------------|----------------------|------------|-------------------|
+  | `newsrag-crawler-rule`   | `cron(0 1 * * ? *)`  | 01:00      | newsrag-crawler   |
+  | `newsrag-etl-rule`       | `cron(0 2 * * ? *)`  | 02:00      | newsrag-etl       |
+  | `newsrag-vectorize-rule` | `cron(0 3 * * ? *)`  | 03:00      | newsrag-vectorize |
 
-* Became familiar with the AWS Management Console and learned how to find, access, and use services via the web interface.
+* Environment variables managed via `locals.common_env`:
+  * DB credentials → automatically uses RDS endpoint
+  * Qdrant, Kafka, Embedding, LLM configs
+  * Sensitive values (passwords, API keys) → Terraform variables (type=string, sensitive=true)
 
-* Installed and configured AWS CLI on the computer, including:
-  * Access Key
-  * Secret Key
-  * Default Region
-  * ...
+* Outputs: `rds_endpoint`, `ecr_repository_url`, `ecs_cluster_name`
 
-* Used AWS CLI to perform basic operations such as:
-
-  * Check account & configuration information
-  * Retrieve the list of regions
-  * View EC2 service
-  * Create and manage key pairs
-  * Check information about running services
-  * ...
-
-* Acquired the ability to connect between the web interface and CLI to manage AWS resources in parallel.
-* ...
+* `terraform apply` succeeded, all resources created on AWS

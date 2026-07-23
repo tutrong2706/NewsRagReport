@@ -1,125 +1,56 @@
 ---
 title: "Event 2"
 date: 2024-01-01
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 4.2. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
-# Bài thu hoạch “GenAI-powered App-DB Modernization workshop”
+# Bài thu hoạch “AWS Serverless & Container Day”
 
 ### Mục Đích Của Sự Kiện
 
-- Chia sẻ best practices trong thiết kế ứng dụng hiện đại
-- Giới thiệu phương pháp DDD và event-driven architecture
-- Hướng dẫn lựa chọn compute services phù hợp
-- Giới thiệu công cụ AI hỗ trợ development lifecycle
-
-### Danh Sách Diễn Giả
-
-- **Jignesh Shah** - Director, Open Source Databases
-- **Erica Liu** - Sr. GTM Specialist, AppMod
-- **Fabrianne Effendi** - Assc. Specialist SA, Serverless Amazon Web Services
+- Giới thiệu các xu hướng mới nhất về công nghệ Serverless và Container trên AWS.
+- Phân tích sâu về Amazon ECS, EKS và AWS Fargate.
+- Hướng dẫn xây dựng kiến trúc microservices tối ưu chi phí và hiệu suất.
+- Chia sẻ kinh nghiệm thực tiễn từ các chuyên gia AWS và khách hàng.
 
 ### Nội Dung Nổi Bật
 
-#### Đưa ra các ảnh hưởng tiêu cực của kiến trúc ứng dụng cũ
+#### 1. Tối ưu hóa Container với AWS Fargate
+- **Không quản lý server**: Fargate giúp các lập trình viên tập trung vào ứng dụng thay vì phải lo lắng về việc quản lý EC2 instances.
+- **Tính năng Right-sizing**: Cấu hình CPU và Memory chính xác cho từng task để tiết kiệm chi phí.
+- **Tích hợp với Graviton**: Chạy Fargate trên nền tảng chip ARM (Graviton) giúp tăng hiệu năng lên 40% với chi phí thấp hơn 20%.
 
-- Thời gian release sản phẩm lâu → Mất doanh thu/bỏ lỡ cơ hội
-- Hoạt động kém hiệu quả → Mất năng suất, tốn kém chi phí
-- Không tuân thủ các quy định về bảo mật → Mất an ninh, uy tín
+#### 2. Event-Driven Architecture với EventBridge
+- Sử dụng Amazon EventBridge để lên lịch (schedule) hoặc phản hồi các sự kiện từ các dịch vụ khác (S3, SQS).
+- Cách EventBridge giảm bớt việc viết code tích hợp (integration code) giữa các microservices.
 
-#### Chuyển đổi sang kiến trúc ứng dụng mới - Microservice Architecture
+#### 3. Best Practices cho AWS Lambda
+- Quản lý **Cold Start**: Sử dụng Provisioned Concurrency.
+- Lựa chọn kích thước memory phù hợp để đạt sự cân bằng hoàn hảo giữa hiệu suất và chi phí.
+- Giới hạn thời gian (Timeout): Lưu ý giới hạn 15 phút của Lambda đối với các tác vụ dài.
 
-Chuyển đổi thành hệ thống modular – từng chức năng là một **dịch vụ độc lập** giao tiếp với nhau qua **sự kiện** với 3 trụ cột cốt lõi:
+### Ứng Dụng Vào Công Việc (Dự án NewsRAG)
 
-- **Queue Management**: Xử lý tác vụ bất đồng bộ
-- **Caching Strategy:** Tối ưu performance
-- **Message Handling:** Giao tiếp linh hoạt giữa services
-
-#### Domain-Driven Design (DDD)
-
-- **Phương pháp 4 bước**: Xác định domain events → sắp xếp timeline → identify actors → xác định bounded contexts
-- **Case study bookstore**: Minh họa cách áp dụng DDD thực tế
-- **Context mapping**: 7 patterns tích hợp bounded contexts
-
-#### Event-Driven Architecture
-
-- **3 patterns tích hợp**: Publish/Subscribe, Point-to-point, Streaming
-- **Lợi ích**: Loose coupling, scalability, resilience
-- **So sánh sync vs async**: Hiểu rõ trade-offs (sự đánh đổi)
-
-#### Compute Evolution
-
-- **Shared Responsibility Model**: Từ EC2 → ECS → Fargate → Lambda
-- **Serverless benefits**: No server management, auto-scaling, pay-for-value
-- **Functions vs Containers**: Criteria lựa chọn phù hợp
-
-#### Amazon Q Developer
-
-- **SDLC automation**: Từ planning đến maintenance
-- **Code transformation**: Java upgrade, .NET modernization
-- **AWS Transform agents**: VMware, Mainframe, .NET migration
-
-### Những Gì Học Được
-
-#### Tư Duy Thiết Kế
-
-- **Business-first approach**: Luôn bắt đầu từ business domain, không phải technology
-- **Ubiquitous language**: Importance của common vocabulary giữa business và tech teams
-- **Bounded contexts**: Cách identify và manage complexity trong large systems
-
-#### Kiến Trúc Kỹ Thuật
-
-- **Event storming technique**: Phương pháp thực tế để mô hình hóa quy trình kinh doanh
-- Sử dụng **Event-driven communication** thay vì synchronous calls
-- **Integration patterns**: Hiểu khi nào dùng sync, async, pub/sub, streaming
-- **Compute spectrum**: Criteria chọn từ VM → containers → serverless
-
-#### Chiến Lược Hiện Đại Hóa
-
-- **Phased approach**: Không rush, phải có roadmap rõ ràng
-- **7Rs framework**: Nhiều con đường khác nhau tùy thuộc vào đặc điểm của mỗi ứng dụng
-- **ROI measurement**: Cost reduction + business agility
-
-### Ứng Dụng Vào Công Việc
-
-- **Áp dụng DDD** cho project hiện tại: Event storming sessions với business team
-- **Refactor microservices**: Sử dụng bounded contexts để identify service boundaries
-- **Implement event-driven patterns**: Thay thế một số sync calls bằng async messaging
-- **Serverless adoption**: Pilot AWS Lambda cho một số use cases phù hợp
-- **Try Amazon Q Developer**: Integrate vào development workflow để boost productivity
+- **Chuyển đổi kiến trúc Crawler**: Kiến thức về giới hạn 15 phút của Lambda đã giúp tôi nhận ra kiến trúc v1 của NewsRAG (dùng Lambda để crawl web) không khả thi cho SitemapSpider. Từ sự kiện này, tôi đã đề xuất và trực tiếp chuyển đổi Crawler sang chạy trên container sử dụng **AWS Fargate**, giải quyết triệt để vấn đề timeout.
+- **Tự động hóa pipeline**: Ứng dụng **Amazon EventBridge Scheduler** để tự động kích hoạt Fargate Crawler mỗi ngày vào lúc 01:00 UTC thay vì phải chạy thủ công.
+- **Tối ưu chi phí Docker**: Dựa trên best practices từ sự kiện, tôi đã tối ưu hóa Dockerfile cho Crawler (sử dụng `python:3.10-slim`) và thiết lập cấu hình Fargate ở mức nhỏ nhất (0.25 vCPU, 512MB RAM) vì tác vụ I/O bound không cần nhiều compute.
 
 ### Trải nghiệm trong event
 
-Tham gia workshop **“GenAI-powered App-DB Modernization”** là một trải nghiệm rất bổ ích, giúp tôi có cái nhìn toàn diện về cách hiện đại hóa ứng dụng và cơ sở dữ liệu bằng các phương pháp và công cụ hiện đại. Một số trải nghiệm nổi bật:
+Sự kiện **"AWS Serverless & Container Day"** diễn ra vào đúng thời điểm nhóm NewsRAG đang gặp bế tắc với lỗi timeout của Lambda Crawler. Những kiến thức thu được giống như một chiếc "phao cứu sinh".
 
-#### Học hỏi từ các diễn giả có chuyên môn cao
-- Các diễn giả đến từ AWS và các tổ chức công nghệ lớn đã chia sẻ **best practices** trong thiết kế ứng dụng hiện đại.
-- Qua các case study thực tế, tôi hiểu rõ hơn cách áp dụng **Domain-Driven Design (DDD)** và **Event-Driven Architecture** vào các project lớn.
+#### Sự tương tác & Hỏi đáp
+- Tôi đã có cơ hội đặt câu hỏi trực tiếp cho các Solutions Architect của AWS về bài toán web scraping dài hạn và nhận được lời khuyên rõ ràng: *"Sử dụng ECS Fargate thay vì Lambda cho các tác vụ không thể đoán trước thời gian hoàn thành"*.
 
-#### Trải nghiệm kỹ thuật thực tế
-- Tham gia các phiên trình bày về **event storming** giúp tôi hình dung cách **mô hình hóa quy trình kinh doanh** thành các domain events.
-- Học cách **phân tách microservices** và xác định **bounded contexts** để quản lý sự phức tạp của hệ thống lớn.
-- Hiểu rõ trade-offs giữa **synchronous và asynchronous communication** cũng như các pattern tích hợp như **pub/sub, point-to-point, streaming**.
+#### Giao lưu kỹ thuật
+- Gặp gỡ nhiều lập trình viên khác và nghe họ chia sẻ về những sai lầm khi cấu hình container, giúp tôi tránh được những cạm bẫy tương tự khi viết file `main.tf` Terraform cho dự án của mình.
 
-#### Ứng dụng công cụ hiện đại
-- Trực tiếp tìm hiểu về **Amazon Q Developer**, công cụ AI hỗ trợ SDLC từ lập kế hoạch đến maintenance.
-- Học cách **tự động hóa code transformation** và pilot serverless với **AWS Lambda**, từ đó nâng cao năng suất phát triển.
+#### Bài học tâm đắc
+- Công nghệ nào cũng có use case riêng của nó. Lambda rất tuyệt vời cho API (như RAG API của dự án), nhưng Fargate mới là "chân ái" cho những batch job kéo dài như Crawler và ETL.
 
-#### Kết nối và trao đổi
-- Workshop tạo cơ hội trao đổi trực tiếp với các chuyên gia, đồng nghiệp và team business, giúp **nâng cao ngôn ngữ chung (ubiquitous language)** giữa business và tech.
-- Qua các ví dụ thực tế, tôi nhận ra tầm quan trọng của **business-first approach**, luôn bắt đầu từ nhu cầu kinh doanh thay vì chỉ tập trung vào công nghệ.
+#### Hình ảnh sự kiện
+*Thêm hình ảnh thực tế của bạn tại đây*
 
-#### Bài học rút ra
-- Việc áp dụng DDD và event-driven patterns giúp giảm **coupling**, tăng **scalability** và **resilience** cho hệ thống.
-- Chiến lược hiện đại hóa cần **phased approach** và đo lường **ROI**, không nên vội vàng chuyển đổi toàn bộ hệ thống.
-- Các công cụ AI như Amazon Q Developer có thể **boost productivity** nếu được tích hợp vào workflow phát triển hiện tại.
-
-#### Một số hình ảnh khi tham gia sự kiện
-* Thêm các hình ảnh của các bạn tại đây
-> Tổng thể, sự kiện không chỉ cung cấp kiến thức kỹ thuật mà còn giúp tôi thay đổi cách tư duy về thiết kế ứng dụng, hiện đại hóa hệ thống và phối hợp hiệu quả hơn giữa các team.
+> Sự kiện là một bước ngoặt lớn trong quá trình thiết kế hệ thống NewsRAG v2, mang lại sự ổn định và hiệu năng vượt trội cho toàn bộ pipeline dữ liệu.
