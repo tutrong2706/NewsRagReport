@@ -66,3 +66,6 @@ Sự đa dạng về thế mạnh cá nhân trong một đội nhóm (khác bi�
 - Hãy học cách yêu thích sự hỗn loạn, các lỗi debug lúc nửa đêm và những sản phẩm "chưa hoàn hảo". Bởi vì đó chính là nơi lưu giữ những bài học sâu sắc nhất và những kỷ niệm vô giá nhất trong cuộc đời làm kỹ thuật.
 
 *(Hình ảnh sự kiện có thể được bổ sung tại đây)*
+
+
+![Event 3](/NewsRagReport/images/event3.jpg)

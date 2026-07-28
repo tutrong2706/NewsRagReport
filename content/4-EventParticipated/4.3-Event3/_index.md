@@ -66,3 +66,6 @@ Diversity in individual strengths within a team (differing skill sets are always
 - Learn to love the chaos, the midnight debug errors, and the "imperfect" products. Because that is precisely where the most profound lessons and priceless memories of an engineering life are kept.
 
 *(Event photos can be inserted here)*
+
+
+![Event 3](/NewsRagReport/images/event3.jpg)
