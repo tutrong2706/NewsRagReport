@@ -6,7 +6,7 @@ chapter: false
 pre: " <b> 1. </b> "
 ---
 
-Trong suốt **8 tuần** thực tập tại chương trình **First Cloud AI Journey** (từ 15/06/2025 đến 14/08/2025), tôi đã tham gia xây dựng dự án **NewsRAG** — hệ thống tổng hợp và phân tích tin tức thông minh dựa trên kiến trúc RAG (Retrieval-Augmented Generation) triển khai hoàn toàn trên AWS.
+Trong suốt **8 tuần** thực tập tại chương trình **First Cloud AI Journey** (từ 15/06/2026 đến 14/08/2026), tôi đã tham gia xây dựng dự án **NewsRAG** — hệ thống tổng hợp và phân tích tin tức thông minh dựa trên kiến trúc RAG (Retrieval-Augmented Generation) triển khai hoàn toàn trên AWS.
 
 Vai trò chính của tôi trong nhóm là phụ trách module **Crawl + Queue**, bao gồm: viết Scrapy Spider crawl tin tức từ 3 báo điện tử Việt Nam, đóng gói Docker container cho Fargate Crawler, cấu hình SQS + Dead Letter Queue, và triển khai lên ECR/ECS.
 
