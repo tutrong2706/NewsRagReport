@@ -22,8 +22,12 @@ jobs:
           hugo-version: "0.134.3"
           extended: true
 
+      - name: Set GitHub Pages base URL
+        run: |
+          echo "HUGO_BASEURL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_ENV
+
       - name: Build website
-        run: hugo --minify
+        run: hugo --minify --baseURL "$HUGO_BASEURL"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

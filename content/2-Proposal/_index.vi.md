@@ -5,131 +5,111 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
+{{% notice warning %}}
+⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
+{{% /notice %}}
 
-# News RAG — Hệ thống Tổng hợp và Phân tích Tin tức Thông minh
-## Giải pháp AWS Serverless cho tổng hợp tin tức với kiến trúc RAG
+Tại phần này, bạn cần tóm tắt các nội dung trong workshop mà bạn **dự tính** sẽ làm.
+
+# News RAG Pipeline trên AWS
+## Đường ống dữ liệu Serverless với RAG cho hỏi đáp tin tức thông minh
 
 ### 1. Tóm tắt điều hành
-
-**News RAG** là hệ thống tổng hợp và phân tích tin tức thông minh, ứng dụng kiến trúc RAG (Retrieval-Augmented Generation) để tự động thu thập tin tức từ các báo điện tử Việt Nam (VnExpress, Thanh Niên, VietnamNet), xử lý và lưu trữ dữ liệu theo mô hình Star Schema, tạo embedding vector và cho phép người dùng đặt câu hỏi bằng ngôn ngữ tự nhiên — hệ thống sẽ truy xuất các đoạn tin tức liên quan và tổng hợp câu trả lời thông qua các mô hình ngôn ngữ lớn (LLM) như Groq Qwen3, Gemini Flash.
-
-Dự án được phát triển bởi nhóm 4 thành viên trong chương trình thực tập **First Cloud AI Journey** tại **AWS Vietnam**, triển khai hoàn toàn trên AWS với kiến trúc serverless, tối ưu chi phí (~$21-26/tháng).
+News RAG Pipeline là hệ thống xây dựng ứng dụng hỏi đáp tin tức thông minh, tự động thu thập bài báo từ các trang tin Việt Nam (VnExpress, Thanh Niên, VietnamNet), xử lý qua Data Warehouse (Star Schema), tạo vector embedding bằng Amazon Bedrock Titan Embed v2, và cho phép người dùng đặt câu hỏi bằng ngôn ngữ tự nhiên thông qua kiến trúc RAG (Retrieval-Augmented Generation) — hoàn toàn serverless trên AWS. Hệ thống là minh chứng thực tế về tích hợp dịch vụ serverless AWS với LLM API (Groq, Gemini) để tạo nền tảng tra cứu thông tin AI.
 
 ### 2. Tuyên bố vấn đề
+#### Vấn đề hiện tại
+Theo dõi tin tức từ nhiều nguồn đòi hỏi đọc và tìm kiếm thủ công qua vô số bài báo. Không có hệ thống tập trung cho phép người dùng đặt câu hỏi về tin tức mới nhất và nhận câu trả lời AI có trích dẫn nguồn. Các giải pháp hiện có như ChatGPT thiếu ngữ cảnh tin tức cập nhật.
 
-*Vấn đề hiện tại*
-Người dùng Việt Nam gặp khó khăn trong việc theo dõi và phân tích thông tin từ nhiều nguồn báo khác nhau. Việc đọc thủ công hàng trăm bài báo mỗi ngày tốn rất nhiều thời gian. Chưa có hệ thống nào cho phép hỏi đáp thông minh dựa trên dữ liệu tin tức tiếng Việt sử dụng công nghệ RAG.
+#### Giải pháp
+News RAG Pipeline tự động hóa toàn bộ quy trình: (1) Scrapy crawler trên ECS Fargate thu thập bài báo từ sitemap tin tức, (2) bài viết được đưa qua SQS vào Aurora PostgreSQL, (3) Lambda ETL xử lý HTML thô thành Star Schema và tạo vector embedding qua Amazon Bedrock Titan Embed v2, (4) Lambda RAG API nhận câu hỏi ngôn ngữ tự nhiên, tìm kiếm tương đồng vector trên pgvector (HNSW index), và sinh câu trả lời dùng Groq (Qwen3-8B, Llama 3.1) hoặc Gemini 2.0 Flash — tất cả được điều phối bởi EventBridge Scheduler.
 
-*Giải pháp*
-Hệ thống NewsRAG tự động:
-1. **Crawl** tin tức từ 3 báo điện tử qua Scrapy SitemapSpider trên ECS Fargate
-2. **Stream** dữ liệu qua SQS → Lambda Consumer → PostgreSQL
-3. **ETL** chuẩn hóa dữ liệu theo Star Schema, chunk text 800 chars
-4. **Vectorize** embedding qua Bedrock Titan Embed v2 (1024 chiều)
-5. **RAG** cho phép hỏi đáp thông minh: embed query → vector search → LLM generate
-
-*Lợi ích*
-- Tiết kiệm thời gian theo dõi tin tức cho người dùng
-- Cung cấp trả lời có trích dẫn nguồn, tăng độ tin cậy
-- Chi phí vận hành thấp (~$21-26/tháng) nhờ kiến trúc serverless
-- Có thể mở rộng thêm nguồn tin và ngôn ngữ
+#### Lợi ích và hoàn vốn đầu tư
+Giải pháp cung cấp nền tảng học tập về kiến trúc serverless AWS, hệ thống RAG và MLOps. Lợi ích chính: tổng hợp tin tức tự động loại bỏ tìm kiếm thủ công, hỏi đáp AI có trích dẫn nguồn tiết kiệm thời gian nghiên cứu, trải nghiệm thực tế với 10+ dịch vụ AWS, và hạ tầng serverless tiết kiệm chi phí. Chi phí hàng tháng khoảng $21-26 USD.
 
 ### 3. Kiến trúc giải pháp
+Nền tảng sử dụng kiến trúc serverless AWS với hai giai đoạn pipeline: (1) Data Pipeline — EventBridge Scheduler kích hoạt ECS Fargate crawler hàng ngày lúc 01:00 UTC, đẩy bài viết vào SQS; Lambda Consumer xử lý messages và insert bài thô vào Aurora PostgreSQL với SHA256 dedup. (2) ETL + RAG Pipeline — EventBridge thứ hai lúc 02:00 UTC chạy Lambda ETL làm sạch HTML, chunk text 500 token, tạo embedding 1024 chiều qua Bedrock Titan Embed v2, lưu vector vào Aurora pgvector với HNSW index. Lambda RAG API, phía sau API Gateway, embed câu hỏi người dùng với Bedrock, tìm kiếm tương đồng trên pgvector, sau đó sinh câu trả lời dùng Groq/Gemini LLM.
 
-```text
-EventBridge Scheduler (01:00, 02:00, 03:00 UTC)
-       │
-       ├──[01:00]──► Fargate Crawler ──► SQS ──► Lambda Consumer
-       │               (Scrapy Sitemap)            (SHA256 + insert Aurora)
-       │
-       ├──[02:00]──► Fargate ETL
-       │               (clean → chunk → Star Schema)
-       │
-       └──[03:00]──► Fargate Vectorize
-                       (Bedrock Embed → Qdrant)
+### Các dịch vụ AWS sử dụng
+- **Amazon ECS Fargate**: Chạy Scrapy SitemapSpider crawler (0.25 vCPU, 0.5 GB)
+- **Amazon SQS Standard**: Message queue thay thế Kafka (~$0/tháng)
+- **AWS Lambda** (3 functions): Consumer (SQS → Aurora), ETL + Bedrock Embed, RAG API
+- **Amazon Aurora Serverless v2**: PostgreSQL 15.4 với pgvector extension
+- **Amazon Bedrock**: Titan Embed Text v2 (1024d) cho vector embeddings
+- **Amazon API Gateway**: REST API frontend cho RAG queries
+- **Amazon EventBridge Scheduler**: Cron trigger hàng ngày (01:00, 02:00 UTC)
+- **Amazon ECR**: Docker image registry cho Fargate tasks
+- **AWS IAM**: Task execution và Lambda roles với least-privilege policies
+- **Amazon CloudWatch**: Centralized logging và monitoring (7-day retention)
 
-                              ▲
-                              │ top-k chunks
-                     Lambda RAG API ◄── API Gateway ◄── Client
-                     (Embed query → vector search → Groq/Gemini LLM)
-```
-
-*Dịch vụ AWS sử dụng*
-- **ECS Fargate**: Chạy container Crawler, ETL, Vectorize (không quản lý server)
-- **Amazon SQS**: Hàng đợi tin nhắn thay Kafka (~$0/tháng)
-- **Amazon ECR**: Docker image registry
-- **RDS Aurora PostgreSQL**: Lưu trữ bài viết + Star Schema warehouse
-- **Amazon Bedrock**: Titan Embed Text v2 (1024 chiều) — serverless embedding
-- **EventBridge Scheduler**: Tự động chạy pipeline theo lịch
-- **CloudWatch**: Monitoring logs
-- **VPC + Security Groups**: Networking an toàn
-
-*Dịch vụ bên ngoài*
-- **Qdrant Cloud**: Vector database cho similarity search
-- **Groq API** (Qwen3-8B): LLM chính cho RAG
-- **Google Gemini 2.0 Flash**: LLM fallback
+### Thiết kế thành phần
+- **Crawler (Fargate)**: Scrapy SitemapSpider đọc sitemap_news.xml từ 3 nguồn báo, parse bài viết, đẩy vào SQS. Chạy ~30 phút/ngày.
+- **Queue (SQS)**: Standard queue với DLQ, 14-day retention, 3 lần retry.
+- **Consumer (Lambda)**: Triggered bởi SQS, tính SHA256 URL hash cho dedup, insert bài thô vào Aurora.
+- **ETL + Embed (Lambda)**: Làm sạch HTML, chunk text (500 tokens, 50 overlap), gọi Bedrock Titan Embed v2, lưu vector 1024d trong pgvector với HNSW index.
+- **RAG API (Lambda + API Gateway)**: Embed câu hỏi qua Bedrock, cosine similarity search trên pgvector, sinh câu trả lời qua Groq/Gemini có trích dẫn nguồn.
+- **Frontend (Next.js + FastAPI)**: Dashboard với KPI cards, charts (Recharts), AI Chat với model selector, Article Explorer, Pipeline Monitor.
 
 ### 4. Triển khai kỹ thuật
+#### Các giai đoạn triển khai
+Dự án theo 4 giai đoạn:
+- **Giai đoạn 1 - Hạ tầng (Tuần 1-2)**: Terraform cho VPC, Aurora pgvector, ECS Cluster, ECR, Lambda, EventBridge, IAM, CloudWatch. Xây dựng Docker multi-stage cho Fargate.
+- **Giai đoạn 2 - Phát triển cục bộ (Tuần 3-6)**: Docker Compose với PostgreSQL, Qdrant, Kafka. Phát triển Scrapy SitemapSpider, Kafka Consumer, ETL pipeline với Star Schema, SentenceTransformer vectorization.
+- **Giai đoạn 3 - Production AWS (Tuần 7-10)**: Deploy Fargate crawler với EventBridge scheduler, Lambda Consumer với SQS trigger, Lambda ETL với Bedrock Titan Embed v2, Lambda RAG API với API Gateway, Next.js frontend.
+- **Giai đoạn 4 - Kiểm thử (Tuần 11-12)**: RAGAS evaluation (Faithfulness, Relevancy, Precision, Recall), CloudWatch dashboards và alerts, Locust load testing, tối ưu chi phí.
 
-*Phân chia công việc theo nhóm*
+#### Yêu cầu kỹ thuật
+- **Data Pipeline**: Scrapy với SitemapSpider, Kafka (local) / SQS (AWS), PostgreSQL với pgvector.
+- **ETL Pipeline**: Làm sạch HTML bằng regex, chunk text 500 tokens, embedding qua SentenceTransformer (local) / Bedrock Titan v2 (AWS).
+- **RAG System**: pgvector HNSW similarity search (cosine distance), Groq API (Qwen3-8B, Llama 3.1), Gemini 2.0 Flash fallback, structured prompts với trích dẫn nguồn.
+- **Infrastructure**: Terraform cho AWS resources, Docker multi-stage builds, Lambda deployment packages, EventBridge cron scheduling.
 
-| Thành viên | Module              | AWS Services                                 | Công việc chính                                          |
-| ---------- | ------------------- | -------------------------------------------- | -------------------------------------------------------- |
-| **A (Tôi)**| Crawl + Queue       | ECS Fargate, SQS, ECR, Docker                | Dockerfile, SQS + DLQ, ECR deploy, Sitemap Spider        |
-| **B**      | Consumer + Database | Lambda, Aurora, pgvector, Secrets Manager    | Lambda Consumer, Aurora cluster, Star Schema SQL          |
-| **C**      | ETL + Embedding     | Lambda, Bedrock, S3                          | Clean HTML, chunk text, Bedrock Embed, insert vector      |
-| **D**      | RAG API + Frontend  | Lambda, API Gateway, Groq/Gemini, Next.js    | RAG search, API Gateway, Frontend Dashboard               |
+### 5. Timeline & Milestones
+**Dòng thời gian dự án**
+- Pre-Internship (Tháng 0): Lập kế hoạch, học AWS cơ bản.
+- Internship (Tháng 1-3):
+  - Tháng 1: Thiết lập hạ tầng, môi trường dev local, phát triển crawler.
+  - Tháng 2: ETL pipeline, Star Schema, vector hóa, phát triển RAG API.
+  - Tháng 3: Triển khai AWS production, kiểm thử (RAGAS), monitoring, tối ưu chi phí.
+- Post-Launch: Duy trì và mở rộng (semantic chunking, hybrid search, topic alerts).
 
-*Công nghệ sử dụng*
-- **Backend**: Python 3.10, Scrapy, psycopg2, boto3, sentence-transformers
-- **Frontend**: Next.js, React, Tailwind CSS, FastAPI
-- **Infrastructure**: Terraform, Docker, Docker Compose
-- **Database**: PostgreSQL 15 + pgvector extension
-- **LLM**: LangChain + Groq + Google GenAI
+### 6. Dự toán ngân sách
+Tham khảo [AWS Pricing Calculator](https://calculator.aws/#/) để ước tính.
 
-### 5. Lộ trình & Timeline (8 tuần)
-
-| Tuần    | Công việc chính                                          |
-| ------- | -------------------------------------------------------- |
-| **1**   | Làm quen AWS, tìm hiểu kiến trúc NewsRAG, setup môi trường |
-| **2**   | Nghiên cứu Scrapy, Docker, phân tích sitemap XML        |
-| **3**   | Phát triển NewsRAGSpider, KafkaPipeline                  |
-| **4**   | Dockerize Crawler, push ECR, cấu hình ECS Fargate       |
-| **5**   | SQS + DLQ, tích hợp Crawler → Consumer → PostgreSQL     |
-| **6**   | Terraform infrastructure, EventBridge Schedule           |
-| **7**   | Integration test, debug edge cases, đánh giá Ragas       |
-| **8**   | Hoàn thiện code, viết tài liệu, báo cáo thực tập       |
-
-### 6. Ước tính chi phí
-
-| Nhóm              | Component                                              | Giá/tháng         |
-| ----------------- | ------------------------------------------------------ | ----------------- |
-| **Crawl + Queue** | Fargate (0.25 vCPU, 512 MB, ~30 phút/ngày) + SQS + Consumer | **~$3–5**     |
-| **ETL + Embed**   | Fargate ETL + Bedrock Titan Embed                      | **~$1–3**         |
-| **Database**      | Aurora Serverless v2 (2 ACU) + pgvector                | **~$14**          |
-| **RAG API**       | Lambda RAG + API Gateway                               | **~$3–4**         |
-| **Tổng**          |                                                        | **~$21–26/tháng** |
+#### Chi phí hạ tầng (Hàng tháng)
+- Aurora Serverless v2 (2 ACU): ~$15-20
+- ECS Fargate Crawler (0.25 vCPU, 0.5 GB, 30 phút/ngày): ~$0.50
+- Lambda (3 functions): ~$2-3
+- SQS Standard: ~$0
+- API Gateway: ~$0.30
+- Bedrock Titan Embed: ~$0.50
+- CloudWatch Logs (7-day retention): ~$1-2
+- **Tổng: ~$21-26/tháng**
 
 ### 7. Đánh giá rủi ro
+#### Ma trận rủi ro
+- Crawler bị chặn: Medium impact, medium probability (giảm thiểu với headers phù hợp, tôn trọng robots.txt, DOWNLOAD_DELAY).
+- Bedrock throttling: Medium impact, low probability (giảm thiểu với retry logic, adaptive backoff).
+- LLM API outage (Groq/Gemini): High impact, low probability (giảm thiểu với multi-model fallback).
+- Vượt chi phí: Medium impact, low probability (giảm thiểu với budget alerts, right-sizing).
 
-*Ma trận rủi ro*
-- Crawl bị chặn (rate limit, anti-bot): Ảnh hưởng cao, xác suất trung bình
-- API LLM ngừng hoạt động: Ảnh hưởng cao, xác suất thấp
-- Vượt ngân sách AWS: Ảnh hưởng trung bình, xác suất thấp
+#### Chiến lược giảm thiểu
+- **Crawler**: Tôn trọng robots.txt, 1s DOWNLOAD_DELAY, AutoThrottle bật.
+- **Throttling**: Exponential backoff trên Bedrock, max_attempts=3.
+- **LLM Fallback**: Chuỗi fallback: Groq Qwen3 → Llama 3.1 → Gemini 2.0 Flash.
+- **Chi phí**: AWS Budget alerts tại 80%, Fargate Spot cho crawler, right-size Lambda memory.
 
-*Chiến lược giảm thiểu*
-- Crawl: Tuân thủ `ROBOTSTXT_OBEY`, `DOWNLOAD_DELAY`, User-Agent hợp lệ
-- LLM: Fallback pattern (Qwen3 → Llama 3.1 → Gemini Flash)
-- Chi phí: AWS Budget Alerts, Fargate spot instances khi có thể
+#### Kế hoạch dự phòng
+- Nếu site báo chặn crawler: Dùng nguồn tin thay thế hoặc upload dữ liệu thủ công.
+- Nếu Bedrock không available: Dùng SentenceTransformer local.
+- Nếu chi phí vượt ngân sách: Giảm Aurora xuống 1 ACU.
 
-### 8. Kết quả kỳ vọng
+### 8. Kết quả mong đợi
+#### Cải thiện kỹ thuật:
+Tổng hợp tin tức tự động thay thế tìm kiếm thủ công. Hỏi đáp AI có trích dẫn nguồn tiết kiệm thời gian. Kiến trúc serverless co giãn xử lý khối lượng tin tức tăng dần.
 
-*Cải tiến kỹ thuật*:
-- Pipeline tự động crawl + xử lý ~500 bài/ngày từ 3 nguồn báo
-- Chi phí giảm ~30% so với phiên bản v1 (~$35 → ~$21-26)
-- Hệ thống RAG hỏi đáp tiếng Việt dựa trên tin tức thực
-
-*Giá trị dài hạn*:
-- Nền tảng dữ liệu tin tức có thể mở rộng thêm nguồn
-- Kinh nghiệm thực tế với AWS serverless architecture
-- Có thể tái sử dụng cho các use case RAG khác
+#### Giá trị dài hạn
+- Hệ thống RAG nền tảng cho các dự án NLP/AI trong tương lai.
+- Các thành phần pipeline có thể tái sử dụng cho lĩnh vực khác (tech blogs, research papers).
+- Kinh nghiệm thực tế với AWS serverless.
+- Nền tảng dữ liệu (~5000 bài viết) cho phân tích sau này.
