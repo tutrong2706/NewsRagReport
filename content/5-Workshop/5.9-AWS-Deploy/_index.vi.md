@@ -1,6 +1,6 @@
 ---
 title: "Chuẩn bị triển khai AWS"
-date: 2024-01-01
+date: 2026-07-28
 weight: 9
 chapter: false
 pre: " <b> 5.9 </b> "

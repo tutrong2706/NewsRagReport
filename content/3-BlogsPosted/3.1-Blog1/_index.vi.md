@@ -1,6 +1,6 @@
 ---
 title: "Blog 1: Vượt giới hạn Timeout với AWS Fargate"
-date: 2024-01-01
+date: 2026-07-28
 weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "

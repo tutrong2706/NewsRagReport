@@ -1,6 +1,6 @@
 ---
 title: "Frontend Integration (Next.js + FastAPI)"
-date: 2024-01-01
+date: 2026-07-28
 weight: 14
 chapter: false
 pre: " <b> 5.14 </b> "

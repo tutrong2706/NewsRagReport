@@ -1,6 +1,6 @@
 ---
 title: "Clean Up Resources"
-date: 2024-01-01
+date: 2026-07-28
 weight: 17
 chapter: false
 pre: " <b> 5.17 </b> "

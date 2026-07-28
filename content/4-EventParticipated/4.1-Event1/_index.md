@@ -1,69 +1,66 @@
 ---
-title: "Event 1"
-date: 2024-01-01
+title: "Event 1 Report: Career Orientation, Skills, and Practical Mindset in Business"
+date: 2026-06-12
 weight: 1
 chapter: false
-pre: " <b> 4.1. </b> "
+pre: " 1. "
 ---
 
-# Summary Report: “GenAI-powered App-DB Modernization workshop”
+# Summary Report: Career Orientation, Skills, and Practical Mindset in Business
 
-### Event Objectives
+## 1. Event Objectives
+- Help 3rd and 4th-year students dispel unrealistic illusions about the workplace, equipping them with a practical and sharp mindset to adapt to the rigorous demands of the modern labor market.
+- Clarify the hands-on nature of technical roles such as DevOps and Data Engineers, while understanding professional operational standards at large multinational corporations.
 
-- Share best practices in modern application design
-- Introduce Domain-Driven Design (DDD) and event-driven architecture
-- Provide guidance on selecting the right compute services
-- Present AI tools to support the development lifecycle
+## 2. Guest Speakers
+- **Mr. Trong H. Truong** - DevOps Engineer @ Endava Vietnam.
+- **Mr. Danh Hoang Hieu Nghi** - AI Engineer @ AWS Community Builder & AWS Student Builder Group Leader.
+- **Mr. Dat Pham** - Data Analytics Engineer @ Kamereo & Colgate-Palmolive.
+- **Mr. Cuong Nguyen** - Process Engineer @ Colgate-Palmolive.
 
-### Speakers
+## 3. Key Highlights
 
-- **Jignesh Shah** – Director, Open Source Databases
-- **Erica Liu** – Sr. GTM Specialist, AppMod
-- **Fabrianne Effendi** – Assc. Specialist SA, Serverless Amazon Web Services
+### The Harsh Reality of DevOps in the Enterprise
+The reality of DevOps work is far from the glamorous descriptions found in textbooks. It involves a long series of responsibilities, from handling rotating on-call shifts and mitigating midnight system outages, to solving complex cloud cost optimization problems and defining strict system ownership.
 
-### Key Highlights
+A profound lesson is that tools are temporary. The enduring core value lies in a strong foundation of systems thinking and the ability to automate repetitive tasks to liberate the workforce.
 
-#### Transitioning to modern application architecture – Microservices
-Migrating to a modular system — each function is an **independent service** communicating via **events**, built on three core pillars:
-- **Queue Management**: Handle asynchronous tasks (Amazon SQS)
-- **Caching Strategy**: Optimize performance
-- **Message Handling**: Flexible inter-service communication
+### The Adaptability of Data Engineers Across Business Domains
+The role of a Data Analytics Engineer is not rigid but highly adaptable to business specifics. At Kamereo (an F&B startup), the focus is on optimizing the daily supply chain and designing intuitive dashboards to help the board make immediate business (GMV) decisions.
 
-#### Event-Driven Architecture
-- **3 integration patterns**: Publish/Subscribe, Point-to-point, Streaming
-- **Benefits**: Loose coupling, scalability, resilience
-- **Sync vs async comparison**: Understanding the trade-offs
+In contrast, at a global FMCG corporation like Colgate-Palmolive, engineers must work directly on the factory floor with the IoT data systems of manufacturing equipment. The goal is to enhance operational efficiency and drive the factory's long-term digital transformation.
 
-#### Compute Evolution
-- **Shared Responsibility Model**: EC2 → ECS → Fargate → Lambda
-- **Serverless benefits**: No server management, auto-scaling, pay-for-value
-- **Functions vs Containers**: Criteria for appropriate choice based on workloads
+## 4. Key Takeaways
 
-### Applying to Work (NewsRAG Project)
+### The 5-Stage Career Development Mindset
+I was deeply convinced by the concept of "advancing capability rather than advancing job titles." Young professionals must clearly position themselves on the capability pyramid: moving from a **Follower** (working strictly off checklists), to a **Learner** (proactively asking insightful questions to gain practical experience), breaking through to a **Problem Solver** (committing to output quality), becoming a **System Thinker** (seeing the big picture for long-term optimization), and ultimately rising as a **Super Star** (leading and shaping the vision for an entire organization).
 
-- **Implement event-driven patterns**: Applied SQS as an intermediary queue between Crawler and Consumer in the NewsRAG pipeline, ensuring loose coupling.
-- **Serverless adoption**: Used ECS Fargate for Crawler and ETL modules, and AWS Lambda for Consumer and RAG API modules, maximizing serverless architecture to optimize costs (reduced by 30% compared to v1).
-- **Compute selection**: Applied the "Functions vs Containers" lesson to decide moving the Crawler from Lambda to ECS Fargate to avoid the 15-minute timeout issue.
+### Technical Foundations and the 8-Step Personal Journey
+For deeply specialized fields like DevOps, the greatest lesson is to persistently master foundational knowledge—such as Linux, computer networking, programming languages (Python/Golang), Git/CI-CD, and Containers—rather than endlessly chasing rapidly changing tools.
 
-### Event Experience
+The inspiring 8-step journey of Mr. Danh Hoang Hieu Nghi—from a curious student joining the First Cloud Journey program, dedicating himself to Labs and projects, building a high-quality portfolio to become an AWS Partner, and finally adopting a "Share-Back" mentality to uplift the next generation—proves that perseverance and a spirit of community service are the keys to unlocking massive opportunities.
 
-Attending the **“GenAI-powered App-DB Modernization”** workshop was extremely valuable, giving me a comprehensive view of modernizing applications and databases using advanced methods and tools. Key experiences included:
+### Corporate Culture and the "Doing the Right Work" Philosophy
+I was incredibly impressed by the "No-Blame Post-Mortem" culture at leading tech companies. When critical incidents occur, teams gather to analyze system flaws for improvement, absolutely refusing to use the process to point fingers at individuals.
 
-#### Learning from highly skilled speakers
-- Experts from AWS shared **best practices** in modern application design, especially how to leverage GenAI to optimize workflows.
+The Japanese philosophy of "Wakon Yosai" (Japanese spirit, Western techniques) teaches us to preserve our core identity while proactively mastering advanced global technologies. Alongside this, the philosophy of "Doing the Right Work" (Đúng Việc) guides individuals to take responsibility across three solid pillars: Being Human (internal management), Doing the Job (serving with true competence), and Being a Citizen (social responsibility).
 
-#### Hands-on technical exposure
-- Understood trade-offs between **synchronous and asynchronous communication** and integration patterns, enabling me to confidently apply SQS for the NewsRAG project.
-- Clearly distinguished the pros and cons between **ECS Fargate and Lambda**, a crucial knowledge that helped the team restructure NewsRAG v2.
+## 5. Applying to Work
+- **Stop Mindless Copying**: Immediately break the habit of blindly copying commands from the internet. Instead, always dig into the underlying mechanisms and ask "Why?" before figuring out "How?".
+- **Data Storytelling Skills**: Focus on refining data communication skills, turning dry data tables into structured narratives to drive actionable business outcomes.
+- **Taking Ownership**: Proactively identify the "true owner of the problem" and commit to resolving it thoroughly, rather than doing the bare minimum or passively waiting for instructions.
+- **Team Spirit**: Practice a culture of supporting teammates, simplifying operational workflows, and documenting every solution to share knowledge across the entire team.
 
-#### Networking and discussions
-- The workshop offered opportunities to exchange ideas with experts and other FCAJ trainees, answering many questions about serverless architecture.
+## 6. Event Experience
 
-#### Lessons learned
-- Applying event-driven patterns reduces **coupling** while improving **scalability** and **resilience**.
-- Choosing the right Compute Service (Fargate vs Lambda) is vital for system stability and cost.
+- **Lessons from Authenticity**: The real-world stories and thorny practical experiences shared by the speakers completely extinguished my rosy illusions based on textbook theories.
+- **A Realistic Technical Perspective**: The massive landscape of DevOps tools initially overwhelmed me, but it also highlighted a clear path forward: I must focus on mastering the fundamentals and deeply understanding how applications truly operate in a production environment.
+- **Smart Tool Utilization**: I became highly conscious of using AI as a powerful assistant to boost personal productivity, ensuring that it never diminishes my own proactive and critical thinking abilities.
+- **Community Connection**: The open and passionate discussions at the meetup ignited a burning desire within me to keep learning, engage in community building, and continually raise my personal standards.
 
-#### Event photos
-*Add your real event photos here*
+## 7. Lessons Learned
+- Blindly copying commands without understanding the system's nature only seeds security vulnerabilities and dangerous future incidents.
+- An outstanding DevOps engineer is not a "lone wolf" saving the world at midnight, but a professional who communicates effectively, coordinates with the team, and builds a long-lasting, stable architecture.
+- Technical skills only get your foot in the door; it is systems thinking and soft skills (like communication and critical thinking) that give you the wings to soar in your career journey.
 
-> Overall, the event not only provided technical knowledge but also helped me reshape my thinking about system design, directly contributing to the success of the NewsRAG project.
+*(Event photos can be inserted here)*

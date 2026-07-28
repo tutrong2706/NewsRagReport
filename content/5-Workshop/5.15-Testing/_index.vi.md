@@ -1,6 +1,6 @@
 ---
 title: "Kiểm thử & Giám sát"
-date: 2024-01-01
+date: 2026-07-28
 weight: 15
 chapter: false
 pre: " <b> 5.15 </b> "
