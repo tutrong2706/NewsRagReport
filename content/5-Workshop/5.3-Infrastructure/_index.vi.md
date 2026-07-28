@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.3 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Hạ tầng dưới dạng Code (Terraform)
 
 Phần này mô tả việc định nghĩa và triển khai toàn bộ hạ tầng AWS cho News RAG Pipeline bằng Terraform.

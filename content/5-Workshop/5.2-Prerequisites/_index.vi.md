@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.2 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Điều kiện tiên quyết
 
 Trước khi bắt đầu workshop này, hãy đảm bảo bạn đã cài đặt và cấu hình các công cụ sau.

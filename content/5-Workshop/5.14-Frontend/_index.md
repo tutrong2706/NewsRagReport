@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.14 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Frontend Integration: Next.js Dashboard + FastAPI Backend
 
 This section covers the web interface for the News RAG system, including Dashboard, Search, AI Chat, Article Explorer, and Pipeline Monitor.

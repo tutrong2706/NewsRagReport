@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.9 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # AWS Deployment Preparation
 
 This section covers building Docker images, pushing to ECR, and preparing Lambda deployment packages for the AWS serverless architecture.

@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.13 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # RAG API: Lambda + API Gateway
 
 This section covers the REST API that accepts natural language queries, retrieves relevant chunks via pgvector similarity search, and generates answers using LLMs (Groq/Gemini).

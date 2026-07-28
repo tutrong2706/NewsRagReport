@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.12 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Lambda ETL + Bedrock Titan Embedding
 
 Phần này bao gồm Lambda function chuyển đổi bài viết thô thành Star Schema, tạo embeddings dùng Amazon Bedrock Titan Embed v2, và lưu vectors vào Aurora pgvector.

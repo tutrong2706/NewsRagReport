@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.9 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Chuẩn bị triển khai AWS
 
 Phần này bao gồm việc build Docker images, push lên ECR, và chuẩn bị Lambda deployment packages cho kiến trúc serverless AWS.

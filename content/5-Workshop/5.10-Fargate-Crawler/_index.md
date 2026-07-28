@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.10 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Fargate Crawler: ECS Fargate + EventBridge Scheduler
 
 This section covers deploying the Scrapy crawler as an ECS Fargate task triggered by EventBridge Scheduler.

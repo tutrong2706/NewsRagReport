@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.17 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Clean Up Resources
 
 This section provides step-by-step instructions to tear down all AWS resources created during the workshop to avoid ongoing charges.

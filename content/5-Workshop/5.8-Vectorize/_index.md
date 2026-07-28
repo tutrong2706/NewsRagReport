@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.8 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Vectorization: Generating Embeddings & Storing in Vector DB
 
 This section covers the vectorization step that converts text chunks into vector embeddings and stores them for similarity search.

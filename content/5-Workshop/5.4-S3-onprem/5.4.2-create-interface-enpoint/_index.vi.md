@@ -21,9 +21,6 @@ Trong phần này, bạn sẽ tạo và kiểm tra Interface Endpoint  S3 bằng
 ![service](/images/5-Workshop/5.4-S3-onprem/s3-interface-endpoint2.png)
 
 4. Đối với VPC, chọn VPC Cloud từ drop-down.
-{{% notice warning %}}
-Đảm bảo rằng bạn chọn "VPC Cloud" và không phải "VPC On-prem"
-{{% /notice %}}
 + Mở rộng **Additional settings** và đảm bảo rằng Enable DNS name *không* được chọn (sẽ sử dụng điều này trong phần tiếp theo của workshop)
 
 ![vpc](/images/5-Workshop/5.4-S3-onprem/s3-interface-endpoint3.png)

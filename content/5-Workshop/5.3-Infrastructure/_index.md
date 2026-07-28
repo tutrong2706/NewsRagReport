@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.3 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Infrastructure as Code (Terraform)
 
 This section covers the complete AWS infrastructure defined in `main.tf` using Terraform for the News RAG Pipeline.

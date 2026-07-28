@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.8 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Vector hóa: Tạo Embeddings & Lưu vào Vector DB
 
 Phần này bao gồm bước vector hóa chuyển đổi text chunks thành vector embeddings và lưu trữ cho similarity search.

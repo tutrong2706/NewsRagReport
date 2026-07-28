@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.10 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Fargate Crawler: ECS Fargate + EventBridge Scheduler
 
 Phần này bao gồm việc deploy Scrapy crawler như ECS Fargate task được trigger bởi EventBridge Scheduler.

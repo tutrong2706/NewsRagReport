@@ -1,62 +1,32 @@
 ---
-title: "Blog 3"
+title: "Blog 3: Xây dựng RAG tối ưu"
 date: 2024-01-01
 weight: 3
 chapter: false
 pre: " <b> 3.3. </b> "
 ---
 
-# Triển khai Infrastructure as Code với Terraform cho Dự án AWS
+# Hiện thực hóa hệ thống RAG với Amazon Bedrock và Aurora pgvector
 
-Trong dự án NewsRAG, toàn bộ infrastructure AWS được quản lý bằng **Terraform** — công cụ Infrastructure as Code (IaC) phổ biến nhất. Bài viết chia sẻ cách tổ chức Terraform config cho một dự án thực tế với VPC, RDS, ECS, EventBridge.
+**Retrieval-Augmented Generation (RAG)** là phương pháp kết hợp sức mạnh của Mô hình ngôn ngữ lớn (LLM) với dữ liệu riêng của doanh nghiệp. Để RAG hoạt động hiệu quả, trái tim của hệ thống chính là **Embedding Model** (để biến văn bản thành vector) và **Vector Database** (để lưu trữ và tìm kiếm vector). 
 
-### Tại sao Infrastructure as Code?
+Dưới đây là cách chúng tôi xây dựng trái tim này hoàn toàn bằng hệ sinh thái AWS.
 
-- **Reproducible**: Tạo lại toàn bộ infrastructure bằng 1 lệnh `terraform apply`
-- **Version control**: Track thay đổi qua Git
-- **Tự động hóa**: Không cần click thủ công trên AWS Console
-- **Team collaboration**: Review infrastructure changes qua Pull Request
+### 1. Amazon Bedrock: Sức mạnh nhúng (Embedding)
 
-### Cấu trúc Terraform cho NewsRAG
+Thay vì phải tự host các model như HuggingFace SentenceTransformer trên EC2 (rất tốn kém GPU) hoặc Lambda (chạy chậm và dễ cold-start), chúng tôi sử dụng **Amazon Bedrock** với mô hình `amazon.titan-embed-text-v2:0`.
 
-```
-main.tf (371 lines)
-├── Provider: aws (ap-southeast-2)
-├── Variables: db_password, qdrant_api_key, model_api_keys (sensitive)
-├── VPC & Networking
-│   ├── VPC (10.0.0.0/16)
-│   ├── 2 Public Subnets (2a, 2b)
-│   ├── Internet Gateway + Route Table
-│   └── Security Groups (ECS, RDS)
-├── RDS Aurora PostgreSQL
-│   ├── Cluster: aurora-postgresql 15.4
-│   └── Instance: db.t4g.medium
-├── ECS + ECR
-│   ├── ECR Repository
-│   ├── ECS Cluster
-│   ├── 3 Task Definitions (crawler, etl, vectorize)
-│   └── IAM Roles
-├── EventBridge Scheduler
-│   ├── Crawler: 01:00 UTC
-│   ├── ETL: 02:00 UTC
-│   └── Vectorize: 03:00 UTC
-└── Outputs: rds_endpoint, ecr_url, cluster_name
-```
+*   **Hiệu suất và chi phí**: API của Bedrock phản hồi rất nhanh, xử lý embedding cho các đoạn chunk văn bản trong tích tắc. Chi phí được tính theo số token, vô cùng rẻ cho các dự án vừa và nhỏ.
+*   **Tính nhất quán tuyệt đối**: Nguyên tắc sống còn của RAG là dữ liệu trong Database và câu hỏi của người dùng (Query) phải được chuyển thành vector bởi **cùng một model**. Bằng cách gọi Bedrock API ở cả khâu ETL và khâu RAG API, chúng tôi đảm bảo tính nhất quán tuyệt đối của không gian vector (vector space).
 
-### Best Practices áp dụng
+### 2. Amazon Aurora Serverless v2 + pgvector
 
-1. **Sensitive variables**: Dùng `type = string, sensitive = true` cho passwords và API keys
-2. **Locals block**: Quản lý environment variables chung qua `locals.common_env`
-3. **Security Groups**: Principle of least privilege — RDS chỉ accept từ ECS SG
-4. **CloudWatch Logs**: Retention 7 ngày để tiết kiệm chi phí
-5. **Outputs**: Export RDS endpoint, ECR URL để dùng trong CI/CD
+Thay vì dùng các Vector Database bên thứ ba như Qdrant, Pinecone hay Milvus, chúng tôi quyết định sử dụng **Amazon Aurora PostgreSQL** kết hợp với extension **`pgvector`**.
 
-### Kết quả
+*   **Tất cả trong một**: PostgreSQL cho phép lưu trữ siêu dữ liệu (metadata như tác giả, ngày đăng, URL) theo cấu trúc quan hệ (Star Schema) kết hợp với cột kiểu `vector` để lưu embedding. Điều này giúp chúng tôi dễ dàng thực hiện các truy vấn kết hợp: "Tìm các bài báo về kinh tế (vector search) nhưng chỉ lấy những bài xuất bản trong tuần này (SQL filter)".
+*   **Chỉ mục HNSW**: Để tìm kiếm nhanh trên hàng trăm ngàn chunk dữ liệu, chúng tôi cấu hình chỉ mục **HNSW (Hierarchical Navigable Small World)** trên cột vector. Nhờ đó, truy vấn tìm kiếm độ tương tự (cosine similarity) trả về kết quả gần như ngay lập tức.
+*   **Serverless v2**: Database Aurora tự động scale lên xuống (từ 0.5 đến 2 ACU) dựa trên tải hệ thống, giúp tối ưu chi phí mà vẫn đảm bảo hiệu suất khi có người dùng truy vấn hỏi đáp.
 
-- 1 file `main.tf` quản lý toàn bộ 20+ AWS resources
-- Deploy/destroy infrastructure trong < 10 phút
-- Dễ dàng tái tạo môi trường mới
+### Kết luận
 
-...Hình ảnh...
-
-...Link bài blog...
+Kiến trúc kết hợp giữa Amazon Bedrock và Aurora pgvector mang lại một giải pháp RAG khép kín (End-to-End) hoàn toàn trên AWS. Dữ liệu tin tức không bao giờ phải rời khỏi VPC của hệ thống để gọi ra bên ngoài, đảm bảo tính bảo mật và giảm độ trễ mạng tối đa. Đây chính là điểm nhấn kỹ thuật mà chúng tôi tâm đắc nhất trong toàn bộ quy trình xây dựng ứng dụng.

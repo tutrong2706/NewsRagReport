@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.11 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Lambda Consumer: SQS Trigger → Aurora PostgreSQL
 
 This section covers the Lambda function that consumes messages from SQS and inserts raw articles into Aurora PostgreSQL with SHA256 deduplication.

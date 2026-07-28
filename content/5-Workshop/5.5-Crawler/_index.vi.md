@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.5 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Phát triển Crawler
 
 Phần này bao gồm việc xây dựng crawler Scrapy để thu thập bài báo từ các trang tin tức Việt Nam sử dụng SitemapSpider.

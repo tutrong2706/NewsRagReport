@@ -5,11 +5,8 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
 
-In this section, you need to summarize the contents of the workshop that you **plan** to conduct.
+
 
 # News RAG Pipeline on AWS
 ## A Serverless Retrieval-Augmented Generation Pipeline for Intelligent News Q&A

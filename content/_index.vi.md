@@ -1,31 +1,31 @@
 ---
 title: "Báo cáo thực tập"
-date: 2024-01-01
+date: 28-07-2026
 weight: 1
 chapter: false
 ---
 
 # Báo cáo thực tập
 ### Thông tin sinh viên:
-&emsp; **Họ và tên:** Nguyễn Văn A
+&emsp; **Họ và tên:** Nguyễn Lê Trọng
 
-&emsp; **Số điện thoại:** 0989888999
+&emsp; **Số điện thoại:** 0834727124
 
-&emsp; **Email:** Anguyenvan@gmail.com
+&emsp; **Email:** nguyenletrong91@gmail.com
 
-&emsp; **Trường:** Đại học Sư phạm Kỹ thuật TP.HCM
+&emsp; **Trường:** Trường Đại học Bách Khoa- ĐHQG- TP.HCM
 
-&emsp; **Ngành:** Công nghệ thông tin
+&emsp; **Ngành:** Khoa Học Máy Tính
 
-&emsp; **Lớp:** AWS082025
+&emsp; **Lớp:** MT23KHM3
 
 &emsp; **Công ty thực tập:** Công ty TNHH Amazon Web Services Viet Nam
 
 &emsp; **Vị trí thực tập:** Workforce Bootcamp - First Cloud AI Journey
 
-&emsp; **Thời gian thực tập:** Từ ngày 12/08/2025 đến ngày 12/11/2025
+&emsp; **Thời gian thực tập:** Từ ngày 15/06/2026 đến ngày 14/08/2026
 
-![Ảnh đại diện của bạn](/images/avatar.png)
+![Ảnh đại diện của bạn](/images/avatar.jpg)
 
 
 

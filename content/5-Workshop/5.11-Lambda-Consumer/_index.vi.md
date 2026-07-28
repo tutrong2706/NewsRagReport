@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.11 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Lambda Consumer: SQS Trigger → Aurora PostgreSQL
 
 Phần này bao gồm Lambda function consume messages từ SQS và insert bài viết thô vào Aurora PostgreSQL với SHA256 deduplication.

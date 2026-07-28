@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.12 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Lambda ETL + Bedrock Titan Embedding
 
 This section covers the Lambda function that transforms raw articles into Star Schema, generates embeddings using Amazon Bedrock Titan Embed v2, and stores vectors in Aurora pgvector.

@@ -1,51 +1,32 @@
 ---
-title: "Blog 2"
+title: "Blog 2: Tối ưu chi phí bằng SQS"
 date: 2024-01-01
 weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
-# So sánh Kafka và Amazon SQS: Khi nào nên dùng cái nào?
+# Tối ưu hóa chi phí hệ thống: Chuyển đổi từ Apache Kafka sang Amazon SQS
 
-Trong dự án NewsRAG, nhóm đã chuyển đổi từ **Apache Kafka** (v1) sang **Amazon SQS** (v2) cho phần message queue. Bài viết này chia sẻ phân tích chi tiết và kinh nghiệm thực tế khi đưa ra quyết định này.
+Một tiêu chí quan trọng khi thiết kế hệ thống trên Cloud là **Tối ưu hóa chi phí (Cost Optimization)**. Trong phiên bản đầu tiên (v1) phát triển ở môi trường cục bộ (local), dự án sử dụng **Apache Kafka** làm hệ thống hàng đợi (message broker) để luân chuyển dữ liệu từ Crawler sang Database. Tuy nhiên, khi đưa lên AWS, bài toán chi phí trở thành rào cản lớn.
 
-### Bối cảnh
+### Bài toán chi phí với Kafka
 
-- **v1**: Sử dụng Kafka chạy trên Docker container, cần quản lý broker, ZooKeeper
-- **v2**: Chuyển sang SQS Standard — fully managed, chi phí gần như $0
+Apache Kafka là một công cụ stream processing cực kỳ mạnh mẽ. Nhưng để chạy Kafka trên AWS, chúng ta có hai lựa chọn chính:
+1. **Amazon MSK (Managed Streaming for Apache Kafka)**: Chi phí rất đắt đỏ (có thể lên tới hàng chục hoặc hàng trăm USD mỗi tháng).
+2. **Tự host Kafka trên EC2**: Phải duy trì máy chủ EC2 chạy 24/7, tốn kém chi phí cố định (ít nhất ~$10-15/tháng) cộng với công sức quản trị hệ thống, cập nhật bảo mật và duy trì ZooKeeper.
 
-### So sánh chi tiết
+Trong khi đó, luồng dữ liệu của NewsRAG có đặc thù là **Batch processing**: Crawler chỉ chạy 1-2 lần mỗi ngày (vào ban đêm) và đẩy khoảng 500 - 1000 tin tức mới. Việc duy trì một cụm Kafka chạy 24/7 chỉ để phục vụ luồng dữ liệu đứt quãng này là vô cùng lãng phí.
 
-| Tiêu chí              | Kafka                              | Amazon SQS                       |
-|-----------------------|-------------------------------------|----------------------------------|
-| **Kiến trúc**         | Distributed log, multi-broker       | Managed message queue            |
-| **Message ordering**  | Có (theo partition)                 | Best-effort (Standard)           |
-| **Throughput**        | Rất cao (100K+ msg/s)              | Cao (3000 msg/s per queue)       |
-| **Message retention** | Cấu hình (mặc định 7 ngày)        | Tối đa 14 ngày                  |
-| **Consumer groups**   | Native support                      | Không có                         |
-| **Chi phí**           | Infrastructure + management         | Pay-per-request (~$0 cho <1M)    |
-| **Quản lý**           | Self-managed hoặc MSK              | Fully managed                    |
-| **Dead Letter Queue** | Phải tự implement                   | Native support                   |
+### Lựa chọn thay thế: Amazon SQS (Simple Queue Service)
 
-### Khi nào nên dùng Kafka?
+Chúng tôi đã quyết định thay thế toàn bộ kiến trúc hàng đợi sang **Amazon SQS**.
 
-- Real-time streaming với throughput cực cao
-- Cần event replay (đọc lại message)
-- Microservices phức tạp với nhiều consumer groups
-- Log aggregation quy mô lớn
+**Lý do SQS là lựa chọn hoàn hảo:**
+1. **Fully Serverless & Pay-as-you-go**: SQS không yêu cầu máy chủ. Bạn chỉ trả tiền dựa trên số lượng request. Với lượng tin tức hàng ngày của hệ thống, số lượng request hoàn toàn nằm gọn trong **Free Tier** (1 triệu request đầu tiên mỗi tháng là miễn phí). Chi phí hàng đợi được giảm xuống **còn $0**.
+2. **Tích hợp tự nhiên với AWS Lambda**: SQS có thể đóng vai trò là "Event Source" để tự động kích hoạt Lambda (Lambda Consumer). Khi Crawler đẩy bài báo vào SQS, SQS sẽ tự động gọi Lambda để lưu vào Database mà không cần chúng ta phải tự viết code vòng lặp lắng nghe (polling).
+3. **Dead-Letter Queue (DLQ)**: SQS cung cấp sẵn cơ chế DLQ. Nếu một bài báo bị lỗi định dạng và Lambda không thể lưu vào DB sau nhiều lần thử, message đó sẽ được đẩy sang DLQ để chúng tôi có thể phân tích sau, đảm bảo không bị mất mát dữ liệu.
 
-### Khi nào nên dùng SQS?
+### Đánh giá từ quyết định thiết kế
 
-- Batch processing (crawl 1 lần/ngày)
-- Pipeline đơn giản (1 producer, 1 consumer)
-- Muốn giảm chi phí vận hành
-- Cần DLQ sẵn có cho error handling
-
-### Kết luận từ NewsRAG
-
-Với use case crawl tin tức 1 lần/ngày (~500 bài), Kafka là **overkill**. SQS đáp ứng hoàn toàn yêu cầu với chi phí gần $0 và không cần quản lý.
-
-...Hình ảnh...
-
-...Link bài blog...
+Bằng việc loại bỏ Kafka và chuyển sang SQS, hệ thống không chỉ trở nên nhẹ nhàng, dễ bảo trì hơn mà còn tiết kiệm được một khoản ngân sách vận hành rất lớn. Đây là một minh chứng thực tế cho thấy: **Lựa chọn công nghệ không phải là chọn thứ "xịn nhất", mà là chọn thứ "phù hợp nhất" với quy mô và bài toán hiện tại.**

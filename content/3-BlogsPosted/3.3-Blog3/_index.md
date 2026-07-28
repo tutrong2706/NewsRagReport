@@ -1,62 +1,32 @@
 ---
-title: "Blog 3"
+title: "Blog 3: Building an Optimized RAG System"
 date: 2024-01-01
 weight: 3
 chapter: false
 pre: " <b> 3.3. </b> "
 ---
 
-# Deploying Infrastructure as Code with Terraform for AWS Projects
+# Realizing the RAG System with Amazon Bedrock and Aurora pgvector
 
-In the NewsRAG project, the entire AWS infrastructure is managed using **Terraform** — the most popular Infrastructure as Code (IaC) tool. This blog shares how to organize Terraform config for a real project with VPC, RDS, ECS, and EventBridge.
+**Retrieval-Augmented Generation (RAG)** is a method that combines the power of Large Language Models (LLMs) with a business's proprietary data. For RAG to work effectively, the heart of the system is the **Embedding Model** (to convert text into vectors) and the **Vector Database** (to store and search vectors). 
 
-### Why Infrastructure as Code?
+Here is how we built this heart entirely using the AWS ecosystem.
 
-- **Reproducible**: Recreate entire infrastructure with a single `terraform apply`
-- **Version control**: Track changes through Git
-- **Automation**: No manual clicking on AWS Console
-- **Team collaboration**: Review infrastructure changes via Pull Request
+### 1. Amazon Bedrock: The Power of Embedding
 
-### Terraform Structure for NewsRAG
+Instead of self-hosting models like HuggingFace SentenceTransformer on EC2 (which is very expensive for GPUs) or Lambda (which runs slowly and suffers from cold starts), we used **Amazon Bedrock** with the `amazon.titan-embed-text-v2:0` model.
 
-```
-main.tf (371 lines)
-├── Provider: aws (ap-southeast-2)
-├── Variables: db_password, qdrant_api_key, model_api_keys (sensitive)
-├── VPC & Networking
-│   ├── VPC (10.0.0.0/16)
-│   ├── 2 Public Subnets (2a, 2b)
-│   ├── Internet Gateway + Route Table
-│   └── Security Groups (ECS, RDS)
-├── RDS Aurora PostgreSQL
-│   ├── Cluster: aurora-postgresql 15.4
-│   └── Instance: db.t4g.medium
-├── ECS + ECR
-│   ├── ECR Repository
-│   ├── ECS Cluster
-│   ├── 3 Task Definitions (crawler, etl, vectorize)
-│   └── IAM Roles
-├── EventBridge Scheduler
-│   ├── Crawler: 01:00 UTC
-│   ├── ETL: 02:00 UTC
-│   └── Vectorize: 03:00 UTC
-└── Outputs: rds_endpoint, ecr_url, cluster_name
-```
+*   **Performance and Cost**: The Bedrock API responds incredibly fast, processing embeddings for text chunks in milliseconds. The cost is calculated per token, which is extremely cheap for small to medium projects.
+*   **Absolute Consistency**: A vital rule of RAG is that the data in the Database and the user's question (Query) must be converted into vectors by the **same model**. By calling the Bedrock API during both the ETL phase and the RAG API phase, we ensure the absolute consistency of our vector space.
 
-### Best Practices Applied
+### 2. Amazon Aurora Serverless v2 + pgvector
 
-1. **Sensitive variables**: Use `type = string, sensitive = true` for passwords and API keys
-2. **Locals block**: Manage shared environment variables via `locals.common_env`
-3. **Security Groups**: Principle of least privilege — RDS only accepts from ECS SG
-4. **CloudWatch Logs**: 7-day retention to save costs
-5. **Outputs**: Export RDS endpoint, ECR URL for CI/CD usage
+Instead of using third-party Vector Databases like Qdrant, Pinecone, or Milvus, we decided to use **Amazon Aurora PostgreSQL** combined with the **`pgvector`** extension.
 
-### Results
+*   **All-in-one**: PostgreSQL allows storing metadata (like author, publish date, URL) in a relational structure (Star Schema) combined with a `vector` column to store embeddings. This makes it easy for us to perform hybrid queries: "Find articles about the economy (vector search) but only fetch those published this week (SQL filter)".
+*   **HNSW Indexing**: To search quickly across hundreds of thousands of data chunks, we configured the **HNSW (Hierarchical Navigable Small World)** index on the vector column. Consequently, cosine similarity search queries return results almost instantaneously.
+*   **Serverless v2**: The Aurora Database automatically scales up and down (from 0.5 to 2 ACUs) based on system load, optimizing costs while ensuring high performance when users query the Q&A system.
 
-- Single `main.tf` managing 20+ AWS resources
-- Deploy/destroy infrastructure in < 10 minutes
-- Easy to recreate new environments
+### Conclusion
 
-...Images...
-
-...Blog link...
+The architectural combination of Amazon Bedrock and Aurora pgvector provides a closed-loop (End-to-End) RAG solution entirely on AWS. The news data never has to leave the system's VPC to make external calls, ensuring maximum security and reducing network latency. This is the technical highlight we are most proud of in the entire application development process.

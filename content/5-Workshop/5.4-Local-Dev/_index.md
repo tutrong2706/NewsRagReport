@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.4 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Local Development Setup
 
 This section covers setting up the complete local development environment using Docker Compose to simulate the AWS services locally.

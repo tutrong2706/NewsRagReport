@@ -1,51 +1,32 @@
 ---
-title: "Blog 2"
+title: "Blog 2: Cost Optimization with SQS"
 date: 2024-01-01
 weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
-# Comparing Kafka and Amazon SQS: When to Use Which?
+# System Cost Optimization: Migrating from Apache Kafka to Amazon SQS
 
-In the NewsRAG project, our team transitioned from **Apache Kafka** (v1) to **Amazon SQS** (v2) for the message queue component. This blog shares the detailed analysis and real-world experience behind this decision.
+A crucial criterion when designing systems on the Cloud is **Cost Optimization**. In the first version (v1) developed in our local environment, the project used **Apache Kafka** as the message broker to stream data from the Crawler to the Database. However, when migrating to AWS, cost became a significant barrier.
 
-### Context
+### The Cost Challenge with Kafka
 
-- **v1**: Used Kafka running on Docker containers, required managing broker, ZooKeeper
-- **v2**: Switched to SQS Standard — fully managed, cost near $0
+Apache Kafka is an incredibly powerful stream processing tool. But to run Kafka on AWS, we generally have two main choices:
+1. **Amazon MSK (Managed Streaming for Apache Kafka)**: Very expensive (can cost dozens or hundreds of USD per month).
+2. **Self-hosting Kafka on EC2**: Requires maintaining EC2 instances running 24/7, incurring fixed costs (at least ~$10-15/month) plus the overhead of system administration, security updates, and managing ZooKeeper.
 
-### Detailed Comparison
+Meanwhile, the data flow of NewsRAG is fundamentally **Batch processing**: The Crawler only runs 1-2 times a day (at night) and pushes around 500 - 1000 new articles. Maintaining a Kafka cluster running 24/7 just to serve this intermittent data flow is extremely wasteful.
 
-| Criteria              | Kafka                               | Amazon SQS                       |
-|-----------------------|-------------------------------------|----------------------------------|
-| **Architecture**      | Distributed log, multi-broker       | Managed message queue            |
-| **Message ordering**  | Yes (per partition)                 | Best-effort (Standard)           |
-| **Throughput**        | Very high (100K+ msg/s)            | High (3000 msg/s per queue)      |
-| **Message retention** | Configurable (default 7 days)      | Max 14 days                      |
-| **Consumer groups**   | Native support                      | Not available                    |
-| **Cost**              | Infrastructure + management         | Pay-per-request (~$0 for <1M)    |
-| **Management**        | Self-managed or MSK                | Fully managed                    |
-| **Dead Letter Queue** | Must self-implement                 | Native support                   |
+### The Alternative: Amazon SQS (Simple Queue Service)
 
-### When to Use Kafka?
+We decided to completely replace the queue architecture with **Amazon SQS**.
 
-- Real-time streaming with extremely high throughput
-- Need event replay (re-read messages)
-- Complex microservices with multiple consumer groups
-- Large-scale log aggregation
+**Why SQS is the perfect fit:**
+1. **Fully Serverless & Pay-as-you-go**: SQS requires no servers. You only pay based on the number of requests. With our system's daily news volume, the number of requests easily fits within the **Free Tier** (the first 1 million requests per month are free). The queue cost was reduced to **essentially $0**.
+2. **Native Integration with AWS Lambda**: SQS can act as an "Event Source" to automatically trigger a Lambda function (Lambda Consumer). When the Crawler pushes an article to SQS, SQS automatically invokes Lambda to save it into the Database, without us having to write polling loops.
+3. **Dead-Letter Queue (DLQ)**: SQS provides a built-in DLQ mechanism. If an article is malformed and Lambda fails to save it to the DB after several retries, that message is moved to the DLQ so we can analyze it later, ensuring no data loss.
 
-### When to Use SQS?
+### Design Evaluation
 
-- Batch processing (crawl once per day)
-- Simple pipeline (1 producer, 1 consumer)
-- Want to reduce operational costs
-- Need built-in DLQ for error handling
-
-### Conclusion from NewsRAG
-
-For the use case of crawling news once daily (~500 articles), Kafka is **overkill**. SQS fully meets the requirements at near-zero cost with no management needed.
-
-...Images...
-
-...Blog link...
+By removing Kafka and switching to SQS, the system became not only lighter and easier to maintain but also saved a massive amount in operational budget. This is a practical proof that: **Choosing technology is not about picking the "fanciest" tool, but choosing the most "appropriate" one for the current scale and problem.**

@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.4 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Thiết lập phát triển cục bộ
 
 Phần này bao gồm việc thiết lập môi trường phát triển cục bộ hoàn chỉnh sử dụng Docker Compose để mô phỏng các dịch vụ AWS cục bộ.

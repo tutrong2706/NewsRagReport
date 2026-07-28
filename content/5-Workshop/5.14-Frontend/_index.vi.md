@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.14 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Tích hợp Frontend: Next.js Dashboard + FastAPI Backend
 
 Phần này bao gồm giao diện web cho News RAG system, bao gồm Dashboard, Search, AI Chat, Article Explorer, và Pipeline Monitor.

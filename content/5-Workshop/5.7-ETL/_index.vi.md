@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.7 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # ETL & Star Schema Transformation
 
 Phần này bao gồm quy trình ETL transform bài viết thô từ `article_metadata` thành Star Schema tối ưu cho analytics và RAG retrieval.

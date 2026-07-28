@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.16 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Thông tin dưới đây chỉ mang tính tham khảo. Vui lòng **không sao chép y nguyên** cho báo cáo của bạn, bao gồm cả cảnh báo này.
-{{% /notice %}}
-
 # Tối ưu chi phí
 
 Phần này bao gồm các chiến lược để giảm thiểu chi phí AWS cho News RAG Pipeline trong khi vẫn duy trì hiệu năng.

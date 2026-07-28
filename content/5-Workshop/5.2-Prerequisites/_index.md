@@ -6,10 +6,6 @@ chapter: false
 pre: " <b> 5.2 </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
-
 # Prerequisites
 
 Before starting this workshop, ensure you have the following tools installed and configured.
