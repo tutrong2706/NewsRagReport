@@ -26,7 +26,7 @@ Giải pháp cung cấp nền tảng học tập về kiến trúc serverless AW
 ### 3. Kiến trúc giải pháp
 Nền tảng sử dụng kiến trúc serverless AWS với hai giai đoạn pipeline: (1) Data Pipeline — EventBridge Scheduler kích hoạt ECS Fargate crawler hàng ngày lúc 01:00 UTC, đẩy bài viết vào SQS; Lambda Consumer xử lý messages và insert bài thô vào Aurora PostgreSQL với SHA256 dedup. (2) ETL + RAG Pipeline — EventBridge thứ hai lúc 02:00 UTC chạy Lambda ETL làm sạch HTML, chunk text 500 token, tạo embedding 1024 chiều qua Bedrock Titan Embed v2, lưu vector vào Aurora pgvector với HNSW index. Lambda RAG API, phía sau API Gateway, embed câu hỏi người dùng với Bedrock, tìm kiếm tương đồng trên pgvector, sau đó sinh câu trả lời dùng Groq/Gemini LLM.
 
-![News RAG Pipeline Architecture](images/image.png)
+![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/architecture.png)
 
 ### Các dịch vụ AWS sử dụng
 - **Amazon ECS Fargate**: Chạy Scrapy SitemapSpider crawler (0.25 vCPU, 0.5 GB)

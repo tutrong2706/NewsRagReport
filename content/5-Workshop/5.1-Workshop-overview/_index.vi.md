@@ -13,7 +13,7 @@ Workshop này hướng dẫn bạn xây dựng một **News RAG (Retrieval-Augme
 
 ## Kiến trúc Workshop
 
-![Kiến trúc Workshop](images/image.png)
+![Kiến trúc Workshop](/images/5-Workshop/5.1-Workshop-overview/architecture.png)
 ```
 EventBridge Scheduler (01:00, 02:00 UTC)
        │
