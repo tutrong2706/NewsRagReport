@@ -16,11 +16,11 @@ pre: " <b> 1.2. </b> "
 ### Tasks for this week:
 | Day | Tasks                                                                                                                                                                            | Start Date   | End Date        | Resources                                 |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| Mon | - Study Scrapy framework: <br>&emsp; + Scrapy project structure <br>&emsp; + Spider, Pipeline, Settings <br>&emsp; + Middleware and Item Pipeline                                 | 23/06/2026   | 23/06/2026      | <https://docs.scrapy.org/>                |
-| Tue | - Compare CrawlSpider vs SitemapSpider: <br>&emsp; + CrawlSpider: relies on DEPTH_LIMIT, misses old articles <br>&emsp; + SitemapSpider: reads all URLs from sitemap, navigation-independent | 24/06/2026   | 24/06/2026      | <https://docs.scrapy.org/>                |
-| Wed | - Analyze sitemap XML structure of 3 news outlets: <br>&emsp; + VnExpress: `sitemap_news.xml` <br>&emsp; + Thanh Niên: `sitemap.xml` <br>&emsp; + VietnamNet: `sitemap_news.xml`   | 25/06/2026   | 25/06/2026      |                                           |
-| Thu | - Learn Docker basics: <br>&emsp; + Dockerfile: FROM, WORKDIR, COPY, RUN, CMD <br>&emsp; + docker-compose.yml: services, volumes, environment <br>&emsp; + Multi-stage build      | 26/06/2026   | 26/06/2026      | <https://docs.docker.com/>                |
-| Fri | - Study `newspaper3k` library for article content extraction <br> - Research Kafka Producer/Consumer pattern <br> - Learn `confluent_kafka` Python client                          | 27/06/2026   | 27/06/2026      | <https://newspaper.readthedocs.io/>       |
+| Mon | - Study Scrapy framework: <br>&emsp; + Scrapy project structure <br>&emsp; + Spider, Pipeline, Settings <br>&emsp; + Middleware and Item Pipeline                                 | 09/06/2026   | 09/06/2026      | <https://docs.scrapy.org/>                |
+| Tue | - Compare CrawlSpider vs SitemapSpider: <br>&emsp; + CrawlSpider: relies on DEPTH_LIMIT, misses old articles <br>&emsp; + SitemapSpider: reads all URLs from sitemap, navigation-independent | 10/06/2026   | 10/06/2026      | <https://docs.scrapy.org/>                |
+| Wed | - Analyze sitemap XML structure of 3 news outlets: <br>&emsp; + VnExpress: `sitemap_news.xml` <br>&emsp; + Thanh Niên: `sitemap.xml` <br>&emsp; + VietnamNet: `sitemap_news.xml`   | 11/06/2026   | 11/06/2026      |                                           |
+| Thu | - Learn Docker basics: <br>&emsp; + Dockerfile: FROM, WORKDIR, COPY, RUN, CMD <br>&emsp; + docker-compose.yml: services, volumes, environment <br>&emsp; + Multi-stage build      | 12/06/2026   | 12/06/2026      | <https://docs.docker.com/>                |
+| Fri | - Study `newspaper3k` library for article content extraction <br> - Research Kafka Producer/Consumer pattern <br> - Learn `confluent_kafka` Python client                          | 13/06/2026   | 13/06/2026      | <https://newspaper.readthedocs.io/>       |
 
 
 ### Week 2 Results:

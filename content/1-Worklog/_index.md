@@ -6,7 +6,7 @@ chapter: false
 pre: " <b> 1. </b> "
 ---
 
-Throughout **8 weeks** of internship in the **First Cloud AI Journey** program (from June 15, 2026 to August 14, 2026), I participated in building the **NewsRAG** project — an intelligent news aggregation and analysis system based on RAG (Retrieval-Augmented Generation) architecture, fully deployed on AWS.
+Throughout **8 weeks** of internship in the **First Cloud AI Journey** program (from June 1, 2026 to August 14, 2026), I participated in building the **NewsRAG** project — an intelligent news aggregation and analysis system based on RAG (Retrieval-Augmented Generation) architecture, fully deployed on AWS.
 
 My primary role in the team was to develop the **Crawl + Queue** module, including: writing Scrapy Spiders to crawl news from 3 Vietnamese news outlets, packaging Docker containers for the Fargate Crawler, configuring SQS + Dead Letter Queue, and deploying to ECR/ECS.
 

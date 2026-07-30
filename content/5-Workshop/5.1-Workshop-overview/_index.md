@@ -12,6 +12,7 @@ This workshop guides you through building a complete **News RAG (Retrieval-Augme
 
 ## Workshop Architecture
 
+![Workshop Architecture](/images/5-Workshop/5.1-Workshop-overview/image.png)
 ```
 EventBridge Scheduler (01:00, 02:00 UTC)
        │

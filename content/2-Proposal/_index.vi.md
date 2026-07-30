@@ -50,9 +50,9 @@ Nền tảng sử dụng kiến trúc serverless AWS với hai giai đoạn pipe
 #### Các giai đoạn triển khai
 Dự án theo 4 giai đoạn:
 - **Giai đoạn 1 - Hạ tầng (Tuần 1-2)**: Terraform cho VPC, Aurora pgvector, ECS Cluster, ECR, Lambda, EventBridge, IAM, CloudWatch. Xây dựng Docker multi-stage cho Fargate.
-- **Giai đoạn 2 - Phát triển cục bộ (Tuần 3-6)**: Docker Compose với PostgreSQL, Qdrant, Kafka. Phát triển Scrapy SitemapSpider, Kafka Consumer, ETL pipeline với Star Schema, SentenceTransformer vectorization.
-- **Giai đoạn 3 - Production AWS (Tuần 7-10)**: Deploy Fargate crawler với EventBridge scheduler, Lambda Consumer với SQS trigger, Lambda ETL với Bedrock Titan Embed v2, Lambda RAG API với API Gateway, Next.js frontend.
-- **Giai đoạn 4 - Kiểm thử (Tuần 11-12)**: RAGAS evaluation (Faithfulness, Relevancy, Precision, Recall), CloudWatch dashboards và alerts, Locust load testing, tối ưu chi phí.
+- **Giai đoạn 2 - Phát triển cục bộ (Tuần 3-4)**: Docker Compose với PostgreSQL, Qdrant, Kafka. Phát triển Scrapy SitemapSpider, Kafka Consumer, ETL pipeline với Star Schema, SentenceTransformer vectorization.
+- **Giai đoạn 3 - Production AWS (Tuần 5-6)**: Deploy Fargate crawler với EventBridge scheduler, Lambda Consumer với SQS trigger, Lambda ETL với Bedrock Titan Embed v2, Lambda RAG API với API Gateway, Next.js frontend.
+- **Giai đoạn 4 - Kiểm thử (Tuần 7-8)**: RAGAS evaluation (Faithfulness, Relevancy, Precision, Recall), CloudWatch dashboards và alerts, Locust load testing, tối ưu chi phí.
 
 #### Yêu cầu kỹ thuật
 - **Data Pipeline**: Scrapy với SitemapSpider, Kafka (local) / SQS (AWS), PostgreSQL với pgvector.

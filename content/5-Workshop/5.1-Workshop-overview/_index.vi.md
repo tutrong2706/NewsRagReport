@@ -13,6 +13,7 @@ Workshop này hướng dẫn bạn xây dựng một **News RAG (Retrieval-Augme
 
 ## Kiến trúc Workshop
 
+![Kiến trúc Workshop](/images/5-Workshop/5.1-Workshop-overview/image.png)
 ```
 EventBridge Scheduler (01:00, 02:00 UTC)
        │
@@ -41,18 +42,18 @@ Sau khi hoàn thành workshop này, bạn sẽ có thể:
 
 ## Các Module Workshop
 
-| Module | Tiêu đề | Mô tả | Thời gian |
-|--------|---------|-------------|----------|
-| 5.1 | **Tổng quan Workshop** | Kiến trúc, mục tiêu, điều kiện tiên quyết, ước lượng chi phí | 30 phút |
-| 5.2 | **Điều kiện tiên quyết** | AWS CLI, Terraform, Docker, Python setup | 30 phút |
-| 5.3 | **Hạ tầng (Terraform)** | VPC, Aurora pgvector, ECS Cluster, ECR, IAM, EventBridge | 60 phút |
-| 5.4 | **Crawler (ECS Fargate)** | Dockerfile, Scrapy SitemapSpider, ECR push, Task Definition | 45 phút |
-| 5.5 | **Hàng đợi & Consumer (SQS + Lambda)** | SQS queue, Lambda Consumer, SHA256 dedup, Aurora insert | 45 phút |
-| 5.6 | **ETL + Embedding (Lambda + Bedrock)** | HTML clean, chunking, Titan Embed v2, pgvector HNSW insert | 60 phút |
-| 5.7 | **RAG API (Lambda + API Gateway)** | Query embed, pgvector search, LLM generation, response | 45 phút |
-| 5.8 | **Tích hợp Frontend** | Next.js Dashboard, Search, Chat, Explorer, Pipeline Monitor | 60 phút |
-| 5.9 | **Kiểm thử & Giám sát** | CloudWatch Logs, query testing, RAG evaluation | 30 phút |
-| 5.10 | **Dọn dẹp** | Terraform destroy, dọn dẹp tài nguyên | 15 phút |
+| Module | Tiêu đề                                | Mô tả                                                        | Thời gian |
+| --------| ----------------------------------------| --------------------------------------------------------------| -----------|
+| 5.1    | **Tổng quan Workshop**                 | Kiến trúc, mục tiêu, điều kiện tiên quyết, ước lượng chi phí | 30 phút   |
+| 5.2    | **Điều kiện tiên quyết**               | AWS CLI, Terraform, Docker, Python setup                     | 30 phút   |
+| 5.3    | **Hạ tầng (Terraform)**                | VPC, Aurora pgvector, ECS Cluster, ECR, IAM, EventBridge     | 60 phút   |
+| 5.4    | **Crawler (ECS Fargate)**              | Dockerfile, Scrapy SitemapSpider, ECR push, Task Definition  | 45 phút   |
+| 5.5    | **Hàng đợi & Consumer (SQS + Lambda)** | SQS queue, Lambda Consumer, SHA256 dedup, Aurora insert      | 45 phút   |
+| 5.6    | **ETL + Embedding (Lambda + Bedrock)** | HTML clean, chunking, Titan Embed v2, pgvector HNSW insert   | 60 phút   |
+| 5.7    | **RAG API (Lambda + API Gateway)**     | Query embed, pgvector search, LLM generation, response       | 45 phút   |
+| 5.8    | **Tích hợp Frontend**                  | Next.js Dashboard, Search, Chat, Explorer, Pipeline Monitor  | 60 phút   |
+| 5.9    | **Kiểm thử & Giám sát**                | CloudWatch Logs, query testing, RAG evaluation               | 30 phút   |
+| 5.10   | **Dọn dẹp**                            | Terraform destroy, dọn dẹp tài nguyên                        | 15 phút   |
 
 ## Điều kiện tiên quyết
 

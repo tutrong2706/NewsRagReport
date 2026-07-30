@@ -16,11 +16,11 @@ pre: " <b> 1.3. </b> "
 ### Các công việc cần triển khai trong tuần này:
 | Thứ | Công việc                                                                                                                                                                              | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Viết class `NewsRAGSpider` kế thừa `scrapy.Spider` <br> - Implement `parse()` method: lọc URL nội bộ, phân loại link bài viết (.html, .htm) và link danh mục <br> - Cấu hình `custom_settings`: CONCURRENT_REQUESTS, DOWNLOAD_DELAY, DEPTH_LIMIT | 30/06/2026   | 30/06/2026      | spider.py                                 |
-| 3   | - Implement `parse_article()`: sử dụng `newspaper3k` để parse HTML <br> - Lọc bài viết có nội dung < 100 ký tự <br> - Extract author từ `article.authors`                               | 01/07/2026   | 01/07/2026      |                                           |
-| 4   | - Xử lý author extraction nâng cao: <br>&emsp; + Fallback qua nhiều CSS selectors (`.author-name`, `.tac-gia`, `a[rel="author"]`,...) <br>&emsp; + Validate author: loại bỏ fake authors (URLs, ngày tháng, tên báo) <br>&emsp; + Hàm `is_valid_author()`: kiểm tra độ dài, ký tự đặc biệt, bad words | 02/07/2026   | 02/07/2026      |                                           |
-| 5   | - Xử lý publish_date parsing: <br>&emsp; + Parse ISO format: `2026-07-01T14:30` <br>&emsp; + Parse VN format: `01/07/2026 14:30` <br>&emsp; + Fallback qua nhiều CSS selectors + `article.publish_date` <br> - Viết `KafkaPipeline`: serialize item thành JSON → push vào Kafka topic `news_raw` | 03/07/2026   | 03/07/2026      | pipelines.py                              |
-| 6   | - Test crawl local: `scrapy crawl news_rag_spider` <br> - Kiểm tra output: đúng format JSON, author hợp lệ, date đúng <br> - Debug và sửa lỗi CSS selectors cho từng báo                | 04/07/2026   | 04/07/2026      |                                           |
+| 2   | - Viết class `NewsRAGSpider` kế thừa `scrapy.Spider` <br> - Implement `parse()` method: lọc URL nội bộ, phân loại link bài viết (.html, .htm) và link danh mục <br> - Cấu hình `custom_settings`: CONCURRENT_REQUESTS, DOWNLOAD_DELAY, DEPTH_LIMIT | 16/06/2026   | 16/06/2026      | spider.py                                 |
+| 3   | - Implement `parse_article()`: sử dụng `newspaper3k` để parse HTML <br> - Lọc bài viết có nội dung < 100 ký tự <br> - Extract author từ `article.authors`                               | 17/06/2026   | 17/06/2026      |                                           |
+| 4   | - Xử lý author extraction nâng cao: <br>&emsp; + Fallback qua nhiều CSS selectors (`.author-name`, `.tac-gia`, `a[rel="author"]`,...) <br>&emsp; + Validate author: loại bỏ fake authors (URLs, ngày tháng, tên báo) <br>&emsp; + Hàm `is_valid_author()`: kiểm tra độ dài, ký tự đặc biệt, bad words | 18/06/2026   | 18/06/2026      |                                           |
+| 5   | - Xử lý publish_date parsing: <br>&emsp; + Parse ISO format: `2026-07-01T14:30` <br>&emsp; + Parse VN format: `17/06/2026 14:30` <br>&emsp; + Fallback qua nhiều CSS selectors + `article.publish_date` <br> - Viết `KafkaPipeline`: serialize item thành JSON → push vào Kafka topic `news_raw` | 19/06/2026   | 19/06/2026      | pipelines.py                              |
+| 6   | - Test crawl local: `scrapy crawl news_rag_spider` <br> - Kiểm tra output: đúng format JSON, author hợp lệ, date đúng <br> - Debug và sửa lỗi CSS selectors cho từng báo                | 20/06/2026   | 20/06/2026      |                                           |
 
 
 ### Kết quả đạt được tuần 3:
@@ -39,7 +39,7 @@ pre: " <b> 1.3. </b> "
 
 * Xử lý date parsing đa dạng:
   * ISO format: `2026-07-01T14:30:00`
-  * VN format: `01/07/2026 14:30` hoặc `01-07-2026`
+  * VN format: `17/06/2026 14:30` hoặc `01-07-2026`
   * Fallback qua 10 CSS selectors + `article.publish_date`
   * Output chuẩn: `YYYY-MM-DD HH:MM:SS`
 

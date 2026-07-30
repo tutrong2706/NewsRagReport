@@ -53,9 +53,9 @@ The platform employs a serverless AWS architecture based on two pipeline stages:
 #### Implementation Phases
 This project follows 4 phases:
 - **Phase 1 - Infrastructure (Weeks 1-2)**: Terraform configuration for VPC, Aurora pgvector, ECS Cluster, ECR, Lambda, EventBridge, IAM, CloudWatch. Build multi-stage Docker image for Fargate.
-- **Phase 2 - Local Development (Weeks 3-6)**: Docker Compose environment with PostgreSQL, Qdrant, Kafka. Develop Scrapy SitemapSpider, Kafka Consumer, ETL pipeline with Star Schema, SentenceTransformer vectorization.
-- **Phase 3 - AWS Production (Weeks 7-10)**: Deploy Fargate crawler with EventBridge scheduler, Lambda Consumer with SQS trigger, Lambda ETL with Bedrock Titan Embed v2, Lambda RAG API with API Gateway, Next.js frontend.
-- **Phase 4 - Testing & Polish (Weeks 11-12)**: RAGAS evaluation (Faithfulness, Relevancy, Precision, Recall), CloudWatch dashboards and alerts, Locust load testing, cost optimization.
+- **Phase 2 - Local Development (Weeks 3-4)**: Docker Compose environment with PostgreSQL, Qdrant, Kafka. Develop Scrapy SitemapSpider, Kafka Consumer, ETL pipeline with Star Schema, SentenceTransformer vectorization.
+- **Phase 3 - AWS Production (Weeks 5-6)**: Deploy Fargate crawler with EventBridge scheduler, Lambda Consumer with SQS trigger, Lambda ETL with Bedrock Titan Embed v2, Lambda RAG API with API Gateway, Next.js frontend.
+- **Phase 4 - Testing & Polish (Weeks 7-8)**: RAGAS evaluation (Faithfulness, Relevancy, Precision, Recall), CloudWatch dashboards and alerts, Locust load testing, cost optimization.
 
 #### Technical Requirements
 - **Data Pipeline**: Scrapy with SitemapSpider for news crawling, Kafka (local) / SQS (AWS) for message queue, PostgreSQL with pgvector for storage and vector search.
