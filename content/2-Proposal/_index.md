@@ -27,7 +27,7 @@ The solution provides a foundational platform for learning modern AWS serverless
 ### 3. Solution Architecture
 The platform employs a serverless AWS architecture based on two pipeline stages: (1) Data Pipeline — EventBridge Scheduler triggers ECS Fargate crawler daily at 01:00 UTC, pushing articles to SQS; Lambda Consumer processes messages and inserts raw articles into Aurora PostgreSQL with SHA256 deduplication. (2) ETL + RAG Pipeline — second EventBridge trigger at 02:00 UTC runs Lambda ETL that cleans HTML, chunks text at 500 tokens, generates 1024-dimensional embeddings via Bedrock Titan Embed v2, and stores vectors in Aurora pgvector with HNSW index. The RAG API Lambda, fronted by API Gateway, embeds user queries with Bedrock, performs similarity search on pgvector, then generates answers using Groq/Gemini LLMs. The architecture is detailed below:
 
-![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/architecture.png)
+![News RAG Pipeline Architecture](images/image.png)
 
 ### AWS Services Used
 - **Amazon ECS Fargate**: Runs Scrapy SitemapSpider crawler (0.25 vCPU, 0.5 GB)
