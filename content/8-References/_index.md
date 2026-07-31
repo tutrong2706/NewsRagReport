@@ -6,7 +6,6 @@ chapter: false
 pre: " <b> 8. </b> "
 ---
 
-# References
 
 This section collects the reference materials for the internship project, including the demo video, project source code, and supporting documents.
 

@@ -6,7 +6,6 @@ chapter: false
 pre: " <b> 8. </b> "
 ---
 
-# Tài liệu tham khảo
 
 Mục này tổng hợp các tài liệu tham khảo cho dự án thực tập, bao gồm video demo, mã nguồn dự án và các tài liệu hỗ trợ khác.
 
