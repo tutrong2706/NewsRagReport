@@ -2,9 +2,9 @@
 {{ $video := .Page.Resources.GetMatch $src }}
 <video width="100%" controls>
   {{ if $video }}
-  <source src="{{ $video.RelPermalink }}" type="video/mp4">
+  <source src="{{ $video.Permalink }}" type="video/mp4">
   {{ else }}
-  <source src="{{ $src }}" type="video/mp4">
+  <source src="{{ $src | absURL }}" type="video/mp4">
   {{ end }}
   {{ .Inner }}
 </video>
