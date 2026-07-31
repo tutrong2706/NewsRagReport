@@ -1,0 +1,630 @@
+<!doctype html><html lang=vi class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.134.3"><meta name=description content><meta name=author content="thienlh@thienlu.com"><link rel=icon href=https://tutrong2706.github.io/NewsRagReport/images/favicon.png type=image/png><title>Lambda ETL + Bedrock Embedding :: Báo cáo thực tập</title>
+<link href=https://tutrong2706.github.io/NewsRagReport/css/nucleus.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/fontawesome-all.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hybrid.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/featherlight.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/perfect-scrollbar.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/auto-complete.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/atom-one-dark-reasonable.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hugo-theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme-workshop.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery-3.3.1.min.js?1785509515></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/><nav id=sidebar class=showVisitedLinks><div id=header-wrapper><div id=header><a id=logo href=https://tutrong2706.github.io/NewsRagReport/><svg id="Layer_1" data-name="Layer 1" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff}.cls-2{fill:#fff;fill-rule:evenodd}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09 10.85a4.7 4.7.0 00.19 1.48 7.73 7.73.0 00.54 1.19.77.77.0 01.12.38.64.64.0 01-.32.49l-1 .7a.83.83.0 01-.44.15.69.69.0 01-.49-.23 3.8 3.8.0 01-.6-.77q-.25-.42-.51-1a6.14 6.14.0 01-4.89 2.3 4.54 4.54.0 01-3.32-1.19 4.27 4.27.0 01-1.22-3.2 4.28 4.28.0 011.46-3.4A6.06 6.06.0 017.69 6.46a12.47 12.47.0 011.76.13q.92.13 1.91.36V5.73a3.65 3.65.0 00-.79-2.66A3.81 3.81.0 007.86 2.3a7.71 7.71.0 00-1.79.22 12.78 12.78.0 00-1.79.57 4.55 4.55.0 01-.58.22h-.26q-.35.0-.35-.52V2a1.09 1.09.0 01.12-.58 1.2 1.2.0 01.47-.35A10.88 10.88.0 015.77.32 10.19 10.19.0 018.36.0a6 6 0 014.35 1.35 5.49 5.49.0 011.38 4.09zM7.34 13.38a5.36 5.36.0 001.72-.31A3.63 3.63.0 0010.63 12 2.62 2.62.0 0011.19 11a5.63 5.63.0 00.16-1.44v-.7a14.35 14.35.0 00-1.53-.28 12.37 12.37.0 00-1.56-.1 3.84 3.84.0 00-2.47.67A2.34 2.34.0 005 11a2.35 2.35.0 00.61 1.76A2.4 2.4.0 007.34 13.38zm13.35 1.8a1 1 0 01-.64-.16 1.3 1.3.0 01-.35-.65L15.81 1.51a3 3 0 01-.15-.67.36.36.0 01.41-.41H17.7a1 1 0 01.65.16 1.4 1.4.0 01.33.65l2.79 11 2.59-11A1.17 1.17.0 0124.39.6a1.1 1.1.0 01.67-.16H26.4a1.1 1.1.0 01.67.16 1.17 1.17.0 01.32.65L30 12.39 32.88 1.25A1.39 1.39.0 0133.22.6a1 1 0 01.65-.16h1.54a.36.36.0 01.41.41 1.36 1.36.0 010 .26 3.64 3.64.0 01-.12.41l-4 12.86a1.3 1.3.0 01-.35.65 1 1 0 01-.64.16H29.25a1 1 0 01-.67-.17 1.26 1.26.0 01-.32-.67L25.67 3.64l-2.56 10.7a1.26 1.26.0 01-.32.67 1 1 0 01-.67.17zm21.36.44a11.28 11.28.0 01-2.56-.29 7.44 7.44.0 01-1.92-.67 1 1 0 01-.61-.93v-.84q0-.52.38-.52a.9.9.0 01.31.06l.42.17a8.77 8.77.0 001.83.58 9.78 9.78.0 002 .2 4.48 4.48.0 002.43-.55 1.76 1.76.0 00.86-1.57 1.61 1.61.0 00-.45-1.16A4.29 4.29.0 0043 9.22l-2.41-.76A5.15 5.15.0 0138 6.78a3.94 3.94.0 01-.83-2.41 3.7 3.7.0 01.45-1.85 4.47 4.47.0 011.19-1.37 5.27 5.27.0 011.7-.86A7.4 7.4.0 0142.6.0a8.87 8.87.0 011.12.07q.57.07 1.08.19t.95.26a4.27 4.27.0 01.7.29 1.59 1.59.0 01.49.41.94.94.0 01.15.55v.79q0 .52-.38.52a1.76 1.76.0 01-.64-.2 7.74 7.74.0 00-3.2-.64 4.37 4.37.0 00-2.21.47 1.6 1.6.0 00-.79 1.48 1.58 1.58.0 00.49 1.18 4.94 4.94.0 001.83.92L44.55 7a5.08 5.08.0 012.57 1.6A3.76 3.76.0 0147.9 11a4.21 4.21.0 01-.44 1.93 4.4 4.4.0 01-1.21 1.47 5.43 5.43.0 01-1.85.93A8.25 8.25.0 0142.05 15.62z"/><path class="cls-2" d="M45.19 23.81C39.72 27.85 31.78 30 25 30A36.64 36.64.0 01.22 20.57c-.51-.46-.06-1.09.56-.74A49.78 49.78.0 0025.53 26.4 49.23 49.23.0 0044.4 22.53C45.32 22.14 46.1 23.14 45.19 23.81z"/><path class="cls-2" d="M47.47 21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74 3.13-2.2 8.27-1.57 8.86-.83s-.16 5.89-3.09 8.35c-.45.38-.88.18-.68-.32C46.69 25.8 48.17 22.11 47.47 21.21z"/></svg></a></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/lunr.min.js?1785509515></script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/auto-complete.js?1785509515></script><script type=text/javascript>var baseurl="https://tutrong2706.github.io/NewsRagReport//vi"</script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/search.js?1785509515></script></div><div class=highlightable><ul class=topics><li data-nav-id=/vi/1-worklog/ title="Nhật ký công việc" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/><b>1. </b>Nhật ký công việc
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/1-worklog/1.1-week1/ title="Worklog Tuần 1" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.1-week1/><b>1.1. </b>Worklog Tuần 1
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.2-week2/ title="Worklog Tuần 2" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.2-week2/><b>1.2. </b>Worklog Tuần 2
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.3-week3/ title="Worklog Tuần 3" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.3-week3/><b>1.3. </b>Worklog Tuần 3
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.4-week4/ title="Worklog Tuần 4" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.4-week4/><b>1.4. </b>Worklog Tuần 4
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.5-week5/ title="Worklog Tuần 5" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.5-week5/><b>1.5. </b>Worklog Tuần 5
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.6-week6/ title="Worklog Tuần 6" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.6-week6/><b>1.6. </b>Worklog Tuần 6
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.7-week7/ title="Worklog Tuần 7" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.7-week7/><b>1.7. </b>Worklog Tuần 7
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.8-week8/ title="Worklog Tuần 8" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.8-week8/><b>1.8. </b>Worklog Tuần 8
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/2-proposal/ title="Bản đề xuất" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/2-proposal/><b>2. </b>Bản đề xuất
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/ title="Các bài Blogs & Kinh nghiệm" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/><b>3. </b>Các bài Blogs & Kinh nghiệm
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/3-blogsposted/3.1-blog1/ title="Blog 1: Vượt giới hạn Timeout với AWS Fargate" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.1-blog1/><b>3.1. </b>Blog 1: Vượt giới hạn Timeout với AWS Fargate
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.2-blog2/ title="Blog 2: Tối ưu chi phí bằng SQS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.2-blog2/><b>3.2. </b>Blog 2: Tối ưu chi phí bằng SQS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.3-blog3/ title="Blog 3: Xây dựng RAG tối ưu" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.3-blog3/><b>3.3. </b>Blog 3: Xây dựng RAG tối ưu
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/4-eventparticipated/ title="Sự kiện đã tham gia" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/><b>4. </b>Sự kiện đã tham gia
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/4-eventparticipated/4.1-event1/ title="Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.1-event1/>1. Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.2-event2/ title="Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.2-event2/>2. Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.3-event3/ title="Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.3-event3/>3. Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/5-workshop/ title="News RAG Pipeline on AWS — Workshop" class="dd-item
+parent"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/><b>5. </b>News RAG Pipeline on AWS — Workshop
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/5-workshop/5.1-workshop-overview/ title="Tổng quan Workshop" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.1-workshop-overview/><b>5.1 </b>Tổng quan Workshop
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.2-prerequisites/ title="Điều kiện tiên quyết" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.2-prerequisites/><b>5.2 </b>Điều kiện tiên quyết
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.3-infrastructure/ title="Hạ tầng dưới dạng Code (Terraform)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.3-infrastructure/><b>5.3 </b>Hạ tầng dưới dạng Code (Terraform)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.4-local-dev/ title="Thiết lập phát triển cục bộ" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/><b>5.4 </b>Thiết lập phát triển cục bộ
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.5-crawler/ title="Phát triển Crawler" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/><b>5.5 </b>Phát triển Crawler
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.6-ingestion/ title="Nhập dữ liệu (Kafka Consumer → PostgreSQL)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.6-ingestion/><b>5.6 </b>Nhập dữ liệu (Kafka Consumer → PostgreSQL)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.7-etl/ title="ETL & Star Schema" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.7-etl/><b>5.7 </b>ETL & Star Schema
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.8-vectorize/ title="Vector hóa (Local Dev - SentenceTransformer → Qdrant)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.8-vectorize/><b>5.8 </b>Vector hóa (Local Dev - SentenceTransformer → Qdrant)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.9-aws-deploy/ title="Chuẩn bị triển khai AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.9-aws-deploy/><b>5.9 </b>Chuẩn bị triển khai AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.10-fargate-crawler/><b>5.10 </b>Fargate Crawler (ECS + EventBridge)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/><b>5.11 </b>Lambda Consumer (SQS → Aurora)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" class="dd-item
+active"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/><b>5.12 </b>Lambda ETL + Bedrock Embedding
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.13-rag-api/><b>5.13 </b>RAG API (Lambda + API Gateway)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.14-frontend/ title="Tích hợp Frontend (Next.js + FastAPI)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.14-frontend/><b>5.14 </b>Tích hợp Frontend (Next.js + FastAPI)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.15-testing/ title="Kiểm thử & Giám sát" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.15-testing/><b>5.15 </b>Kiểm thử & Giám sát
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.16-cost/ title="Tối ưu chi phí" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.16-cost/><b>5.16 </b>Tối ưu chi phí
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.17-cleanup/ title="Dọn dẹp tài nguyên" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.17-cleanup/><b>5.17 </b>Dọn dẹp tài nguyên
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/6-self-evaluation/ title="Tự đánh giá" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/6-self-evaluation/><b>6. </b>Tự đánh giá
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/7-feedback/ title="Chia sẻ, đóng góp ý kiến" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/7-feedback/><b>7. </b>Chia sẻ, đóng góp ý kiến
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/8-references/ title="Tài liệu tham khảo" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/8-references/><b>8. </b>Tài liệu tham khảo
+<i class="fas fa-check read-icon"></i></a></li></ul><section id=shortcuts><h3>More</h3><ul><li><a class=padding href=http://awsstudygroup.com><i class='fab fa-aws'></i> AWS Study Group - Blog</a></li><li><a class=padding href=https://www.facebook.com/groups/awsstudygroupfcj><i class='fab fa-facebook'></i> AWS Study Group - Nhóm FB</a></li></ul></section><section id=prefooter><hr><ul><li><a class=padding><i class="fas fa-language fa-fw"></i><div class=select-style><select id=select-language onchange="location=this.value"><option id=en value=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.12-lambda-etl/>English</option><option id=vi value=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/ selected>Tiếng Việt</option></select><svg id="Capa_1" xmlns:xlink="http://www.w3.org/1999/xlink" width="255" height="255" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255"><g><g id="arrow-drop-down"><polygon points="0,63.75 127.5,191.25 255,63.75"/></g></g></svg></div></a></li><li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li></ul></section><section id=footer><left><br><br><b>Last Updated</b><br><i><font color=orange>31-07-2026</font>
+</i></left><left><br><br><b>Team</b><br><i><a href=https://www.facebook.com/groups/660548818043427 style=color:orange>First Cloud AI Journey</a>
+</i></left><script async defer src=https://buttons.github.io/buttons.js></script></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i>
+</a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links><a href=https://tutrong2706.github.io/NewsRagReport/vi/>Báo cáo thực tập</a> > <a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/>News RAG Pipeline on AWS — Workshop</a> > Lambda ETL + Bedrock Embedding</span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#kiến-trúc>Kiến trúc</a></li><li><a href=#quyết-định-thiết-kế-chính>Quyết định thiết kế chính</a></li><li><a href=#lambda-function-code>Lambda Function Code</a><ul><li><a href=#cấu-trúc-file>Cấu trúc file</a></li><li><a href=#bedrock_utilspy>bedrock_utils.py</a></li><li><a href=#lambda_functionpy>lambda_function.py</a></li><li><a href=#requirementstxt>requirements.txt</a></li></ul></li><li><a href=#terraform-deployment>Terraform Deployment</a></li><li><a href=#testing-the-etl-lambda>Testing the ETL Lambda</a><ul><li><a href=#1-invoke-manually>1. Invoke Manually</a></li><li><a href=#2-check-logs>2. Check Logs</a></li><li><a href=#3-verify-in-database>3. Verify in Database</a></li></ul></li><li><a href=#monitoring--optimization>Monitoring & Optimization</a><ul><li><a href=#cloudwatch-metrics>CloudWatch Metrics</a></li><li><a href=#cost-optimization>Cost Optimization</a></li><li><a href=#performance-tips>Performance Tips</a></li></ul></li><li><a href=#next-steps>Next Steps</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>Lambda ETL + Bedrock Embedding</h1><h1 id=lambda-etl--bedrock-titan-embedding>Lambda ETL + Bedrock Titan Embedding</h1><p>Phần này bao gồm Lambda function chuyển đổi bài viết thô thành Star Schema, tạo embeddings dùng Amazon Bedrock Titan Embed v2, và lưu vectors vào Aurora pgvector.</p><h2 id=kiến-trúc>Kiến trúc</h2><pre tabindex=0><code>EventBridge Scheduler (02:00 UTC hàng ngày)
+       │
+       ▼
+┌─────────────────┐
+│  Lambda ETL     │  (Python 3.11, 15 min timeout, 1024 MB)
+│  ─────────────  │
+│  • Fetch raw    │
+│  • Clean HTML   │
+│  • Chunk text   │
+│  • Bedrock Embed│
+│  • Upsert pgvector│
+└────────┬────────┘
+         │
+         ▼
+Aurora PostgreSQL (fact_articles, fact_chunks + HNSW index)
+</code></pre><h2 id=quyết-định-thiết-kế-chính>Quyết định thiết kế chính</h2><table><thead><tr><th style=text-align:left>Aspect</th><th style=text-align:left>Lựa chọn</th><th style=text-align:left>Lý do</th></tr></thead><tbody><tr><td style=text-align:left><strong>Embedding Model</strong></td><td style=text-align:left><code>amazon.titan-embed-text-v2:0</code></td><td style=text-align:left>1024 dims, AWS native, serverless, consistent với RAG query</td></tr><tr><td style=text-align:left><strong>Chunk Size</strong></td><td style=text-align:left>~500 tokens, 50 overlap</td><td style=text-align:left>Cân bằng context vs. precision</td></tr><tr><td style=text-align:left><strong>Vector Index</strong></td><td style=text-align:left>HNSW (m=16, ef_construction=64)</td><td style=text-align:left>Fast approximate nearest neighbor</td></tr><tr><td style=text-align:left><strong>Batch Size</strong></td><td style=text-align:left>50 articles per invocation</td><td style=text-align:left>Giữ trong 15-min timeout</td></tr><tr><td style=text-align:left><strong>Trigger</strong></td><td style=text-align:left>EventBridge cron(0 2 * * ? *)</td><td style=text-align:left>Hàng ngày sau crawler (01:00 UTC)</td></tr></tbody></table><h2 id=lambda-function-code>Lambda Function Code</h2><h3 id=cấu-trúc-file>Cấu trúc file</h3><pre tabindex=0><code>deploy/
+├── etl/
+│   ├── lambda_function.py
+│   ├── requirements.txt
+│   └── bedrock_utils.py
+</code></pre><h3 id=bedrock_utilspy>bedrock_utils.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> boto3
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> botocore.config <span style=color:#f92672>import</span> Config
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger(__name__)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Bedrock client với retry config</span>
+</span></span><span style=display:flex><span>bedrock <span style=color:#f92672>=</span> boto3<span style=color:#f92672>.</span>client(
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;bedrock-runtime&#34;</span>,
+</span></span><span style=display:flex><span>    region_name<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;AWS_REGION&#34;</span>, <span style=color:#e6db74>&#34;ap-southeast-2&#34;</span>),
+</span></span><span style=display:flex><span>    config<span style=color:#f92672>=</span>Config(
+</span></span><span style=display:flex><span>        retries<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;max_attempts&#34;</span>: <span style=color:#ae81ff>3</span>, <span style=color:#e6db74>&#34;mode&#34;</span>: <span style=color:#e6db74>&#34;adaptive&#34;</span>},
+</span></span><span style=display:flex><span>        read_timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>60</span>,
+</span></span><span style=display:flex><span>        connect_timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>10</span>,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>TITAN_MODEL_ID <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;amazon.titan-embed-text-v2:0&#34;</span>
+</span></span><span style=display:flex><span>EMBEDDING_DIM <span style=color:#f92672>=</span> <span style=color:#ae81ff>1024</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>embed_text</span>(text: str) <span style=color:#f92672>-&gt;</span> list[float]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Tạo embedding dùng Titan Embed v2.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Returns list 1024 floats.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> text <span style=color:#f92672>or</span> <span style=color:#f92672>not</span> text<span style=color:#f92672>.</span>strip():
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [<span style=color:#ae81ff>0.0</span>] <span style=color:#f92672>*</span> EMBEDDING_DIM
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Truncate to model max (8192 tokens ~ 6000 words)</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Rough approximation: 1 token ≈ 0.75 words</span>
+</span></span><span style=display:flex><span>    max_chars <span style=color:#f92672>=</span> <span style=color:#ae81ff>20000</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> len(text) <span style=color:#f92672>&gt;</span> max_chars:
+</span></span><span style=display:flex><span>        text <span style=color:#f92672>=</span> text[:max_chars]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    body <span style=color:#f92672>=</span> json<span style=color:#f92672>.</span>dumps({<span style=color:#e6db74>&#34;inputText&#34;</span>: text})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        response <span style=color:#f92672>=</span> bedrock<span style=color:#f92672>.</span>invoke_model(
+</span></span><span style=display:flex><span>            modelId<span style=color:#f92672>=</span>TITAN_MODEL_ID,
+</span></span><span style=display:flex><span>            body<span style=color:#f92672>=</span>body,
+</span></span><span style=display:flex><span>            contentType<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;application/json&#34;</span>,
+</span></span><span style=display:flex><span>            accept<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;application/json&#34;</span>
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        result <span style=color:#f92672>=</span> json<span style=color:#f92672>.</span>loads(response[<span style=color:#e6db74>&#34;body&#34;</span>]<span style=color:#f92672>.</span>read())
+</span></span><span style=display:flex><span>        embedding <span style=color:#f92672>=</span> result<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;embedding&#34;</span>, [])
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> len(embedding) <span style=color:#f92672>!=</span> EMBEDDING_DIM:
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Unexpected embedding dim: </span><span style=color:#e6db74>{</span>len(embedding)<span style=color:#e6db74>}</span><span style=color:#e6db74>, expected </span><span style=color:#e6db74>{</span>EMBEDDING_DIM<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Pad or truncate</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> len(embedding) <span style=color:#f92672>&lt;</span> EMBEDDING_DIM:
+</span></span><span style=display:flex><span>                embedding<span style=color:#f92672>.</span>extend([<span style=color:#ae81ff>0.0</span>] <span style=color:#f92672>*</span> (EMBEDDING_DIM <span style=color:#f92672>-</span> len(embedding)))
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                embedding <span style=color:#f92672>=</span> embedding[:EMBEDDING_DIM]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> embedding
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Bedrock embed error: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>raise</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>embed_batch</span>(texts: list[str]) <span style=color:#f92672>-&gt;</span> list[list[float]]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Embed multiple texts sequentially (Bedrock doesn&#39;t support batch).&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> [embed_text(t) <span style=color:#66d9ef>for</span> t <span style=color:#f92672>in</span> texts]
+</span></span></code></pre></div><h3 id=lambda_functionpy>lambda_function.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> hashlib
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> re
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> sys
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> datetime <span style=color:#f92672>import</span> datetime, timezone
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> List, Optional, Tuple
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> psycopg2
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> psycopg2.extras <span style=color:#f92672>import</span> RealDictCursor, execute_values
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Add layer path</span>
+</span></span><span style=display:flex><span>sys<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>insert(<span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#34;/opt/python&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> bedrock_utils <span style=color:#f92672>import</span> embed_text, EMBEDDING_DIM
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger()
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>setLevel(logging<span style=color:#f92672>.</span>INFO)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ---------- Database Connection ----------</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_db_connection</span>():
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Tạo PostgreSQL connection.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> psycopg2<span style=color:#f92672>.</span>connect(
+</span></span><span style=display:flex><span>        host<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_HOST&#34;</span>],
+</span></span><span style=display:flex><span>        port<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_PORT&#34;</span>],
+</span></span><span style=display:flex><span>        database<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_NAME&#34;</span>],
+</span></span><span style=display:flex><span>        user<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_USER&#34;</span>],
+</span></span><span style=display:flex><span>        password<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_PASSWORD&#34;</span>],
+</span></span><span style=display:flex><span>        cursor_factory<span style=color:#f92672>=</span>RealDictCursor,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>init_schema</span>(conn):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Đảm bảo tables và pgvector extension tồn tại.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> conn<span style=color:#f92672>.</span>cursor() <span style=color:#66d9ef>as</span> cur:
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Enable pgvector</span>
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;CREATE EXTENSION IF NOT EXISTS vector&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Star Schema tables (from warehouse.sql)</span>
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS dim_source (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_id SERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_name VARCHAR(100) NOT NULL UNIQUE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_domain VARCHAR(100) NOT NULL UNIQUE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_url VARCHAR(500),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                language VARCHAR(10) DEFAULT &#39;vi&#39;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                country VARCHAR(10) DEFAULT &#39;VN&#39;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                is_active BOOLEAN DEFAULT TRUE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                created_at TIMESTAMPTZ DEFAULT NOW()
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS dim_time (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                time_id SERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                full_datetime TIMESTAMPTZ NOT NULL UNIQUE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                date_day DATE NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                hour_24 SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                day_of_week SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                day_of_month SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                week_of_year SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                month_number SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                month_name VARCHAR(20) NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                quarter SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                year SMALLINT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                is_weekend BOOLEAN NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                is_holiday BOOLEAN DEFAULT FALSE
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS dim_content (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                content_id BIGSERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                title TEXT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                content_hash CHAR(64) NOT NULL UNIQUE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                word_count INTEGER,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                char_count INTEGER,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                language VARCHAR(10) DEFAULT &#39;vi&#39;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                created_at TIMESTAMPTZ DEFAULT NOW()
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS dim_author (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                author_id SERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                author_name VARCHAR(200) NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                author_slug VARCHAR(200),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                email VARCHAR(200),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                affiliation VARCHAR(200),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                created_at TIMESTAMPTZ DEFAULT NOW(),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                UNIQUE (author_name, affiliation)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS fact_articles (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                article_id BIGSERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                url_hash CHAR(64) NOT NULL UNIQUE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_id INTEGER NOT NULL REFERENCES dim_source(source_id),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                time_id INTEGER NOT NULL REFERENCES dim_time(time_id),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                content_id BIGINT NOT NULL REFERENCES dim_content(content_id),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                url TEXT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                category VARCHAR(100),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                crawled_at TIMESTAMPTZ NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                embedded BOOLEAN DEFAULT FALSE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                chunk_count INTEGER DEFAULT 0,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                created_at TIMESTAMPTZ DEFAULT NOW()
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS fact_article_authors (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                article_id BIGINT NOT NULL REFERENCES fact_articles(article_id),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                author_id INTEGER NOT NULL REFERENCES dim_author(author_id),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                author_order SMALLINT DEFAULT 1,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                PRIMARY KEY (article_id, author_id)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e># fact_chunks with pgvector</span>
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS fact_chunks (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                chunk_id BIGSERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                article_id BIGINT NOT NULL REFERENCES fact_articles(article_id),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                chunk_index INTEGER NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                content TEXT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                token_count INTEGER,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                char_count INTEGER,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                embedding vector(</span><span style=color:#e6db74>{</span>EMBEDDING_DIM<span style=color:#e6db74>}</span><span style=color:#e6db74>),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                created_at TIMESTAMPTZ DEFAULT NOW(),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                UNIQUE (article_id, chunk_index)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e># HNSW index</span>
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE INDEX IF NOT EXISTS idx_fact_chunks_embedding_hnsw
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            ON fact_chunks USING hnsw (embedding vector_cosine_ops)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            WITH (m = 16, ef_construction = 64)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        conn<span style=color:#f92672>.</span>commit()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ---------- Utility Functions ----------</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>clean_html</span>(html: str) <span style=color:#f92672>-&gt;</span> str:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Basic HTML cleaning.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> html:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Remove scripts, styles</span>
+</span></span><span style=display:flex><span>    text <span style=color:#f92672>=</span> re<span style=color:#f92672>.</span>sub(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;&lt;script[^&gt;]*&gt;.*?&lt;/script&gt;&#39;</span>, <span style=color:#e6db74>&#39; &#39;</span>, html, flags<span style=color:#f92672>=</span>re<span style=color:#f92672>.</span>DOTALL <span style=color:#f92672>|</span> re<span style=color:#f92672>.</span>IGNORECASE)
+</span></span><span style=display:flex><span>    text <span style=color:#f92672>=</span> re<span style=color:#f92672>.</span>sub(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;&lt;style[^&gt;]*&gt;.*?&lt;/style&gt;&#39;</span>, <span style=color:#e6db74>&#39; &#39;</span>, text, flags<span style=color:#f92672>=</span>re<span style=color:#f92672>.</span>DOTALL <span style=color:#f92672>|</span> re<span style=color:#f92672>.</span>IGNORECASE)
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Remove tags</span>
+</span></span><span style=display:flex><span>    text <span style=color:#f92672>=</span> re<span style=color:#f92672>.</span>sub(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;&lt;[^&gt;]+&gt;&#39;</span>, <span style=color:#e6db74>&#39; &#39;</span>, text)
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Decode basic entities</span>
+</span></span><span style=display:flex><span>    text <span style=color:#f92672>=</span> text<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#39;&amp;nbsp;&#39;</span>, <span style=color:#e6db74>&#39; &#39;</span>)<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#39;&amp;&#39;</span>, <span style=color:#e6db74>&#39;&amp;&#39;</span>)<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#39;&lt;&#39;</span>, <span style=color:#e6db74>&#39;&lt;&#39;</span>)<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#39;&gt;&#39;</span>, <span style=color:#e6db74>&#39;&gt;&#39;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Normalize whitespace</span>
+</span></span><span style=display:flex><span>    text <span style=color:#f92672>=</span> re<span style=color:#f92672>.</span>sub(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;\s+&#39;</span>, <span style=color:#e6db74>&#39; &#39;</span>, text)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> text<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>chunk_text</span>(text: str, chunk_size: int <span style=color:#f92672>=</span> <span style=color:#ae81ff>500</span>, overlap: int <span style=color:#f92672>=</span> <span style=color:#ae81ff>50</span>) <span style=color:#f92672>-&gt;</span> List[str]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Split text into overlapping word chunks.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    words <span style=color:#f92672>=</span> text<span style=color:#f92672>.</span>split()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> len(words) <span style=color:#f92672>&lt;=</span> chunk_size:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [text]
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    chunks <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>    step <span style=color:#f92672>=</span> chunk_size <span style=color:#f92672>-</span> overlap
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>0</span>, len(words), step):
+</span></span><span style=display:flex><span>        chunk <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34; &#34;</span><span style=color:#f92672>.</span>join(words[i:i <span style=color:#f92672>+</span> chunk_size])
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> len(chunk<span style=color:#f92672>.</span>strip()) <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>50</span>:  <span style=color:#75715e># Skip tiny chunks</span>
+</span></span><span style=display:flex><span>            chunks<span style=color:#f92672>.</span>append(chunk)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> chunks
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>upsert_source</span>(cur, name: str, domain: str, url: str <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        INSERT INTO dim_source (source_name, source_domain, source_url)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        VALUES (</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        ON CONFLICT (source_domain) DO UPDATE SET source_name = EXCLUDED.source_name
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        RETURNING source_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>, (name, domain, url))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> cur<span style=color:#f92672>.</span>fetchone()[<span style=color:#e6db74>&#39;source_id&#39;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>upsert_time</span>(cur, dt: datetime) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        INSERT INTO dim_time (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            full_datetime, date_day, hour_24, day_of_week, day_of_month,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            week_of_year, month_number, month_name, quarter, year, is_weekend
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        ) VALUES (</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        ON CONFLICT (full_datetime) DO NOTHING
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        RETURNING time_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>, (
+</span></span><span style=display:flex><span>        dt, dt<span style=color:#f92672>.</span>date(), dt<span style=color:#f92672>.</span>hour, dt<span style=color:#f92672>.</span>isoweekday(), dt<span style=color:#f92672>.</span>day,
+</span></span><span style=display:flex><span>        dt<span style=color:#f92672>.</span>isocalendar()<span style=color:#f92672>.</span>week, dt<span style=color:#f92672>.</span>month, dt<span style=color:#f92672>.</span>strftime(<span style=color:#e6db74>&#39;%B&#39;</span>),
+</span></span><span style=display:flex><span>        (dt<span style=color:#f92672>.</span>month <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>//</span> <span style=color:#ae81ff>3</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, dt<span style=color:#f92672>.</span>year, dt<span style=color:#f92672>.</span>weekday() <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>    ))
+</span></span><span style=display:flex><span>    row <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchone()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> row:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> row[<span style=color:#e6db74>&#39;time_id&#39;</span>]
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;SELECT time_id FROM dim_time WHERE full_datetime = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span>, (dt,))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> cur<span style=color:#f92672>.</span>fetchone()[<span style=color:#e6db74>&#39;time_id&#39;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>upsert_content</span>(cur, title: str, content: str) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>    content_hash <span style=color:#f92672>=</span> hashlib<span style=color:#f92672>.</span>sha256(content<span style=color:#f92672>.</span>encode())<span style=color:#f92672>.</span>hexdigest()
+</span></span><span style=display:flex><span>    word_count <span style=color:#f92672>=</span> len(content<span style=color:#f92672>.</span>split())
+</span></span><span style=display:flex><span>    char_count <span style=color:#f92672>=</span> len(content)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        INSERT INTO dim_content (title, content_hash, word_count, char_count)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        VALUES (</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        ON CONFLICT (content_hash) DO NOTHING
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        RETURNING content_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>, (title, content_hash, word_count, char_count))
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    row <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchone()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> row:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> row[<span style=color:#e6db74>&#39;content_id&#39;</span>]
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;SELECT content_id FROM dim_content WHERE content_hash = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span>, (content_hash,))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> cur<span style=color:#f92672>.</span>fetchone()[<span style=color:#e6db74>&#39;content_id&#39;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>upsert_author</span>(cur, name: str, affiliation: str <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>) <span style=color:#f92672>-&gt;</span> Optional[int]:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> name <span style=color:#f92672>or</span> <span style=color:#f92672>not</span> name<span style=color:#f92672>.</span>strip():
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> name<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        INSERT INTO dim_author (author_name, affiliation)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        VALUES (</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        ON CONFLICT (author_name, affiliation) DO NOTHING
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        RETURNING author_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>, (name, affiliation))
+</span></span><span style=display:flex><span>    row <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchone()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> row:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> row[<span style=color:#e6db74>&#39;author_id&#39;</span>]
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        SELECT author_id FROM dim_author 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        WHERE author_name = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74> AND (affiliation = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74> OR (affiliation IS NULL AND </span><span style=color:#e6db74>%s</span><span style=color:#e6db74> IS NULL))
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>, (name, affiliation, affiliation))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> cur<span style=color:#f92672>.</span>fetchone()[<span style=color:#e6db74>&#39;author_id&#39;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ---------- Main ETL Logic ----------</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>process_batch</span>(cur, articles: List[dict], batch_limit: int <span style=color:#f92672>=</span> <span style=color:#ae81ff>50</span>) <span style=color:#f92672>-&gt;</span> int:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Xử lý batch bài viết thô. Returns count processed.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    processed <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> art <span style=color:#f92672>in</span> articles[:batch_limit]:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>            url_hash <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;url_hash&#39;</span>]
+</span></span><span style=display:flex><span>            url <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;url&#39;</span>]
+</span></span><span style=display:flex><span>            source_name <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;source_name&#39;</span>]
+</span></span><span style=display:flex><span>            source_domain <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;source_domain&#39;</span>]
+</span></span><span style=display:flex><span>            title <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;title&#39;</span>] <span style=color:#f92672>or</span> <span style=color:#e6db74>&#39;&#39;</span>
+</span></span><span style=display:flex><span>            content <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;content&#39;</span>] <span style=color:#f92672>or</span> <span style=color:#e6db74>&#39;&#39;</span>
+</span></span><span style=display:flex><span>            category <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;category&#39;</span>]
+</span></span><span style=display:flex><span>            author <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;author&#39;</span>]
+</span></span><span style=display:flex><span>            published_at <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;published_at&#39;</span>]
+</span></span><span style=display:flex><span>            crawled_at <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;crawled_at&#39;</span>]
+</span></span><span style=display:flex><span>            raw_html <span style=color:#f92672>=</span> art[<span style=color:#e6db74>&#39;raw_html&#39;</span>] <span style=color:#f92672>or</span> <span style=color:#e6db74>&#39;&#39;</span>
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 1. Clean content</span>
+</span></span><span style=display:flex><span>            cleaned <span style=color:#f92672>=</span> clean_html(raw_html <span style=color:#f92672>or</span> content)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> len(cleaned) <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>100</span>:
+</span></span><span style=display:flex><span>                logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Skipping short article: </span><span style=color:#e6db74>{</span>url<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>                cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;UPDATE article_metadata SET embedded = TRUE WHERE url_hash = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span>, (url_hash,))
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>continue</span>
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 2. Parse published_at</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> isinstance(published_at, str):
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>                    pub_dt <span style=color:#f92672>=</span> datetime<span style=color:#f92672>.</span>fromisoformat(published_at<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#39;Z&#39;</span>, <span style=color:#e6db74>&#39;+00:00&#39;</span>))
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>except</span>:
+</span></span><span style=display:flex><span>                    pub_dt <span style=color:#f92672>=</span> crawled_at <span style=color:#f92672>or</span> datetime<span style=color:#f92672>.</span>now(timezone<span style=color:#f92672>.</span>utc)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>elif</span> published_at:
+</span></span><span style=display:flex><span>                pub_dt <span style=color:#f92672>=</span> published_at
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                pub_dt <span style=color:#f92672>=</span> crawled_at <span style=color:#f92672>or</span> datetime<span style=color:#f92672>.</span>now(timezone<span style=color:#f92672>.</span>utc)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 3. Upsert dimensions</span>
+</span></span><span style=display:flex><span>            source_id <span style=color:#f92672>=</span> upsert_source(cur, source_name, source_domain, url)
+</span></span><span style=display:flex><span>            time_id <span style=color:#f92672>=</span> upsert_time(cur, pub_dt)
+</span></span><span style=display:flex><span>            content_id <span style=color:#f92672>=</span> upsert_content(cur, title, cleaned)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 4. Insert fact_articles</span>
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                INSERT INTO fact_articles (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    url_hash, source_id, time_id, content_id, url, category, crawled_at
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                ) VALUES (</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                ON CONFLICT (url_hash) DO UPDATE SET
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    source_id = EXCLUDED.source_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    time_id = EXCLUDED.time_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    content_id = EXCLUDED.content_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    category = EXCLUDED.category,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    crawled_at = EXCLUDED.crawled_at
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                RETURNING article_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;&#34;&#34;</span>, (url_hash, source_id, time_id, content_id, url, category, crawled_at))
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            article_id <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchone()[<span style=color:#e6db74>&#39;article_id&#39;</span>]
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 5. Link authors</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> author:
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>for</span> idx, author_name <span style=color:#f92672>in</span> enumerate([a<span style=color:#f92672>.</span>strip() <span style=color:#66d9ef>for</span> a <span style=color:#f92672>in</span> author<span style=color:#f92672>.</span>split(<span style=color:#e6db74>&#39;,&#39;</span>)]):
+</span></span><span style=display:flex><span>                    author_id <span style=color:#f92672>=</span> upsert_author(cur, author_name)
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>if</span> author_id:
+</span></span><span style=display:flex><span>                        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                            INSERT INTO fact_article_authors (article_id, author_id, author_order)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                            VALUES (</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                            ON CONFLICT (article_id, author_id) DO NOTHING
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                        &#34;&#34;&#34;</span>, (article_id, author_id, idx <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>))
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 6. Create chunks + embeddings</span>
+</span></span><span style=display:flex><span>            chunks <span style=color:#f92672>=</span> chunk_text(cleaned)
+</span></span><span style=display:flex><span>            chunk_data <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>for</span> i, chunk <span style=color:#f92672>in</span> enumerate(chunks):
+</span></span><span style=display:flex><span>                embedding <span style=color:#f92672>=</span> embed_text(chunk)
+</span></span><span style=display:flex><span>                chunk_data<span style=color:#f92672>.</span>append((
+</span></span><span style=display:flex><span>                    article_id, i, chunk, len(chunk<span style=color:#f92672>.</span>split()), len(chunk), embedding
+</span></span><span style=display:flex><span>                ))
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Bulk upsert chunks</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> chunk_data:
+</span></span><span style=display:flex><span>                execute_values(cur, <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    INSERT INTO fact_chunks (article_id, chunk_index, content, token_count, char_count, embedding)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    VALUES </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    ON CONFLICT (article_id, chunk_index) DO UPDATE SET
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                        content = EXCLUDED.content,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                        token_count = EXCLUDED.token_count,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                        char_count = EXCLUDED.char_count,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                        embedding = EXCLUDED.embedding
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                &#34;&#34;&#34;</span>, chunk_data)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 7. Update article stats</span>
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                UPDATE fact_articles 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                SET embedded = TRUE, chunk_count = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74> 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                WHERE article_id = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;&#34;&#34;</span>, (len(chunks), article_id))
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># 8. Mark raw as processed</span>
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;UPDATE article_metadata SET embedded = TRUE WHERE url_hash = </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span>, (url_hash,))
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            conn<span style=color:#f92672>.</span>commit()
+</span></span><span style=display:flex><span>            processed <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;ETL processed: </span><span style=color:#e6db74>{</span>title[:<span style=color:#ae81ff>60</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>... (</span><span style=color:#e6db74>{</span>len(chunks)<span style=color:#e6db74>}</span><span style=color:#e6db74> chunks)&#34;</span>)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>            conn<span style=color:#f92672>.</span>rollback()
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;ETL failed for article </span><span style=color:#e6db74>{</span>art<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#39;url_hash&#39;</span>)<span style=color:#e6db74>}</span><span style=color:#e6db74>: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Continue with next article</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> processed
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>lambda_handler</span>(event, context):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Lambda entry point - triggered by EventBridge Schedule.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;ETL Lambda started&#34;</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    conn <span style=color:#f92672>=</span> get_db_connection()
+</span></span><span style=display:flex><span>    init_schema(conn)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>with</span> conn<span style=color:#f92672>.</span>cursor() <span style=color:#66d9ef>as</span> cur:
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Fetch unprocessed articles</span>
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                SELECT 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    id, url_hash, url, source_name, source_domain, title, content,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    category, author, published_at, crawled_at, raw_html
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                FROM article_metadata
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                WHERE embedded = FALSE
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                ORDER BY crawled_at ASC
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                LIMIT 50
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>            articles <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchall()
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> articles:
+</span></span><span style=display:flex><span>                logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;No unprocessed articles found&#34;</span>)
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> {<span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>200</span>, <span style=color:#e6db74>&#34;body&#34;</span>: json<span style=color:#f92672>.</span>dumps({<span style=color:#e6db74>&#34;processed&#34;</span>: <span style=color:#ae81ff>0</span>})}
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Found </span><span style=color:#e6db74>{</span>len(articles)<span style=color:#e6db74>}</span><span style=color:#e6db74> articles to process&#34;</span>)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            processed <span style=color:#f92672>=</span> process_batch(cur, articles)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;ETL batch complete: </span><span style=color:#e6db74>{</span>processed<span style=color:#e6db74>}</span><span style=color:#e6db74> articles processed&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> {
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>200</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;body&#34;</span>: json<span style=color:#f92672>.</span>dumps({<span style=color:#e6db74>&#34;processed&#34;</span>: processed})
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;ETL Lambda error: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> {<span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>500</span>, <span style=color:#e6db74>&#34;body&#34;</span>: json<span style=color:#f92672>.</span>dumps({<span style=color:#e6db74>&#34;error&#34;</span>: str(e)})}
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>finally</span>:
+</span></span><span style=display:flex><span>        conn<span style=color:#f92672>.</span>close()
+</span></span></code></pre></div><h3 id=requirementstxt>requirements.txt</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>psycopg2-binary==2.9.9
+</span></span><span style=display:flex><span>boto3==1.34.0
+</span></span><span style=display:flex><span>botocore==1.34.0
+</span></span></code></pre></div><h2 id=terraform-deployment>Terraform Deployment</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_lambda_function&#34; &#34;etl&#34;</span> {
+</span></span><span style=display:flex><span>  function_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-etl&#34;</span>
+</span></span><span style=display:flex><span>  description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ETL + Bedrock Embedding: raw -&gt; Star Schema + pgvector&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  runtime       <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;python3.11&#34;</span>
+</span></span><span style=display:flex><span>  handler       <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;lambda_function.lambda_handler&#34;</span>
+</span></span><span style=display:flex><span>  timeout       <span style=color:#f92672>=</span> <span style=color:#ae81ff>900</span><span style=color:#75715e>  # 15 minutes
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  memory_size   <span style=color:#f92672>=</span> <span style=color:#ae81ff>1024</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  filename         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;etl.zip&#34;</span>
+</span></span><span style=display:flex><span>  source_code_hash <span style=color:#f92672>=</span> <span style=color:#66d9ef>filebase64sha256</span>(<span style=color:#e6db74>&#34;etl.zip&#34;</span>)
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>vpc_config</span> {
+</span></span><span style=display:flex><span>    subnet_ids         <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_subnet</span>.<span style=color:#66d9ef>pub_a</span>.<span style=color:#66d9ef>id</span>, <span style=color:#66d9ef>aws_subnet</span>.<span style=color:#66d9ef>pub_b</span>.<span style=color:#66d9ef>id</span>]
+</span></span><span style=display:flex><span>    security_group_ids <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_security_group</span>.<span style=color:#66d9ef>lambda_sg</span>.<span style=color:#66d9ef>id</span>]
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  role <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>lambda_role</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>environment</span> {
+</span></span><span style=display:flex><span>    variables <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>      DB_HOST     <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_rds_cluster</span>.<span style=color:#66d9ef>main</span>.<span style=color:#66d9ef>endpoint</span>
+</span></span><span style=display:flex><span>      DB_PORT     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;5432&#34;</span>
+</span></span><span style=display:flex><span>      DB_NAME     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag&#34;</span>
+</span></span><span style=display:flex><span>      DB_USER     <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>db_user</span>
+</span></span><span style=display:flex><span>      DB_PASSWORD <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>db_password</span>
+</span></span><span style=display:flex><span>      AWS_REGION  <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ap-southeast-2&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># IAM permissions for Bedrock
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_role_policy&#34; &#34;lambda_bedrock&#34;</span> {
+</span></span><span style=display:flex><span>  role <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>lambda_role</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  policy <span style=color:#f92672>=</span> <span style=color:#66d9ef>jsonencode</span>({
+</span></span><span style=display:flex><span>    Version <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2012-10-17&#34;</span>
+</span></span><span style=display:flex><span>    Statement <span style=color:#f92672>=</span> [{
+</span></span><span style=display:flex><span>      Effect <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Allow&#34;</span>
+</span></span><span style=display:flex><span>      Action <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;bedrock:InvokeModel&#34;</span>]
+</span></span><span style=display:flex><span>      Resource <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;arn:aws:bedrock:ap-southeast-2::foundation-model/amazon.titan-embed-text-v2:0&#34;</span>
+</span></span><span style=display:flex><span>    }]
+</span></span><span style=display:flex><span>  })
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># EventBridge Schedule (daily 02:00 UTC)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_event_rule&#34; &#34;etl_schedule&#34;</span> {
+</span></span><span style=display:flex><span>  name                <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-etl-rule&#34;</span>
+</span></span><span style=display:flex><span>  schedule_expression <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;cron(0 2 * * ? *)&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_event_target&#34; &#34;etl_target&#34;</span> {
+</span></span><span style=display:flex><span>  rule      <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_cloudwatch_event_rule</span>.<span style=color:#66d9ef>etl_schedule</span>.<span style=color:#66d9ef>name</span>
+</span></span><span style=display:flex><span>  arn       <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>etl</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  role_arn  <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>lambda_role</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_lambda_permission&#34; &#34;etl_eventbridge&#34;</span> {
+</span></span><span style=display:flex><span>  statement_id  <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AllowEventBridgeInvoke&#34;</span>
+</span></span><span style=display:flex><span>  action        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;lambda:InvokeFunction&#34;</span>
+</span></span><span style=display:flex><span>  function_name <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>etl</span>.<span style=color:#66d9ef>function_name</span>
+</span></span><span style=display:flex><span>  principal     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;events.amazonaws.com&#34;</span>
+</span></span><span style=display:flex><span>  source_arn    <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_cloudwatch_event_rule</span>.<span style=color:#66d9ef>etl_schedule</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=testing-the-etl-lambda>Testing the ETL Lambda</h2><h3 id=1-invoke-manually>1. Invoke Manually</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>aws lambda invoke <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --function-name newsrag-etl <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --payload <span style=color:#e6db74>&#39;{}&#39;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  response.json
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>cat response.json
+</span></span></code></pre></div><h3 id=2-check-logs>2. Check Logs</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>aws logs tail /aws/lambda/newsrag-etl --follow
+</span></span></code></pre></div><h3 id=3-verify-in-database>3. Verify in Database</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ENDPOINT<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>terraform output -raw rds_endpoint<span style=color:#66d9ef>)</span>
+</span></span><span style=display:flex><span>psql <span style=color:#e6db74>&#34;postgresql://postgres:password@</span><span style=color:#e6db74>${</span>ENDPOINT<span style=color:#e6db74>}</span><span style=color:#e6db74>:5432/newsrag&#34;</span> -c <span style=color:#e6db74>&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>SELECT 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    fa.article_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    ds.source_name,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    fa.chunk_count,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    fa.embedded,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    fc.chunk_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    fc.content,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    fc.embedding IS NOT NULL as has_embedding
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>FROM fact_articles fa
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>JOIN dim_source ds ON fa.source_id = ds.source_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>LEFT JOIN fact_chunks fc ON fa.article_id = fc.article_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>ORDER BY fa.created_at DESC
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>LIMIT 10;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&#34;</span>
+</span></span></code></pre></div><h2 id=monitoring--optimization>Monitoring & Optimization</h2><h3 id=cloudwatch-metrics>CloudWatch Metrics</h3><table><thead><tr><th style=text-align:left>Metric</th><th style=text-align:left>Target</th><th style=text-align:left>Alarm If</th></tr></thead><tbody><tr><td style=text-align:left>Duration (p95)</td><td style=text-align:left>&lt; 600s</td><td style=text-align:left>> 800s</td></tr><tr><td style=text-align:left>Errors</td><td style=text-align:left>0</td><td style=text-align:left>> 0</td></tr><tr><td style=text-align:left>Invocations</td><td style=text-align:left>1/day</td><td style=text-align:left>= 0 for 2 days</td></tr><tr><td style=text-align:left>Bedrock Invocations</td><td style=text-align:left>~1500/day</td><td style=text-align:left>Unexpected spike</td></tr></tbody></table><h3 id=cost-optimization>Cost Optimization</h3><ul><li><strong>Bedrock Titan Embed v2</strong>: ~$0.0001 per 1K tokens</li><li>50 articles × 10 chunks × 500 tokens = 250K tokens/day = ~$0.025/day = ~$0.75/month</li><li>Lambda: 15 min × 1 GB × 1/day = negligible</li><li><strong>Total ETL cost</strong>: ~$1-2/month</li></ul><h3 id=performance-tips>Performance Tips</h3><ol><li><strong>Connection pooling</strong>: Use RDS Proxy for high-frequency invocations</li><li><strong>Batch embeddings</strong>: Process chunks in batches (though Bedrock is sequential)</li><li><strong>Retry logic</strong>: Exponential backoff for Bedrock throttling</li><li><strong>Monitor HNSW index</strong>: <code>ef_search</code> parameter at query time</li></ol><h2 id=next-steps>Next Steps</h2><p>After ETL + Embedding works:</p><ol><li><strong>RAG API</strong> - Lambda + API Gateway for querying: <a href=5.13-RAG-API/>RAG API</a></li><li><strong>Frontend</strong> - Next.js Dashboard: <a href=5.14-Frontend/>Frontend Integration</a></li></ol><hr><p><strong>Tiếp theo:</strong> <a href=5.13-RAG-API/>RAG API (Lambda + API Gateway)</a></p><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=https://tutrong2706.github.io/NewsRagReport/js/clipboard.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.jquery.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery.sticky.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/featherlight.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/highlight.pack.js?1785509515></script><script>hljs.initHighlightingOnLoad()</script><script src=https://tutrong2706.github.io/NewsRagReport/js/modernizr.custom-3.6.0.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/learn.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/hugo-learn.js?1785509515></script><link href=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.js?1785509515></script><script>mermaid.initialize({startOnLoad:!0})</script><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,(e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date),(i=t.createElement(n),a=t.getElementsByTagName(n)[0]),i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-158079754-2","auto"),ga("send","pageview")</script></body></html>

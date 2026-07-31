@@ -1,0 +1,446 @@
+<!doctype html><html lang=vi class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.134.3"><meta name=description content><meta name=author content="thienlh@thienlu.com"><link rel=icon href=https://tutrong2706.github.io/NewsRagReport/images/favicon.png type=image/png><title>Lambda Consumer (SQS → Aurora) :: Báo cáo thực tập</title>
+<link href=https://tutrong2706.github.io/NewsRagReport/css/nucleus.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/fontawesome-all.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hybrid.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/featherlight.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/perfect-scrollbar.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/auto-complete.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/atom-one-dark-reasonable.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hugo-theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme-workshop.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery-3.3.1.min.js?1785509515></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/><nav id=sidebar class=showVisitedLinks><div id=header-wrapper><div id=header><a id=logo href=https://tutrong2706.github.io/NewsRagReport/><svg id="Layer_1" data-name="Layer 1" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff}.cls-2{fill:#fff;fill-rule:evenodd}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09 10.85a4.7 4.7.0 00.19 1.48 7.73 7.73.0 00.54 1.19.77.77.0 01.12.38.64.64.0 01-.32.49l-1 .7a.83.83.0 01-.44.15.69.69.0 01-.49-.23 3.8 3.8.0 01-.6-.77q-.25-.42-.51-1a6.14 6.14.0 01-4.89 2.3 4.54 4.54.0 01-3.32-1.19 4.27 4.27.0 01-1.22-3.2 4.28 4.28.0 011.46-3.4A6.06 6.06.0 017.69 6.46a12.47 12.47.0 011.76.13q.92.13 1.91.36V5.73a3.65 3.65.0 00-.79-2.66A3.81 3.81.0 007.86 2.3a7.71 7.71.0 00-1.79.22 12.78 12.78.0 00-1.79.57 4.55 4.55.0 01-.58.22h-.26q-.35.0-.35-.52V2a1.09 1.09.0 01.12-.58 1.2 1.2.0 01.47-.35A10.88 10.88.0 015.77.32 10.19 10.19.0 018.36.0a6 6 0 014.35 1.35 5.49 5.49.0 011.38 4.09zM7.34 13.38a5.36 5.36.0 001.72-.31A3.63 3.63.0 0010.63 12 2.62 2.62.0 0011.19 11a5.63 5.63.0 00.16-1.44v-.7a14.35 14.35.0 00-1.53-.28 12.37 12.37.0 00-1.56-.1 3.84 3.84.0 00-2.47.67A2.34 2.34.0 005 11a2.35 2.35.0 00.61 1.76A2.4 2.4.0 007.34 13.38zm13.35 1.8a1 1 0 01-.64-.16 1.3 1.3.0 01-.35-.65L15.81 1.51a3 3 0 01-.15-.67.36.36.0 01.41-.41H17.7a1 1 0 01.65.16 1.4 1.4.0 01.33.65l2.79 11 2.59-11A1.17 1.17.0 0124.39.6a1.1 1.1.0 01.67-.16H26.4a1.1 1.1.0 01.67.16 1.17 1.17.0 01.32.65L30 12.39 32.88 1.25A1.39 1.39.0 0133.22.6a1 1 0 01.65-.16h1.54a.36.36.0 01.41.41 1.36 1.36.0 010 .26 3.64 3.64.0 01-.12.41l-4 12.86a1.3 1.3.0 01-.35.65 1 1 0 01-.64.16H29.25a1 1 0 01-.67-.17 1.26 1.26.0 01-.32-.67L25.67 3.64l-2.56 10.7a1.26 1.26.0 01-.32.67 1 1 0 01-.67.17zm21.36.44a11.28 11.28.0 01-2.56-.29 7.44 7.44.0 01-1.92-.67 1 1 0 01-.61-.93v-.84q0-.52.38-.52a.9.9.0 01.31.06l.42.17a8.77 8.77.0 001.83.58 9.78 9.78.0 002 .2 4.48 4.48.0 002.43-.55 1.76 1.76.0 00.86-1.57 1.61 1.61.0 00-.45-1.16A4.29 4.29.0 0043 9.22l-2.41-.76A5.15 5.15.0 0138 6.78a3.94 3.94.0 01-.83-2.41 3.7 3.7.0 01.45-1.85 4.47 4.47.0 011.19-1.37 5.27 5.27.0 011.7-.86A7.4 7.4.0 0142.6.0a8.87 8.87.0 011.12.07q.57.07 1.08.19t.95.26a4.27 4.27.0 01.7.29 1.59 1.59.0 01.49.41.94.94.0 01.15.55v.79q0 .52-.38.52a1.76 1.76.0 01-.64-.2 7.74 7.74.0 00-3.2-.64 4.37 4.37.0 00-2.21.47 1.6 1.6.0 00-.79 1.48 1.58 1.58.0 00.49 1.18 4.94 4.94.0 001.83.92L44.55 7a5.08 5.08.0 012.57 1.6A3.76 3.76.0 0147.9 11a4.21 4.21.0 01-.44 1.93 4.4 4.4.0 01-1.21 1.47 5.43 5.43.0 01-1.85.93A8.25 8.25.0 0142.05 15.62z"/><path class="cls-2" d="M45.19 23.81C39.72 27.85 31.78 30 25 30A36.64 36.64.0 01.22 20.57c-.51-.46-.06-1.09.56-.74A49.78 49.78.0 0025.53 26.4 49.23 49.23.0 0044.4 22.53C45.32 22.14 46.1 23.14 45.19 23.81z"/><path class="cls-2" d="M47.47 21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74 3.13-2.2 8.27-1.57 8.86-.83s-.16 5.89-3.09 8.35c-.45.38-.88.18-.68-.32C46.69 25.8 48.17 22.11 47.47 21.21z"/></svg></a></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/lunr.min.js?1785509515></script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/auto-complete.js?1785509515></script><script type=text/javascript>var baseurl="https://tutrong2706.github.io/NewsRagReport//vi"</script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/search.js?1785509515></script></div><div class=highlightable><ul class=topics><li data-nav-id=/vi/1-worklog/ title="Nhật ký công việc" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/><b>1. </b>Nhật ký công việc
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/1-worklog/1.1-week1/ title="Worklog Tuần 1" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.1-week1/><b>1.1. </b>Worklog Tuần 1
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.2-week2/ title="Worklog Tuần 2" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.2-week2/><b>1.2. </b>Worklog Tuần 2
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.3-week3/ title="Worklog Tuần 3" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.3-week3/><b>1.3. </b>Worklog Tuần 3
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.4-week4/ title="Worklog Tuần 4" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.4-week4/><b>1.4. </b>Worklog Tuần 4
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.5-week5/ title="Worklog Tuần 5" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.5-week5/><b>1.5. </b>Worklog Tuần 5
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.6-week6/ title="Worklog Tuần 6" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.6-week6/><b>1.6. </b>Worklog Tuần 6
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.7-week7/ title="Worklog Tuần 7" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.7-week7/><b>1.7. </b>Worklog Tuần 7
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.8-week8/ title="Worklog Tuần 8" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.8-week8/><b>1.8. </b>Worklog Tuần 8
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/2-proposal/ title="Bản đề xuất" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/2-proposal/><b>2. </b>Bản đề xuất
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/ title="Các bài Blogs & Kinh nghiệm" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/><b>3. </b>Các bài Blogs & Kinh nghiệm
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/3-blogsposted/3.1-blog1/ title="Blog 1: Vượt giới hạn Timeout với AWS Fargate" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.1-blog1/><b>3.1. </b>Blog 1: Vượt giới hạn Timeout với AWS Fargate
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.2-blog2/ title="Blog 2: Tối ưu chi phí bằng SQS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.2-blog2/><b>3.2. </b>Blog 2: Tối ưu chi phí bằng SQS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.3-blog3/ title="Blog 3: Xây dựng RAG tối ưu" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.3-blog3/><b>3.3. </b>Blog 3: Xây dựng RAG tối ưu
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/4-eventparticipated/ title="Sự kiện đã tham gia" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/><b>4. </b>Sự kiện đã tham gia
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/4-eventparticipated/4.1-event1/ title="Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.1-event1/>1. Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.2-event2/ title="Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.2-event2/>2. Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.3-event3/ title="Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.3-event3/>3. Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/5-workshop/ title="News RAG Pipeline on AWS — Workshop" class="dd-item
+parent"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/><b>5. </b>News RAG Pipeline on AWS — Workshop
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/5-workshop/5.1-workshop-overview/ title="Tổng quan Workshop" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.1-workshop-overview/><b>5.1 </b>Tổng quan Workshop
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.2-prerequisites/ title="Điều kiện tiên quyết" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.2-prerequisites/><b>5.2 </b>Điều kiện tiên quyết
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.3-infrastructure/ title="Hạ tầng dưới dạng Code (Terraform)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.3-infrastructure/><b>5.3 </b>Hạ tầng dưới dạng Code (Terraform)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.4-local-dev/ title="Thiết lập phát triển cục bộ" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/><b>5.4 </b>Thiết lập phát triển cục bộ
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.5-crawler/ title="Phát triển Crawler" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/><b>5.5 </b>Phát triển Crawler
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.6-ingestion/ title="Nhập dữ liệu (Kafka Consumer → PostgreSQL)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.6-ingestion/><b>5.6 </b>Nhập dữ liệu (Kafka Consumer → PostgreSQL)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.7-etl/ title="ETL & Star Schema" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.7-etl/><b>5.7 </b>ETL & Star Schema
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.8-vectorize/ title="Vector hóa (Local Dev - SentenceTransformer → Qdrant)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.8-vectorize/><b>5.8 </b>Vector hóa (Local Dev - SentenceTransformer → Qdrant)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.9-aws-deploy/ title="Chuẩn bị triển khai AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.9-aws-deploy/><b>5.9 </b>Chuẩn bị triển khai AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.10-fargate-crawler/><b>5.10 </b>Fargate Crawler (ECS + EventBridge)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)" class="dd-item
+active"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/><b>5.11 </b>Lambda Consumer (SQS → Aurora)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/><b>5.12 </b>Lambda ETL + Bedrock Embedding
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.13-rag-api/><b>5.13 </b>RAG API (Lambda + API Gateway)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.14-frontend/ title="Tích hợp Frontend (Next.js + FastAPI)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.14-frontend/><b>5.14 </b>Tích hợp Frontend (Next.js + FastAPI)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.15-testing/ title="Kiểm thử & Giám sát" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.15-testing/><b>5.15 </b>Kiểm thử & Giám sát
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.16-cost/ title="Tối ưu chi phí" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.16-cost/><b>5.16 </b>Tối ưu chi phí
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.17-cleanup/ title="Dọn dẹp tài nguyên" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.17-cleanup/><b>5.17 </b>Dọn dẹp tài nguyên
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/6-self-evaluation/ title="Tự đánh giá" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/6-self-evaluation/><b>6. </b>Tự đánh giá
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/7-feedback/ title="Chia sẻ, đóng góp ý kiến" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/7-feedback/><b>7. </b>Chia sẻ, đóng góp ý kiến
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/8-references/ title="Tài liệu tham khảo" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/8-references/><b>8. </b>Tài liệu tham khảo
+<i class="fas fa-check read-icon"></i></a></li></ul><section id=shortcuts><h3>More</h3><ul><li><a class=padding href=http://awsstudygroup.com><i class='fab fa-aws'></i> AWS Study Group - Blog</a></li><li><a class=padding href=https://www.facebook.com/groups/awsstudygroupfcj><i class='fab fa-facebook'></i> AWS Study Group - Nhóm FB</a></li></ul></section><section id=prefooter><hr><ul><li><a class=padding><i class="fas fa-language fa-fw"></i><div class=select-style><select id=select-language onchange="location=this.value"><option id=en value=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.11-lambda-consumer/>English</option><option id=vi value=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/ selected>Tiếng Việt</option></select><svg id="Capa_1" xmlns:xlink="http://www.w3.org/1999/xlink" width="255" height="255" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255"><g><g id="arrow-drop-down"><polygon points="0,63.75 127.5,191.25 255,63.75"/></g></g></svg></div></a></li><li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li></ul></section><section id=footer><left><br><br><b>Last Updated</b><br><i><font color=orange>31-07-2026</font>
+</i></left><left><br><br><b>Team</b><br><i><a href=https://www.facebook.com/groups/660548818043427 style=color:orange>First Cloud AI Journey</a>
+</i></left><script async defer src=https://buttons.github.io/buttons.js></script></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i>
+</a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links><a href=https://tutrong2706.github.io/NewsRagReport/vi/>Báo cáo thực tập</a> > <a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/>News RAG Pipeline on AWS — Workshop</a> > Lambda Consumer (SQS → Aurora)</span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#kiến-trúc>Kiến trúc</a></li><li><a href=#lambda-function-code>Lambda Function Code</a><ul><li><a href=#cấu-trúc-file>Cấu trúc file</a></li><li><a href=#lambda_functionpy>lambda_function.py</a></li><li><a href=#requirementstxt>requirements.txt</a></li></ul></li><li><a href=#terraform-deployment>Terraform Deployment</a><ul><li><a href=#lambda-function-resource>Lambda Function Resource</a></li><li><a href=#sqs-trigger-event-source-mapping>SQS Trigger (Event Source Mapping)</a></li><li><a href=#iam-permissions>IAM Permissions</a></li><li><a href=#security-group-cho-lambda>Security Group cho Lambda</a></li></ul></li><li><a href=#building-deployment-package>Building Deployment Package</a></li><li><a href=#deploysh-script>deploy.sh Script</a></li><li><a href=#testing-the-consumer>Testing the Consumer</a><ul><li><a href=#1-send-test-message-to-sqs>1. Send Test Message to SQS</a></li><li><a href=#2-check-lambda-logs>2. Check Lambda Logs</a></li><li><a href=#3-verify-in-database>3. Verify in Database</a></li></ul></li><li><a href=#monitoring>Monitoring</a><ul><li><a href=#cloudwatch-metrics-to-watch>CloudWatch Metrics to Watch</a></li><li><a href=#alarms>Alarms</a></li></ul></li><li><a href=#troubleshooting>Troubleshooting</a></li><li><a href=#production-hardening>Production Hardening</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>Lambda Consumer (SQS → Aurora)</h1><h1 id=lambda-consumer-sqs-trigger--aurora-postgresql>Lambda Consumer: SQS Trigger → Aurora PostgreSQL</h1><p>Phần này bao gồm Lambda function consume messages từ SQS và insert bài viết thô vào Aurora PostgreSQL với SHA256 deduplication.</p><h2 id=kiến-trúc>Kiến trúc</h2><pre tabindex=0><code>SQS Queue (news_raw)
+       │
+       ▼
+┌─────────────────┐
+│  Lambda         │  (Python 3.11, 15 min timeout, 512 MB)
+│  Consumer       │
+│  ─────────────  │
+│  • Batch: 10    │
+│  • SHA256 dedup │
+│  • Insert raw   │
+└────────┬────────┘
+         │
+         ▼
+Aurora PostgreSQL (article_metadata table)
+</code></pre><h2 id=lambda-function-code>Lambda Function Code</h2><h3 id=cấu-trúc-file>Cấu trúc file</h3><pre tabindex=0><code>deploy/
+├── consumer/
+│   ├── lambda_function.py
+│   └── requirements.txt
+</code></pre><h3 id=lambda_functionpy>lambda_function.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> hashlib
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> sys
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> Dict, Any
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> psycopg2
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> psycopg2.extras <span style=color:#f92672>import</span> RealDictCursor
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Add layers path if needed</span>
+</span></span><span style=display:flex><span>sys<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>insert(<span style=color:#ae81ff>0</span>, <span style=color:#e6db74>&#34;/opt/python&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger()
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>setLevel(logging<span style=color:#f92672>.</span>INFO)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_db_connection</span>():
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Tạo database connection dùng environment variables.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> psycopg2<span style=color:#f92672>.</span>connect(
+</span></span><span style=display:flex><span>        host<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_HOST&#34;</span>],
+</span></span><span style=display:flex><span>        port<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_PORT&#34;</span>],
+</span></span><span style=display:flex><span>        database<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_NAME&#34;</span>],
+</span></span><span style=display:flex><span>        user<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_USER&#34;</span>],
+</span></span><span style=display:flex><span>        password<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_PASSWORD&#34;</span>],
+</span></span><span style=display:flex><span>        cursor_factory<span style=color:#f92672>=</span>RealDictCursor,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>init_database</span>(conn):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Đảm bảo article_metadata table tồn tại.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> conn<span style=color:#f92672>.</span>cursor() <span style=color:#66d9ef>as</span> cur:
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE TABLE IF NOT EXISTS article_metadata (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                id              BIGSERIAL PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                url_hash        CHAR(64) UNIQUE NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                url             TEXT NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_name     VARCHAR(100),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                source_domain   VARCHAR(100),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                title           TEXT,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                content         TEXT,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                category        VARCHAR(100),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                author          VARCHAR(200),
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                published_at    TIMESTAMPTZ,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                crawled_at      TIMESTAMPTZ,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                raw_html        TEXT,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                embedded        BOOLEAN DEFAULT FALSE,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                created_at      TIMESTAMPTZ DEFAULT NOW()
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE INDEX IF NOT EXISTS idx_article_metadata_url_hash
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            ON article_metadata(url_hash)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            CREATE INDEX IF NOT EXISTS idx_article_metadata_published_at
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            ON article_metadata(published_at DESC)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        &#34;&#34;&#34;</span>)
+</span></span><span style=display:flex><span>        conn<span style=color:#f92672>.</span>commit()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>process_record</span>(record: Dict[str, Any], conn) <span style=color:#f92672>-&gt;</span> bool:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Xử lý một SQS record. Returns True nếu inserted, False nếu duplicate.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Parse message body</span>
+</span></span><span style=display:flex><span>        body <span style=color:#f92672>=</span> record[<span style=color:#e6db74>&#34;body&#34;</span>]
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> isinstance(body, str):
+</span></span><span style=display:flex><span>            article <span style=color:#f92672>=</span> json<span style=color:#f92672>.</span>loads(body)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            article <span style=color:#f92672>=</span> body
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Validate required fields</span>
+</span></span><span style=display:flex><span>        url <span style=color:#f92672>=</span> article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;url&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> url:
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>&#34;Record missing URL, skipping&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Compute SHA256 hash cho deduplication</span>
+</span></span><span style=display:flex><span>        url_hash <span style=color:#f92672>=</span> hashlib<span style=color:#f92672>.</span>sha256(url<span style=color:#f92672>.</span>encode(<span style=color:#e6db74>&#34;utf-8&#34;</span>))<span style=color:#f92672>.</span>hexdigest()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Prepare insert data</span>
+</span></span><span style=display:flex><span>        insert_data <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;url_hash&#34;</span>: url_hash,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;url&#34;</span>: url,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;source_name&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;source_name&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;source_domain&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;source_domain&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;title&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;title&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;content&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;content&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;category&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;category&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;author&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;author&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;published_at&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;published_at&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;crawled_at&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;crawled_at&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;raw_html&#34;</span>: article<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;raw_html&#34;</span>, <span style=color:#e6db74>&#34;&#34;</span>)[:<span style=color:#ae81ff>50000</span>],  <span style=color:#75715e># Limit size</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Insert với ON CONFLICT DO NOTHING</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>with</span> conn<span style=color:#f92672>.</span>cursor() <span style=color:#66d9ef>as</span> cur:
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                INSERT INTO article_metadata (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    url_hash, url, source_name, source_domain, title, content,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    category, author, published_at, crawled_at, raw_html
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                ) VALUES (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    </span><span style=color:#e6db74>%(url_hash)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(url)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(source_name)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(source_domain)s</span><span style=color:#e6db74>,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    </span><span style=color:#e6db74>%(title)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(content)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(category)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(author)s</span><span style=color:#e6db74>,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    </span><span style=color:#e6db74>%(published_at)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(crawled_at)s</span><span style=color:#e6db74>, </span><span style=color:#e6db74>%(raw_html)s</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                )
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                ON CONFLICT (url_hash) DO NOTHING
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                RETURNING id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;&#34;&#34;</span>, insert_data)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            result <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchone()
+</span></span><span style=display:flex><span>            conn<span style=color:#f92672>.</span>commit()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> result:
+</span></span><span style=display:flex><span>                logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Inserted article: </span><span style=color:#e6db74>{</span>url[:<span style=color:#ae81ff>80</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>...&#34;</span>)
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>True</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                logger<span style=color:#f92672>.</span>debug(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Duplicate skipped: </span><span style=color:#e6db74>{</span>url[:<span style=color:#ae81ff>80</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>...&#34;</span>)
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> json<span style=color:#f92672>.</span>JSONDecodeError <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Invalid JSON in record: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Error processing record: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        conn<span style=color:#f92672>.</span>rollback()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>lambda_handler</span>(event: Dict[str, Any], context) <span style=color:#f92672>-&gt;</span> Dict[str, Any]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Lambda entry point - triggered by SQS.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Received </span><span style=color:#e6db74>{</span>len(event<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#39;Records&#39;</span>, []))<span style=color:#e6db74>}</span><span style=color:#e6db74> records&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Initialize database</span>
+</span></span><span style=display:flex><span>    conn <span style=color:#f92672>=</span> get_db_connection()
+</span></span><span style=display:flex><span>    init_database(conn)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        processed <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        inserted <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        duplicates <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        failed <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> record <span style=color:#f92672>in</span> event<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;Records&#34;</span>, []):
+</span></span><span style=display:flex><span>            processed <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> process_record(record, conn):
+</span></span><span style=display:flex><span>                inserted <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                duplicates <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Batch complete: processed=</span><span style=color:#e6db74>{</span>processed<span style=color:#e6db74>}</span><span style=color:#e6db74>, inserted=</span><span style=color:#e6db74>{</span>inserted<span style=color:#e6db74>}</span><span style=color:#e6db74>, duplicates=</span><span style=color:#e6db74>{</span>duplicates<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>200</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;body&#34;</span>: json<span style=color:#f92672>.</span>dumps({
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;processed&#34;</span>: processed,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;inserted&#34;</span>: inserted,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;duplicates&#34;</span>: duplicates,
+</span></span><span style=display:flex><span>            })
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Lambda handler error: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>500</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;body&#34;</span>: json<span style=color:#f92672>.</span>dumps({<span style=color:#e6db74>&#34;error&#34;</span>: str(e)})
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>finally</span>:
+</span></span><span style=display:flex><span>        conn<span style=color:#f92672>.</span>close()
+</span></span></code></pre></div><h3 id=requirementstxt>requirements.txt</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>psycopg2-binary==2.9.9
+</span></span></code></pre></div><h2 id=terraform-deployment>Terraform Deployment</h2><h3 id=lambda-function-resource>Lambda Function Resource</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_lambda_function&#34; &#34;consumer&#34;</span> {
+</span></span><span style=display:flex><span>  function_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-consumer&#34;</span>
+</span></span><span style=display:flex><span>  description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;SQS Consumer: inserts raw articles to Aurora&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  runtime       <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;python3.11&#34;</span>
+</span></span><span style=display:flex><span>  handler       <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;lambda_function.lambda_handler&#34;</span>
+</span></span><span style=display:flex><span>  timeout       <span style=color:#f92672>=</span> <span style=color:#ae81ff>900</span><span style=color:#75715e>  # 15 minutes
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  memory_size   <span style=color:#f92672>=</span> <span style=color:#ae81ff>512</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  # Package as zip
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  filename         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;consumer.zip&#34;</span>
+</span></span><span style=display:flex><span>  source_code_hash <span style=color:#f92672>=</span> <span style=color:#66d9ef>filebase64sha256</span>(<span style=color:#e6db74>&#34;consumer.zip&#34;</span>)<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  # VPC configuration (same as ECS tasks)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>vpc_config</span> {
+</span></span><span style=display:flex><span>    subnet_ids         <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_subnet</span>.<span style=color:#66d9ef>pub_a</span>.<span style=color:#66d9ef>id</span>, <span style=color:#66d9ef>aws_subnet</span>.<span style=color:#66d9ef>pub_b</span>.<span style=color:#66d9ef>id</span>]
+</span></span><span style=display:flex><span>    security_group_ids <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_security_group</span>.<span style=color:#66d9ef>lambda_sg</span>.<span style=color:#66d9ef>id</span>]
+</span></span><span style=display:flex><span>  }<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  # IAM role
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  role <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>lambda_role</span>.<span style=color:#66d9ef>arn</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  # Environment variables
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>environment</span> {
+</span></span><span style=display:flex><span>    variables <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>      DB_HOST     <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_rds_cluster</span>.<span style=color:#66d9ef>main</span>.<span style=color:#66d9ef>endpoint</span>
+</span></span><span style=display:flex><span>      DB_PORT     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;5432&#34;</span>
+</span></span><span style=display:flex><span>      DB_NAME     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag&#34;</span>
+</span></span><span style=display:flex><span>      DB_USER     <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>db_user</span>
+</span></span><span style=display:flex><span>      DB_PASSWORD <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>db_password</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      # For production, use Secrets Manager ARN instead:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      # DB_SECRET_ARN = aws_secretsmanager_secret.db_credentials.arn
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=sqs-trigger-event-source-mapping>SQS Trigger (Event Source Mapping)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_lambda_event_source_mapping&#34; &#34;consumer_sqs&#34;</span> {
+</span></span><span style=display:flex><span>  event_source_arn <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_sqs_queue</span>.<span style=color:#66d9ef>news_raw</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  function_name    <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>consumer</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  batch_size       <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>  maximum_batching_window_in_seconds <span style=color:#f92672>=</span> <span style=color:#ae81ff>30</span>
+</span></span><span style=display:flex><span>  enabled          <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=iam-permissions>IAM Permissions</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_role_policy&#34; &#34;lambda_permissions&#34;</span> {
+</span></span><span style=display:flex><span>  role <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>lambda_role</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  policy <span style=color:#f92672>=</span> <span style=color:#66d9ef>jsonencode</span>({
+</span></span><span style=display:flex><span>    Version <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2012-10-17&#34;</span>
+</span></span><span style=display:flex><span>    Statement <span style=color:#f92672>=</span> [<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      # CloudWatch Logs
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>      {
+</span></span><span style=display:flex><span>        Effect <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Allow&#34;</span>
+</span></span><span style=display:flex><span>        Action <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;logs:CreateLogGroup&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;logs:CreateLogStream&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;logs:PutLogEvents&#34;</span>
+</span></span><span style=display:flex><span>        ]
+</span></span><span style=display:flex><span>        Resource <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;arn:aws:logs:*:*:*&#34;</span>
+</span></span><span style=display:flex><span>      },<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      # VPC ENI management
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>      {
+</span></span><span style=display:flex><span>        Effect <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Allow&#34;</span>
+</span></span><span style=display:flex><span>        Action <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;ec2:CreateNetworkInterface&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;ec2:DescribeNetworkInterfaces&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;ec2:DeleteNetworkInterface&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;ec2:AssignPrivateIpAddresses&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;ec2:UnassignPrivateIpAddresses&#34;</span>
+</span></span><span style=display:flex><span>        ]
+</span></span><span style=display:flex><span>        Resource <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;*&#34;</span>
+</span></span><span style=display:flex><span>      },<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      # SQS (if Lambda needs to send messages elsewhere)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>      {
+</span></span><span style=display:flex><span>        Effect <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Allow&#34;</span>
+</span></span><span style=display:flex><span>        Action <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;sqs:SendMessage&#34;</span>]
+</span></span><span style=display:flex><span>        Resource <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_sqs_queue</span>.<span style=color:#66d9ef>news_raw</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>      },<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      # Secrets Manager (for DB credentials)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>      {
+</span></span><span style=display:flex><span>        Effect <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Allow&#34;</span>
+</span></span><span style=display:flex><span>        Action <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;secretsmanager:GetSecretValue&#34;</span>]
+</span></span><span style=display:flex><span>        Resource <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_secretsmanager_secret</span>.<span style=color:#66d9ef>db_credentials</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>  })
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=security-group-cho-lambda>Security Group cho Lambda</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_security_group&#34; &#34;lambda_sg&#34;</span> {
+</span></span><span style=display:flex><span>  name   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-lambda-sg&#34;</span>
+</span></span><span style=display:flex><span>  vpc_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_vpc</span>.<span style=color:#66d9ef>main</span>.<span style=color:#66d9ef>id</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  # Allow outbound to Internet (for any external API calls)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>egress</span> {
+</span></span><span style=display:flex><span>    from_port   <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    to_port     <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    protocol    <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;-1&#34;</span>
+</span></span><span style=display:flex><span>    cidr_blocks <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;0.0.0.0/0&#34;</span>]
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># Allow Lambda to connect to RDS
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_security_group_rule&#34; &#34;lambda_to_rds&#34;</span> {
+</span></span><span style=display:flex><span>  type                     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ingress&#34;</span>
+</span></span><span style=display:flex><span>  from_port                <span style=color:#f92672>=</span> <span style=color:#ae81ff>5432</span>
+</span></span><span style=display:flex><span>  to_port                  <span style=color:#f92672>=</span> <span style=color:#ae81ff>5432</span>
+</span></span><span style=display:flex><span>  protocol                 <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;tcp&#34;</span>
+</span></span><span style=display:flex><span>  source_security_group_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_security_group</span>.<span style=color:#66d9ef>lambda_sg</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  security_group_id        <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_security_group</span>.<span style=color:#66d9ef>rds_sg</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=building-deployment-package>Building Deployment Package</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Tạo deployment package</span>
+</span></span><span style=display:flex><span>cd deploy/consumer
+</span></span><span style=display:flex><span>pip install -r requirements.txt -t . --quiet
+</span></span><span style=display:flex><span>zip -r ../consumer.zip lambda_function.py
+</span></span><span style=display:flex><span>cd ../..
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Terraform apply sẽ pick up zip mới</span>
+</span></span><span style=display:flex><span>terraform apply -auto-approve
+</span></span></code></pre></div><h2 id=deploysh-script>deploy.sh Script</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e># deploy.sh - Deploy Lambda functions</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>set -e
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Consumer</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Building consumer...&#34;</span>
+</span></span><span style=display:flex><span>cd deploy/consumer
+</span></span><span style=display:flex><span>pip install -r requirements.txt -t . --quiet
+</span></span><span style=display:flex><span>zip -r ../consumer.zip . -q
+</span></span><span style=display:flex><span>cd ../..
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># ETL (similar)</span>
+</span></span><span style=display:flex><span>cd deploy/etl
+</span></span><span style=display:flex><span>pip install -r requirements.txt -t . --quiet
+</span></span><span style=display:flex><span>zip -r ../etl.zip . -q
+</span></span><span style=display:flex><span>cd ../..
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># RAG API</span>
+</span></span><span style=display:flex><span>cd deploy/rag
+</span></span><span style=display:flex><span>pip install -r requirements.txt -t . --quiet
+</span></span><span style=display:flex><span>zip -r ../rag.zip . -q
+</span></span><span style=display:flex><span>cd ../..
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Terraform apply will pick up new zips</span>
+</span></span><span style=display:flex><span>terraform apply -auto-approve
+</span></span></code></pre></div><h2 id=testing-the-consumer>Testing the Consumer</h2><h3 id=1-send-test-message-to-sqs>1. Send Test Message to SQS</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Get queue URL</span>
+</span></span><span style=display:flex><span>QUEUE_URL<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>aws sqs get-queue-url --queue-name newsrag-news-raw --query <span style=color:#e6db74>&#34;QueueUrl&#34;</span> --output text<span style=color:#66d9ef>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Send test message</span>
+</span></span><span style=display:flex><span>aws sqs send-message <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --queue-url $QUEUE_URL <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --message-body <span style=color:#e6db74>&#39;{
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;url&#34;: &#34;https://vnexpress.net/test-article-123&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;source_name&#34;: &#34;VnExpress&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;source_domain&#34;: &#34;vnexpress.net&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;title&#34;: &#34;Test Article Title&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;content&#34;: &#34;This is test content for the article.&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;category&#34;: &#34;Test&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;author&#34;: &#34;Test Author&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;published_at&#34;: &#34;2024-01-15T10:30:00+07:00&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;crawled_at&#34;: &#34;2024-01-15T03:30:00Z&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;raw_html&#34;: &#34;&lt;html&gt;...&lt;/html&gt;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  }&#39;</span>
+</span></span></code></pre></div><h3 id=2-check-lambda-logs>2. Check Lambda Logs</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Tail logs</span>
+</span></span><span style=display:flex><span>aws logs tail /aws/lambda/newsrag-consumer --follow
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Or filter for recent invocations</span>
+</span></span><span style=display:flex><span>aws logs filter-log-events <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --log-group-name /aws/lambda/newsrag-consumer <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --start-time <span style=color:#66d9ef>$(</span>date -d <span style=color:#e6db74>&#39;10 minutes ago&#39;</span> +%s<span style=color:#66d9ef>)</span><span style=color:#ae81ff>000</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --filter-pattern <span style=color:#e6db74>&#34;INSERT&#34;</span>
+</span></span></code></pre></div><h3 id=3-verify-in-database>3. Verify in Database</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ENDPOINT<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>terraform output -raw rds_endpoint<span style=color:#66d9ef>)</span>
+</span></span><span style=display:flex><span>psql <span style=color:#e6db74>&#34;postgresql://postgres:password@</span><span style=color:#e6db74>${</span>ENDPOINT<span style=color:#e6db74>}</span><span style=color:#e6db74>:5432/newsrag&#34;</span> -c <span style=color:#e6db74>&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>SELECT source_name, title, embedded, created_at
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>FROM article_metadata
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>ORDER BY created_at DESC
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>LIMIT 10;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&#34;</span>
+</span></span></code></pre></div><h2 id=monitoring>Monitoring</h2><h3 id=cloudwatch-metrics-to-watch>CloudWatch Metrics to Watch</h3><table><thead><tr><th style=text-align:left>Metric</th><th style=text-align:left>Namespace</th><th style=text-align:left>Alarm Threshold</th></tr></thead><tbody><tr><td style=text-align:left><code>Invocations</code></td><td style=text-align:left>AWS/Lambda</td><td style=text-align:left>-</td></tr><tr><td style=text-align:left><code>Errors</code></td><td style=text-align:left>AWS/Lambda</td><td style=text-align:left>> 0 for 5 min</td></tr><tr><td style=text-align:left><code>Duration</code> (p95)</td><td style=text-align:left>AWS/Lambda</td><td style=text-align:left>> 300s</td></tr><tr><td style=text-align:left><code>Throttles</code></td><td style=text-align:left>AWS/Lambda</td><td style=text-align:left>> 0</td></tr><tr><td style=text-align:left><code>ApproximateNumberOfMessagesVisible</code></td><td style=text-align:left>AWS/SQS</td><td style=text-align:left>> 1000 for 10 min</td></tr><tr><td style=text-align:left><code>ApproximateAgeOfOldestMessage</code></td><td style=text-align:left>AWS/SQS</td><td style=text-align:left>> 300s</td></tr></tbody></table><h3 id=alarms>Alarms</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_metric_alarm&#34; &#34;consumer_errors&#34;</span> {
+</span></span><span style=display:flex><span>  alarm_name          <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-consumer-errors&#34;</span>
+</span></span><span style=display:flex><span>  comparison_operator <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;GreaterThanThreshold&#34;</span>
+</span></span><span style=display:flex><span>  evaluation_periods  <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>  metric_name         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Errors&#34;</span>
+</span></span><span style=display:flex><span>  namespace           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AWS/Lambda&#34;</span>
+</span></span><span style=display:flex><span>  period              <span style=color:#f92672>=</span> <span style=color:#ae81ff>300</span>
+</span></span><span style=display:flex><span>  statistic           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Sum&#34;</span>
+</span></span><span style=display:flex><span>  threshold           <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>  alarm_description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Consumer Lambda errors detected&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  dimensions <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    FunctionName <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>consumer</span>.<span style=color:#66d9ef>function_name</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  alarm_actions <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_sns_topic</span>.<span style=color:#66d9ef>alerts</span>.<span style=color:#66d9ef>arn</span>]
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_metric_alarm&#34; &#34;sqs_backlog&#34;</span> {
+</span></span><span style=display:flex><span>  alarm_name          <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-sqs-backlog&#34;</span>
+</span></span><span style=display:flex><span>  comparison_operator <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;GreaterThanThreshold&#34;</span>
+</span></span><span style=display:flex><span>  evaluation_periods  <span style=color:#f92672>=</span> <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>  metric_name         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ApproximateNumberOfMessagesVisible&#34;</span>
+</span></span><span style=display:flex><span>  namespace           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AWS/SQS&#34;</span>
+</span></span><span style=display:flex><span>  period              <span style=color:#f92672>=</span> <span style=color:#ae81ff>300</span>
+</span></span><span style=display:flex><span>  statistic           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Average&#34;</span>
+</span></span><span style=display:flex><span>  threshold           <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>  alarm_description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;SQS queue backing up - consumer may be down&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  dimensions <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    QueueName <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_sqs_queue</span>.<span style=color:#66d9ef>news_raw</span>.<span style=color:#66d9ef>name</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  alarm_actions <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_sns_topic</span>.<span style=color:#66d9ef>alerts</span>.<span style=color:#66d9ef>arn</span>]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=troubleshooting>Troubleshooting</h2><table><thead><tr><th style=text-align:left>Issue</th><th style=text-align:left>Solution</th></tr></thead><tbody><tr><td style=text-align:left><code>Connection timeout</code></td><td style=text-align:left>Check Lambda SG allows outbound, RDS SG allows inbound from Lambda SG on 5432</td></tr><tr><td style=text-align:left><code>Access denied SecretsManager</code></td><td style=text-align:left>Add <code>secretsmanager:GetSecretValue</code> to Lambda role</td></tr><tr><td style=text-align:left><code>Duplicate inserts</code></td><td style=text-align:left>Verify <code>url_hash</code> UNIQUE constraint and <code>ON CONFLICT DO NOTHING</code></td></tr><tr><td style=text-align:left><code>Lambda timeout</code></td><td style=text-align:left>Increase timeout to 900s; reduce batch size; optimize DB inserts</td></tr><tr><td style=text-align:left><code>SQS messages not processed</code></td><td style=text-align:left>Check Event Source Mapping is enabled; check Lambda errors</td></tr></tbody></table><h2 id=production-hardening>Production Hardening</h2><ol><li><strong>Use RDS Proxy</strong> for connection pooling</li><li><strong>Secrets Manager</strong> for DB credentials (not env vars)</li><li><strong>Enable X-Ray tracing</strong> for distributed tracing</li><li><strong>Set up DLQ</strong> with CloudWatch alarm</li><li><strong>Configure retry policy</strong> with exponential backoff</li></ol><hr><p><strong>Tiếp theo:</strong> <a href=5.12-Lambda-ETL/>Lambda ETL + Bedrock Embedding</a></p><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=https://tutrong2706.github.io/NewsRagReport/js/clipboard.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.jquery.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery.sticky.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/featherlight.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/highlight.pack.js?1785509515></script><script>hljs.initHighlightingOnLoad()</script><script src=https://tutrong2706.github.io/NewsRagReport/js/modernizr.custom-3.6.0.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/learn.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/hugo-learn.js?1785509515></script><link href=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.js?1785509515></script><script>mermaid.initialize({startOnLoad:!0})</script><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,(e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date),(i=t.createElement(n),a=t.getElementsByTagName(n)[0]),i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-158079754-2","auto"),ga("send","pageview")</script></body></html>

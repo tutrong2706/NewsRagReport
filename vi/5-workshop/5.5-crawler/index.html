@@ -1,0 +1,435 @@
+<!doctype html><html lang=vi class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.134.3"><meta name=description content><meta name=author content="thienlh@thienlu.com"><link rel=icon href=https://tutrong2706.github.io/NewsRagReport/images/favicon.png type=image/png><title>Phát triển Crawler :: Báo cáo thực tập</title>
+<link href=https://tutrong2706.github.io/NewsRagReport/css/nucleus.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/fontawesome-all.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hybrid.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/featherlight.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/perfect-scrollbar.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/auto-complete.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/atom-one-dark-reasonable.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hugo-theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme-workshop.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery-3.3.1.min.js?1785509515></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/><nav id=sidebar class=showVisitedLinks><div id=header-wrapper><div id=header><a id=logo href=https://tutrong2706.github.io/NewsRagReport/><svg id="Layer_1" data-name="Layer 1" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff}.cls-2{fill:#fff;fill-rule:evenodd}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09 10.85a4.7 4.7.0 00.19 1.48 7.73 7.73.0 00.54 1.19.77.77.0 01.12.38.64.64.0 01-.32.49l-1 .7a.83.83.0 01-.44.15.69.69.0 01-.49-.23 3.8 3.8.0 01-.6-.77q-.25-.42-.51-1a6.14 6.14.0 01-4.89 2.3 4.54 4.54.0 01-3.32-1.19 4.27 4.27.0 01-1.22-3.2 4.28 4.28.0 011.46-3.4A6.06 6.06.0 017.69 6.46a12.47 12.47.0 011.76.13q.92.13 1.91.36V5.73a3.65 3.65.0 00-.79-2.66A3.81 3.81.0 007.86 2.3a7.71 7.71.0 00-1.79.22 12.78 12.78.0 00-1.79.57 4.55 4.55.0 01-.58.22h-.26q-.35.0-.35-.52V2a1.09 1.09.0 01.12-.58 1.2 1.2.0 01.47-.35A10.88 10.88.0 015.77.32 10.19 10.19.0 018.36.0a6 6 0 014.35 1.35 5.49 5.49.0 011.38 4.09zM7.34 13.38a5.36 5.36.0 001.72-.31A3.63 3.63.0 0010.63 12 2.62 2.62.0 0011.19 11a5.63 5.63.0 00.16-1.44v-.7a14.35 14.35.0 00-1.53-.28 12.37 12.37.0 00-1.56-.1 3.84 3.84.0 00-2.47.67A2.34 2.34.0 005 11a2.35 2.35.0 00.61 1.76A2.4 2.4.0 007.34 13.38zm13.35 1.8a1 1 0 01-.64-.16 1.3 1.3.0 01-.35-.65L15.81 1.51a3 3 0 01-.15-.67.36.36.0 01.41-.41H17.7a1 1 0 01.65.16 1.4 1.4.0 01.33.65l2.79 11 2.59-11A1.17 1.17.0 0124.39.6a1.1 1.1.0 01.67-.16H26.4a1.1 1.1.0 01.67.16 1.17 1.17.0 01.32.65L30 12.39 32.88 1.25A1.39 1.39.0 0133.22.6a1 1 0 01.65-.16h1.54a.36.36.0 01.41.41 1.36 1.36.0 010 .26 3.64 3.64.0 01-.12.41l-4 12.86a1.3 1.3.0 01-.35.65 1 1 0 01-.64.16H29.25a1 1 0 01-.67-.17 1.26 1.26.0 01-.32-.67L25.67 3.64l-2.56 10.7a1.26 1.26.0 01-.32.67 1 1 0 01-.67.17zm21.36.44a11.28 11.28.0 01-2.56-.29 7.44 7.44.0 01-1.92-.67 1 1 0 01-.61-.93v-.84q0-.52.38-.52a.9.9.0 01.31.06l.42.17a8.77 8.77.0 001.83.58 9.78 9.78.0 002 .2 4.48 4.48.0 002.43-.55 1.76 1.76.0 00.86-1.57 1.61 1.61.0 00-.45-1.16A4.29 4.29.0 0043 9.22l-2.41-.76A5.15 5.15.0 0138 6.78a3.94 3.94.0 01-.83-2.41 3.7 3.7.0 01.45-1.85 4.47 4.47.0 011.19-1.37 5.27 5.27.0 011.7-.86A7.4 7.4.0 0142.6.0a8.87 8.87.0 011.12.07q.57.07 1.08.19t.95.26a4.27 4.27.0 01.7.29 1.59 1.59.0 01.49.41.94.94.0 01.15.55v.79q0 .52-.38.52a1.76 1.76.0 01-.64-.2 7.74 7.74.0 00-3.2-.64 4.37 4.37.0 00-2.21.47 1.6 1.6.0 00-.79 1.48 1.58 1.58.0 00.49 1.18 4.94 4.94.0 001.83.92L44.55 7a5.08 5.08.0 012.57 1.6A3.76 3.76.0 0147.9 11a4.21 4.21.0 01-.44 1.93 4.4 4.4.0 01-1.21 1.47 5.43 5.43.0 01-1.85.93A8.25 8.25.0 0142.05 15.62z"/><path class="cls-2" d="M45.19 23.81C39.72 27.85 31.78 30 25 30A36.64 36.64.0 01.22 20.57c-.51-.46-.06-1.09.56-.74A49.78 49.78.0 0025.53 26.4 49.23 49.23.0 0044.4 22.53C45.32 22.14 46.1 23.14 45.19 23.81z"/><path class="cls-2" d="M47.47 21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74 3.13-2.2 8.27-1.57 8.86-.83s-.16 5.89-3.09 8.35c-.45.38-.88.18-.68-.32C46.69 25.8 48.17 22.11 47.47 21.21z"/></svg></a></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/lunr.min.js?1785509515></script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/auto-complete.js?1785509515></script><script type=text/javascript>var baseurl="https://tutrong2706.github.io/NewsRagReport//vi"</script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/search.js?1785509515></script></div><div class=highlightable><ul class=topics><li data-nav-id=/vi/1-worklog/ title="Nhật ký công việc" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/><b>1. </b>Nhật ký công việc
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/1-worklog/1.1-week1/ title="Worklog Tuần 1" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.1-week1/><b>1.1. </b>Worklog Tuần 1
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.2-week2/ title="Worklog Tuần 2" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.2-week2/><b>1.2. </b>Worklog Tuần 2
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.3-week3/ title="Worklog Tuần 3" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.3-week3/><b>1.3. </b>Worklog Tuần 3
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.4-week4/ title="Worklog Tuần 4" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.4-week4/><b>1.4. </b>Worklog Tuần 4
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.5-week5/ title="Worklog Tuần 5" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.5-week5/><b>1.5. </b>Worklog Tuần 5
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.6-week6/ title="Worklog Tuần 6" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.6-week6/><b>1.6. </b>Worklog Tuần 6
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.7-week7/ title="Worklog Tuần 7" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.7-week7/><b>1.7. </b>Worklog Tuần 7
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.8-week8/ title="Worklog Tuần 8" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.8-week8/><b>1.8. </b>Worklog Tuần 8
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/2-proposal/ title="Bản đề xuất" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/2-proposal/><b>2. </b>Bản đề xuất
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/ title="Các bài Blogs & Kinh nghiệm" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/><b>3. </b>Các bài Blogs & Kinh nghiệm
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/3-blogsposted/3.1-blog1/ title="Blog 1: Vượt giới hạn Timeout với AWS Fargate" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.1-blog1/><b>3.1. </b>Blog 1: Vượt giới hạn Timeout với AWS Fargate
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.2-blog2/ title="Blog 2: Tối ưu chi phí bằng SQS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.2-blog2/><b>3.2. </b>Blog 2: Tối ưu chi phí bằng SQS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.3-blog3/ title="Blog 3: Xây dựng RAG tối ưu" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.3-blog3/><b>3.3. </b>Blog 3: Xây dựng RAG tối ưu
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/4-eventparticipated/ title="Sự kiện đã tham gia" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/><b>4. </b>Sự kiện đã tham gia
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/4-eventparticipated/4.1-event1/ title="Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.1-event1/>1. Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.2-event2/ title="Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.2-event2/>2. Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.3-event3/ title="Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.3-event3/>3. Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/5-workshop/ title="News RAG Pipeline on AWS — Workshop" class="dd-item
+parent"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/><b>5. </b>News RAG Pipeline on AWS — Workshop
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/5-workshop/5.1-workshop-overview/ title="Tổng quan Workshop" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.1-workshop-overview/><b>5.1 </b>Tổng quan Workshop
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.2-prerequisites/ title="Điều kiện tiên quyết" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.2-prerequisites/><b>5.2 </b>Điều kiện tiên quyết
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.3-infrastructure/ title="Hạ tầng dưới dạng Code (Terraform)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.3-infrastructure/><b>5.3 </b>Hạ tầng dưới dạng Code (Terraform)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.4-local-dev/ title="Thiết lập phát triển cục bộ" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/><b>5.4 </b>Thiết lập phát triển cục bộ
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.5-crawler/ title="Phát triển Crawler" class="dd-item
+active"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/><b>5.5 </b>Phát triển Crawler
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.6-ingestion/ title="Nhập dữ liệu (Kafka Consumer → PostgreSQL)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.6-ingestion/><b>5.6 </b>Nhập dữ liệu (Kafka Consumer → PostgreSQL)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.7-etl/ title="ETL & Star Schema" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.7-etl/><b>5.7 </b>ETL & Star Schema
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.8-vectorize/ title="Vector hóa (Local Dev - SentenceTransformer → Qdrant)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.8-vectorize/><b>5.8 </b>Vector hóa (Local Dev - SentenceTransformer → Qdrant)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.9-aws-deploy/ title="Chuẩn bị triển khai AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.9-aws-deploy/><b>5.9 </b>Chuẩn bị triển khai AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.10-fargate-crawler/><b>5.10 </b>Fargate Crawler (ECS + EventBridge)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/><b>5.11 </b>Lambda Consumer (SQS → Aurora)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/><b>5.12 </b>Lambda ETL + Bedrock Embedding
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.13-rag-api/><b>5.13 </b>RAG API (Lambda + API Gateway)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.14-frontend/ title="Tích hợp Frontend (Next.js + FastAPI)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.14-frontend/><b>5.14 </b>Tích hợp Frontend (Next.js + FastAPI)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.15-testing/ title="Kiểm thử & Giám sát" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.15-testing/><b>5.15 </b>Kiểm thử & Giám sát
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.16-cost/ title="Tối ưu chi phí" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.16-cost/><b>5.16 </b>Tối ưu chi phí
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.17-cleanup/ title="Dọn dẹp tài nguyên" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.17-cleanup/><b>5.17 </b>Dọn dẹp tài nguyên
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/6-self-evaluation/ title="Tự đánh giá" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/6-self-evaluation/><b>6. </b>Tự đánh giá
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/7-feedback/ title="Chia sẻ, đóng góp ý kiến" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/7-feedback/><b>7. </b>Chia sẻ, đóng góp ý kiến
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/8-references/ title="Tài liệu tham khảo" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/8-references/><b>8. </b>Tài liệu tham khảo
+<i class="fas fa-check read-icon"></i></a></li></ul><section id=shortcuts><h3>More</h3><ul><li><a class=padding href=http://awsstudygroup.com><i class='fab fa-aws'></i> AWS Study Group - Blog</a></li><li><a class=padding href=https://www.facebook.com/groups/awsstudygroupfcj><i class='fab fa-facebook'></i> AWS Study Group - Nhóm FB</a></li></ul></section><section id=prefooter><hr><ul><li><a class=padding><i class="fas fa-language fa-fw"></i><div class=select-style><select id=select-language onchange="location=this.value"><option id=en value=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.5-crawler/>English</option><option id=vi value=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/ selected>Tiếng Việt</option></select><svg id="Capa_1" xmlns:xlink="http://www.w3.org/1999/xlink" width="255" height="255" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255"><g><g id="arrow-drop-down"><polygon points="0,63.75 127.5,191.25 255,63.75"/></g></g></svg></div></a></li><li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li></ul></section><section id=footer><left><br><br><b>Last Updated</b><br><i><font color=orange>31-07-2026</font>
+</i></left><left><br><br><b>Team</b><br><i><a href=https://www.facebook.com/groups/660548818043427 style=color:orange>First Cloud AI Journey</a>
+</i></left><script async defer src=https://buttons.github.io/buttons.js></script></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i>
+</a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links><a href=https://tutrong2706.github.io/NewsRagReport/vi/>Báo cáo thực tập</a> > <a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/>News RAG Pipeline on AWS — Workshop</a> > Phát triển Crawler</span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#tại-sao-dùng-sitemapspider>Tại sao dùng SitemapSpider?</a></li><li><a href=#cấu-trúc-dự-án>Cấu trúc dự án</a></li><li><a href=#cấu-hình-configconfig_sitejson>Cấu hình (config/config_site.json)</a></li><li><a href=#cài-đặt-scrapy-crawlersettingspy>Cài đặt Scrapy (crawler/settings.py)</a></li><li><a href=#items-crawleritemspy>Items (crawler/items.py)</a></li><li><a href=#sitemapspider-implementation-crawlerspidersspiderpy>SitemapSpider Implementation (crawler/spiders/spider.py)</a></li><li><a href=#kafka-pipeline-crawlerpipelinespy>Kafka Pipeline (crawler/pipelines.py)</a></li><li><a href=#chạy-crawler>Chạy Crawler</a><ul><li><a href=#local-development-với-docker-compose>Local Development (với Docker Compose)</a></li><li><a href=#output-mong-đợi>Output mong đợi</a></li><li><a href=#xác-minh-kafka-messages>Xác minh Kafka Messages</a></li></ul></li><li><a href=#dockerfile-cho-fargate-multi-stage>Dockerfile cho Fargate (Multi-stage)</a></li><li><a href=#build--test-cục-bộ>Build & Test cục bộ</a></li><li><a href=#thêm-trang-tin-tức-mới>Thêm trang tin tức mới</a></li><li><a href=#vấn-đề-thường-gặp--khắc-phục>Vấn đề thường gặp & Khắc phục</a></li><li><a href=#bước-tiếp-theo>Bước tiếp theo</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>Phát triển Crawler</h1><h1 id=phát-triển-crawler>Phát triển Crawler</h1><p>Phần này bao gồm việc xây dựng crawler Scrapy để thu thập bài báo từ các trang tin tức Việt Nam sử dụng SitemapSpider.</p><h2 id=tại-sao-dùng-sitemapspider>Tại sao dùng SitemapSpider?</h2><p>Khác với <code>CrawlSpider</code> truyền thống dùng <code>DEPTH_LIMIT</code>, <code>SitemapSpider</code> đọc trực tiếp <code>sitemap_news.xml</code>, đảm bảo:</p><ul><li><strong>Không bỏ sót bài</strong> — phát hiện tất cả URL trong sitemap, không chỉ các trang link</li><li><strong>Truy cập lịch sử</strong> — có thể crawl bài cũ qua sitemap archives</li><li><strong>Phát hiện nhanh hơn</strong> — không cần follow pagination links</li><li><strong>Tuân thủ robots.txt</strong> — built-in <code>ROBOTSTXT_OBEY = True</code></li></ul><h2 id=cấu-trúc-dự-án>Cấu trúc dự án</h2><pre tabindex=0><code>crawler/
+├── __init__.py
+├── settings.py           # Cài đặt Scrapy
+├── pipelines.py          # Item pipelines (Kafka, PostgreSQL)
+├── items.py              # Data models
+└── spiders/
+    ├── __init__.py
+    └── spider.py         # SitemapSpider implementation
+</code></pre><h2 id=cấu-hình-configconfig_sitejson>Cấu hình (config/config_site.json)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>[
+</span></span><span style=display:flex><span>  {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;VnExpress&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;url&#34;</span>: <span style=color:#e6db74>&#34;https://vnexpress.net/sitemap_news.xml&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;domain&#34;</span>: <span style=color:#e6db74>&#34;vnexpress.net&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;category_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@property=&#39;article:section&#39;]/@content&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;title_xpath&#34;</span>: <span style=color:#e6db74>&#34;//h1[@class=&#39;title-detail&#39;]//text()&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;content_xpath&#34;</span>: <span style=color:#e6db74>&#34;//article[@class=&#39;fck_detail&#39;]//p//text()&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;author_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@name=&#39;author&#39;]/@content&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;published_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@property=&#39;article:published_time&#39;]/@content&#34;</span>
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;ThanhNien&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;url&#34;</span>: <span style=color:#e6db74>&#34;https://thanhnien.vn/sitemap.xml&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;domain&#34;</span>: <span style=color:#e6db74>&#34;thanhnien.vn&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;category_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@property=&#39;article:section&#39;]/@content&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;title_xpath&#34;</span>: <span style=color:#e6db74>&#34;//h1[@class=&#39;detail-title&#39;]//text()&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;content_xpath&#34;</span>: <span style=color:#e6db74>&#34;//div[@class=&#39;detail-content&#39;]//p//text()&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;author_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@name=&#39;author&#39;]/@content&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;published_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@property=&#39;article:published_time&#39;]/@content&#34;</span>
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;VietnamNet&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;url&#34;</span>: <span style=color:#e6db74>&#34;https://vietnamnet.vn/sitemap_news.xml&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;domain&#34;</span>: <span style=color:#e6db74>&#34;vietnamnet.vn&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;category_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@property=&#39;article:section&#39;]/@content&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;title_xpath&#34;</span>: <span style=color:#e6db74>&#34;//h1[@class=&#39;title-detail&#39;]//text()&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;content_xpath&#34;</span>: <span style=color:#e6db74>&#34;//div[@class=&#39;main-content&#39;]//p//text()&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;author_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@name=&#39;author&#39;]/@content&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;published_xpath&#34;</span>: <span style=color:#e6db74>&#34;//meta[@property=&#39;article:published_time&#39;]/@content&#34;</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>Mỗi trang định nghĩa XPath selectors để trích xuất dữ liệu có cấu trúc.</p><h2 id=cài-đặt-scrapy-crawlersettingspy>Cài đặt Scrapy (crawler/settings.py)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>BOT_NAME <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag_crawler&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>SPIDER_MODULES <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;crawler.spiders&#34;</span>]
+</span></span><span style=display:flex><span>NEWSPIDER_MODULE <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;crawler.spiders&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Tuân thủ robots.txt</span>
+</span></span><span style=display:flex><span>ROBOTSTXT_OBEY <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Concurrency &amp; Delay (lịch sự)</span>
+</span></span><span style=display:flex><span>CONCURRENT_REQUESTS <span style=color:#f92672>=</span> <span style=color:#ae81ff>8</span>
+</span></span><span style=display:flex><span>CONCURRENT_REQUESTS_PER_DOMAIN <span style=color:#f92672>=</span> <span style=color:#ae81ff>4</span>
+</span></span><span style=display:flex><span>DOWNLOAD_DELAY <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>RANDOMIZE_DOWNLOAD_DELAY <span style=color:#f92672>=</span> <span style=color:#ae81ff>0.5</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Timeout</span>
+</span></span><span style=display:flex><span>DOWNLOAD_TIMEOUT <span style=color:#f92672>=</span> <span style=color:#ae81ff>30</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># User Agent</span>
+</span></span><span style=display:flex><span>USER_AGENT <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;NewsRAG Bot (+https://github.com/your-repo/newsrag)&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># AutoThrottle (delay thích ứng)</span>
+</span></span><span style=display:flex><span>AUTOTHROTTLE_ENABLED <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
+</span></span><span style=display:flex><span>AUTOTHROTTLE_START_DELAY <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>AUTOTHROTTLE_MAX_DELAY <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>AUTOTHROTTLE_TARGET_CONCURRENCY <span style=color:#f92672>=</span> <span style=color:#ae81ff>4.0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Pipelines</span>
+</span></span><span style=display:flex><span>ITEM_PIPELINES <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;crawler.pipelines.KafkaPipeline&#34;</span>: <span style=color:#ae81ff>300</span>,
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Kafka Configuration</span>
+</span></span><span style=display:flex><span>KAFKA_BOOTSTRAP_SERVERS <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;localhost:9092&#34;</span>
+</span></span><span style=display:flex><span>KAFKA_TOPIC_NEWS <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;news_raw&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Logging</span>
+</span></span><span style=display:flex><span>LOG_LEVEL <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;INFO&#34;</span>
+</span></span><span style=display:flex><span>LOG_FORMAT <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>%(asctime)s</span><span style=color:#e6db74> [</span><span style=color:#e6db74>%(levelname)s</span><span style=color:#e6db74>] </span><span style=color:#e6db74>%(name)s</span><span style=color:#e6db74>: </span><span style=color:#e6db74>%(message)s</span><span style=color:#e6db74>&#34;</span>
+</span></span></code></pre></div><h2 id=items-crawleritemspy>Items (crawler/items.py)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> scrapy
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>NewsArticleItem</span>(scrapy<span style=color:#f92672>.</span>Item):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Raw article data từ crawler&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    url <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    url_hash <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()        <span style=color:#75715e># SHA256 cho deduplication</span>
+</span></span><span style=display:flex><span>    source_name <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()     <span style=color:#75715e># VnExpress, ThanhNien, etc.</span>
+</span></span><span style=display:flex><span>    source_domain <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()   <span style=color:#75715e># vnexpress.net</span>
+</span></span><span style=display:flex><span>    title <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    content <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    category <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    author <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    published_at <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()    <span style=color:#75715e># ISO datetime string</span>
+</span></span><span style=display:flex><span>    crawled_at <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()      <span style=color:#75715e># UTC now</span>
+</span></span><span style=display:flex><span>    raw_html <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()        <span style=color:#75715e># Full HTML cho debugging</span>
+</span></span></code></pre></div><h2 id=sitemapspider-implementation-crawlerspidersspiderpy>SitemapSpider Implementation (crawler/spiders/spider.py)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> hashlib
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> datetime <span style=color:#f92672>import</span> datetime, timezone
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> Optional
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> scrapy
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> scrapy.spiders <span style=color:#f92672>import</span> SitemapSpider
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> crawler.items <span style=color:#f92672>import</span> NewsArticleItem
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> crawler.settings <span style=color:#f92672>import</span> KAFKA_BOOTSTRAP_SERVERS, KAFKA_TOPIC_NEWS
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>NewsSitemapSpider</span>(SitemapSpider):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Crawl các trang tin tức Việt Nam qua sitemap_news.xml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Đẩy bài viết trích xuất được vào Kafka để xử lý tiếp.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;news_sitemap&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Load site configs từ JSON</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#34;config/config_site.json&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>, encoding<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>        SITE_CONFIGS <span style=color:#f92672>=</span> json<span style=color:#f92672>.</span>load(f)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Xây dựng sitemap_urls và rules động</span>
+</span></span><span style=display:flex><span>    sitemap_urls <span style=color:#f92672>=</span> [site[<span style=color:#e6db74>&#34;url&#34;</span>] <span style=color:#66d9ef>for</span> site <span style=color:#f92672>in</span> SITE_CONFIGS]
+</span></span><span style=display:flex><span>    sitemap_rules <span style=color:#f92672>=</span> [(<span style=color:#e6db74>&#34;/&#34;</span>, <span style=color:#e6db74>&#34;parse_article&#34;</span>)]  <span style=color:#75715e># Match tất cả URL trong sitemap</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    custom_settings <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;CLOSESPIDER_TIMEOUT&#34;</span>: <span style=color:#ae81ff>1800</span>,  <span style=color:#75715e># 30 phút max mỗi spider run</span>
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;CLOSESPIDER_ITEMCOUNT&#34;</span>: <span style=color:#ae81ff>1000</span>,  <span style=color:#75715e># Max bài viết mỗi run</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> __init__(self, <span style=color:#f92672>*</span>args, <span style=color:#f92672>**</span>kwargs):
+</span></span><span style=display:flex><span>        super()<span style=color:#f92672>.</span>__init__(<span style=color:#f92672>*</span>args, <span style=color:#f92672>**</span>kwargs)
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>site_config_map <span style=color:#f92672>=</span> {site[<span style=color:#e6db74>&#34;domain&#34;</span>]: site <span style=color:#66d9ef>for</span> site <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>SITE_CONFIGS}
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>kafka_producer <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>_init_kafka()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_init_kafka</span>(self):
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Khởi tạo Kafka producer&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>from</span> kafka <span style=color:#f92672>import</span> KafkaProducer
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>kafka_producer <span style=color:#f92672>=</span> KafkaProducer(
+</span></span><span style=display:flex><span>                bootstrap_servers<span style=color:#f92672>=</span>KAFKA_BOOTSTRAP_SERVERS,
+</span></span><span style=display:flex><span>                value_serializer<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> v: json<span style=color:#f92672>.</span>dumps(v, ensure_ascii<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>)<span style=color:#f92672>.</span>encode(<span style=color:#e6db74>&#34;utf-8&#34;</span>),
+</span></span><span style=display:flex><span>                key_serializer<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> k: k<span style=color:#f92672>.</span>encode(<span style=color:#e6db74>&#34;utf-8&#34;</span>) <span style=color:#66d9ef>if</span> k <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>None</span>,
+</span></span><span style=display:flex><span>                acks<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;all&#34;</span>,
+</span></span><span style=display:flex><span>                retries<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>,
+</span></span><span style=display:flex><span>                max_in_flight_requests_per_connection<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>,
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Kafka producer init failed: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>kafka_producer <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>parse_article</span>(self, response):
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Parse trang bài viết dùng site-specific XPath selectors&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        domain <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_extract_domain(response<span style=color:#f92672>.</span>url)
+</span></span><span style=display:flex><span>        config <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>site_config_map<span style=color:#f92672>.</span>get(domain)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> config:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>warning(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;No config for domain: </span><span style=color:#e6db74>{</span>domain<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Trích xuất fields dùng site-specific XPaths</span>
+</span></span><span style=display:flex><span>        title <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_extract_text(response, config<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;title_xpath&#34;</span>))
+</span></span><span style=display:flex><span>        content <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_extract_text(response, config<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;content_xpath&#34;</span>))
+</span></span><span style=display:flex><span>        category <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_extract_text(response, config<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;category_xpath&#34;</span>))
+</span></span><span style=display:flex><span>        author <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_extract_text(response, config<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;author_xpath&#34;</span>))
+</span></span><span style=display:flex><span>        published_str <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_extract_text(response, config<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;published_xpath&#34;</span>))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Validate required fields</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> title <span style=color:#f92672>or</span> <span style=color:#f92672>not</span> content:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>debug(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Skipping </span><span style=color:#e6db74>{</span>response<span style=color:#f92672>.</span>url<span style=color:#e6db74>}</span><span style=color:#e6db74>: missing title or content&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Parse published date</span>
+</span></span><span style=display:flex><span>        published_at <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>_parse_date(published_str)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Tạo item</span>
+</span></span><span style=display:flex><span>        item <span style=color:#f92672>=</span> NewsArticleItem()
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;url&#34;</span>] <span style=color:#f92672>=</span> response<span style=color:#f92672>.</span>url
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;url_hash&#34;</span>] <span style=color:#f92672>=</span> hashlib<span style=color:#f92672>.</span>sha256(response<span style=color:#f92672>.</span>url<span style=color:#f92672>.</span>encode())<span style=color:#f92672>.</span>hexdigest()
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;source_name&#34;</span>] <span style=color:#f92672>=</span> config[<span style=color:#e6db74>&#34;name&#34;</span>]
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;source_domain&#34;</span>] <span style=color:#f92672>=</span> domain
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;title&#34;</span>] <span style=color:#f92672>=</span> title<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;content&#34;</span>] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34; &#34;</span><span style=color:#f92672>.</span>join(content<span style=color:#f92672>.</span>split())  <span style=color:#75715e># Normalize whitespace</span>
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;category&#34;</span>] <span style=color:#f92672>=</span> category<span style=color:#f92672>.</span>strip() <span style=color:#66d9ef>if</span> category <span style=color:#66d9ef>else</span> <span style=color:#e6db74>&#34;Unknown&#34;</span>
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;author&#34;</span>] <span style=color:#f92672>=</span> author<span style=color:#f92672>.</span>strip() <span style=color:#66d9ef>if</span> author <span style=color:#66d9ef>else</span> <span style=color:#e6db74>&#34;Unknown&#34;</span>
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;published_at&#34;</span>] <span style=color:#f92672>=</span> published_at<span style=color:#f92672>.</span>isoformat() <span style=color:#66d9ef>if</span> published_at <span style=color:#66d9ef>else</span> datetime<span style=color:#f92672>.</span>now(timezone<span style=color:#f92672>.</span>utc)<span style=color:#f92672>.</span>isoformat()
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;crawled_at&#34;</span>] <span style=color:#f92672>=</span> datetime<span style=color:#f92672>.</span>now(timezone<span style=color:#f92672>.</span>utc)<span style=color:#f92672>.</span>isoformat()
+</span></span><span style=display:flex><span>        item[<span style=color:#e6db74>&#34;raw_html&#34;</span>] <span style=color:#f92672>=</span> response<span style=color:#f92672>.</span>text[:<span style=color:#ae81ff>50000</span>]  <span style=color:#75715e># Giới hạn size</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Gửi tới Kafka (non-blocking)</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>kafka_producer:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>                future <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>kafka_producer<span style=color:#f92672>.</span>send(
+</span></span><span style=display:flex><span>                    KAFKA_TOPIC_NEWS,
+</span></span><span style=display:flex><span>                    key<span style=color:#f92672>=</span>item[<span style=color:#e6db74>&#34;url_hash&#34;</span>],
+</span></span><span style=display:flex><span>                    value<span style=color:#f92672>=</span>dict(item)
+</span></span><span style=display:flex><span>                )
+</span></span><span style=display:flex><span>                <span style=color:#75715e># Optional: wait for confirmation</span>
+</span></span><span style=display:flex><span>                <span style=color:#75715e># future.get(timeout=5)</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>                self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Kafka send failed: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>yield</span> item
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_extract_domain</span>(self, url: str) <span style=color:#f92672>-&gt;</span> str:
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Trích xuất domain từ URL&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>from</span> urllib.parse <span style=color:#f92672>import</span> urlparse
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> urlparse(url)<span style=color:#f92672>.</span>netloc<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#34;www.&#34;</span>, <span style=color:#e6db74>&#34;&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_extract_text</span>(self, response, xpath: Optional[str]) <span style=color:#f92672>-&gt;</span> Optional[str]:
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Trích xuất và join text từ XPath&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> xpath:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>        texts <span style=color:#f92672>=</span> response<span style=color:#f92672>.</span>xpath(xpath)<span style=color:#f92672>.</span>getall()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34; &#34;</span><span style=color:#f92672>.</span>join(t<span style=color:#f92672>.</span>strip() <span style=color:#66d9ef>for</span> t <span style=color:#f92672>in</span> texts <span style=color:#66d9ef>if</span> t<span style=color:#f92672>.</span>strip()) <span style=color:#66d9ef>if</span> texts <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_parse_date</span>(self, date_str: Optional[str]) <span style=color:#f92672>-&gt;</span> Optional[datetime]:
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Parse các định dạng date khác nhau&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> date_str:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>        formats <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;%Y-%m-</span><span style=color:#e6db74>%d</span><span style=color:#e6db74>T%H:%M:%S%z&#34;</span>,      <span style=color:#75715e># ISO with timezone</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;%Y-%m-</span><span style=color:#e6db74>%d</span><span style=color:#e6db74>T%H:%M:%S&#34;</span>,        <span style=color:#75715e># ISO without timezone</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;%Y-%m-</span><span style=color:#e6db74>%d</span><span style=color:#e6db74> %H:%M:%S&#34;</span>,        <span style=color:#75715e># Standard</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>%d</span><span style=color:#e6db74>/%m/%Y %H:%M&#34;</span>,           <span style=color:#75715e># VN format</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;%Y-%m-</span><span style=color:#e6db74>%d</span><span style=color:#e6db74>&#34;</span>,                 <span style=color:#75715e># Date only</span>
+</span></span><span style=display:flex><span>        ]
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> fmt <span style=color:#f92672>in</span> formats:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> datetime<span style=color:#f92672>.</span>strptime(date_str<span style=color:#f92672>.</span>strip(), fmt)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>ValueError</span>:
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>continue</span>
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>debug(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Could not parse date: </span><span style=color:#e6db74>{</span>date_str<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>closed</span>(self, reason):
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;&#34;&#34;Cleanup khi spider đóng&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>kafka_producer:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>kafka_producer<span style=color:#f92672>.</span>flush()
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>kafka_producer<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Spider closed: </span><span style=color:#e6db74>{</span>reason<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span></code></pre></div><h2 id=kafka-pipeline-crawlerpipelinespy>Kafka Pipeline (crawler/pipelines.py)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> kafka <span style=color:#f92672>import</span> KafkaProducer
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> kafka.errors <span style=color:#f92672>import</span> KafkaError
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> crawler.settings <span style=color:#f92672>import</span> KAFKA_BOOTSTRAP_SERVERS, KAFKA_TOPIC_NEWS
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>KafkaPipeline</span>:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Scrapy pipeline gửi items đến Kafka&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> __init__(self):
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>producer <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger(__name__)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>open_spider</span>(self, spider):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>producer <span style=color:#f92672>=</span> KafkaProducer(
+</span></span><span style=display:flex><span>                bootstrap_servers<span style=color:#f92672>=</span>KAFKA_BOOTSTRAP_SERVERS,
+</span></span><span style=display:flex><span>                value_serializer<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> v: json<span style=color:#f92672>.</span>dumps(v, ensure_ascii<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>)<span style=color:#f92672>.</span>encode(<span style=color:#e6db74>&#34;utf-8&#34;</span>),
+</span></span><span style=display:flex><span>                key_serializer<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> k: k<span style=color:#f92672>.</span>encode(<span style=color:#e6db74>&#34;utf-8&#34;</span>) <span style=color:#66d9ef>if</span> k <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>None</span>,
+</span></span><span style=display:flex><span>                acks<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;all&#34;</span>,
+</span></span><span style=display:flex><span>                retries<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>,
+</span></span><span style=display:flex><span>                max_in_flight_requests_per_connection<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>,
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;Kafka producer initialized&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Failed to initialize Kafka producer: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>close_spider</span>(self, spider):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> self<span style=color:#f92672>.</span>producer:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>producer<span style=color:#f92672>.</span>flush()
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>producer<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;Kafka producer closed&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>process_item</span>(self, item, spider):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> self<span style=color:#f92672>.</span>producer:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> item
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>            article_dict <span style=color:#f92672>=</span> dict(item)
+</span></span><span style=display:flex><span>            url_hash <span style=color:#f92672>=</span> article_dict<span style=color:#f92672>.</span>pop(<span style=color:#e6db74>&#34;url_hash&#34;</span>, <span style=color:#66d9ef>None</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            future <span style=color:#f92672>=</span> self<span style=color:#f92672>.</span>producer<span style=color:#f92672>.</span>send(
+</span></span><span style=display:flex><span>                KAFKA_TOPIC_NEWS,
+</span></span><span style=display:flex><span>                key<span style=color:#f92672>=</span>url_hash,
+</span></span><span style=display:flex><span>                value<span style=color:#f92672>=</span>article_dict
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Non-blocking - errors handled in callback</span>
+</span></span><span style=display:flex><span>            future<span style=color:#f92672>.</span>add_callback(self<span style=color:#f92672>.</span>_on_success)
+</span></span><span style=display:flex><span>            future<span style=color:#f92672>.</span>add_errback(self<span style=color:#f92672>.</span>_on_error)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>            self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Kafka send error: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> item
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_on_success</span>(self, metadata):
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>debug(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Sent to </span><span style=color:#e6db74>{</span>metadata<span style=color:#f92672>.</span>topic<span style=color:#e6db74>}</span><span style=color:#e6db74>[</span><span style=color:#e6db74>{</span>metadata<span style=color:#f92672>.</span>partition<span style=color:#e6db74>}</span><span style=color:#e6db74>]@</span><span style=color:#e6db74>{</span>metadata<span style=color:#f92672>.</span>offset<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>_on_error</span>(self, exc):
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>logger<span style=color:#f92672>.</span>error(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Kafka send failed: </span><span style=color:#e6db74>{</span>exc<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span></code></pre></div><h2 id=chạy-crawler>Chạy Crawler</h2><h3 id=local-development-với-docker-compose>Local Development (với Docker Compose)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># 1. Khởi động services</span>
+</span></span><span style=display:flex><span>docker compose up -d
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 2. Tạo Kafka topic</span>
+</span></span><span style=display:flex><span>docker exec newsrag-kafka kafka-topics <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --bootstrap-server localhost:9092 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --create --topic news_raw --partitions <span style=color:#ae81ff>3</span> --replication-factor <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 3. Chạy crawler</span>
+</span></span><span style=display:flex><span>cd crawler
+</span></span><span style=display:flex><span>scrapy crawl news_sitemap -o output.json
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Hoặc qua main.py</span>
+</span></span><span style=display:flex><span>python ../main.py --mode crawl
+</span></span></code></pre></div><h3 id=output-mong-đợi>Output mong đợi</h3><pre tabindex=0><code>2024-01-15 10:30:45 [INFO] Spider opened: news_sitemap
+2024-01-15 10:30:46 [INFO] Crawling VnExpress sitemap: https://vnexpress.net/sitemap_news.xml
+2024-01-15 10:30:47 [INFO] Found 150 URLs in sitemap
+2024-01-15 10:30:48 [INFO] Parsing article: https://vnexpress.net/kinh-doanh/...
+2024-01-15 10:30:49 [INFO] Sent to news_raw[0]@123
+...
+2024-01-15 10:45:30 [INFO] Closing spider (finished)
+2024-01-15 10:45:30 [INFO] Spider closed: finished
+</code></pre><h3 id=xác-minh-kafka-messages>Xác minh Kafka Messages</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Consume messages</span>
+</span></span><span style=display:flex><span>docker exec newsrag-kafka kafka-console-consumer <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --bootstrap-server localhost:9092 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --topic news_raw <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-beginning <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --max-messages <span style=color:#ae81ff>5</span>
+</span></span></code></pre></div><p>Sample message:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;url&#34;</span>: <span style=color:#e6db74>&#34;https://vnexpress.net/kinh-doanh/...&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;url_hash&#34;</span>: <span style=color:#e6db74>&#34;a1b2c3d4...&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;source_name&#34;</span>: <span style=color:#e6db74>&#34;VnExpress&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;source_domain&#34;</span>: <span style=color:#e6db74>&#34;vnexpress.net&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;GDP quý 4 tăng 6.5%...&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;content&#34;</span>: <span style=color:#e6db74>&#34;Theo Tổng cục Thống kê...&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;category&#34;</span>: <span style=color:#e6db74>&#34;Kinh doanh&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;author&#34;</span>: <span style=color:#e6db74>&#34;Phạm Du&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;published_at&#34;</span>: <span style=color:#e6db74>&#34;2024-01-15T08:30:00+07:00&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;crawled_at&#34;</span>: <span style=color:#e6db74>&#34;2024-01-15T03:30:45+00:00&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=dockerfile-cho-fargate-multi-stage>Dockerfile cho Fargate (Multi-stage)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-dockerfile data-lang=dockerfile><span style=display:flex><span><span style=color:#75715e># Dockerfile</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> python:3.11-slim as builder</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>WORKDIR</span><span style=color:#e6db74> /app</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> pip install --no-cache-dir --upgrade pip<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Install build dependencies</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> apt-get update <span style=color:#f92672>&amp;&amp;</span> apt-get install -y --no-install-recommends <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    gcc libpq-dev <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    rm -rf /var/lib/apt/lists/*<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Install Python dependencies</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> requirements.txt .<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> pip install --no-cache-dir --prefix<span style=color:#f92672>=</span>/install -r requirements.txt<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Runtime stage</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> python:3.11-slim</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>WORKDIR</span><span style=color:#e6db74> /app</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Install runtime dependencies</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> apt-get update <span style=color:#f92672>&amp;&amp;</span> apt-get install -y --no-install-recommends <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    libpq5 <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    rm -rf /var/lib/apt/lists/*<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Copy installed packages</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --from<span style=color:#f92672>=</span>builder /install /usr/local<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Copy application code</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> . .<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Create non-root user</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> useradd -m -u <span style=color:#ae81ff>1000</span> appuser <span style=color:#f92672>&amp;&amp;</span> chown -R appuser:appuser /app<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>USER</span><span style=color:#e6db74> appuser</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Default command (ghi đè bởi ECS task definition)</span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>CMD</span> [<span style=color:#e6db74>&#34;python&#34;</span>, <span style=color:#e6db74>&#34;main.py&#34;</span>, <span style=color:#e6db74>&#34;--mode&#34;</span>, <span style=color:#e6db74>&#34;crawl&#34;</span>]<span style=color:#960050;background-color:#1e0010>
+</span></span></span></code></pre></div><h2 id=build--test-cục-bộ>Build & Test cục bộ</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Build image</span>
+</span></span><span style=display:flex><span>docker build -t news-crawler:local .
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Chạy container (cần Kafka, PostgreSQL chạy)</span>
+</span></span><span style=display:flex><span>docker run --rm <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --network host <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -e KAFKA_BOOTSTRAP_SERVERS<span style=color:#f92672>=</span>localhost:9092 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -e DB_HOST<span style=color:#f92672>=</span>localhost <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  news-crawler:local python main.py --mode crawl
+</span></span></code></pre></div><h2 id=thêm-trang-tin-tức-mới>Thêm trang tin tức mới</h2><ol><li><strong>Phân tích trang</strong> — Tìm <code>sitemap_news.xml</code> (thường ở <code>/sitemap_news.xml</code> hoặc <code>/sitemap.xml</code>)</li><li><strong>Kiểm tra trang bài viết</strong> — Dùng browser DevTools tìm XPath selectors cho title, content, author, date, category</li><li><strong>Thêm vào config_site.json</strong> — Copy entry hiện có và sửa selectors</li><li><strong>Test cục bộ</strong> — Chạy spider và xác minh trích xuất</li><li><strong>Deploy</strong> — Rebuild Docker image, push lên ECR</li></ol><h2 id=vấn-đề-thường-gặp--khắc-phục>Vấn đề thường gặp & Khắc phục</h2><table><thead><tr><th style=text-align:left>Vấn đề</th><th style=text-align:left>Giải pháp</th></tr></thead><tbody><tr><td style=text-align:left><code>403 Forbidden</code></td><td style=text-align:left>Thêm headers phù hợp, tuân thủ <code>ROBOTSTXT_OBEY</code>, giảm <code>CONCURRENT_REQUESTS</code></td></tr><tr><td style=text-align:left><code>XPath returns empty</code></td><td style=text-align:left>Kiểm tra site có dùng JavaScript rendering (cần Splash/Playwright)</td></tr><tr><td style=text-align:left><code>Kafka connection failed</code></td><td style=text-align:left>Đảm bảo Kafka healthy, check <code>bootstrap.servers</code></td></tr><tr><td style=text-align:left><code>Memory error</code></td><td style=text-align:left>Giảm <code>CLOSESPIDER_ITEMCOUNT</code>, tăng container memory</td></tr><tr><td style=text-align:left><code>Timeout</code></td><td style=text-align:left>Tăng <code>DOWNLOAD_TIMEOUT</code>, <code>CLOSESPIDER_TIMEOUT</code></td></tr></tbody></table><h2 id=bước-tiếp-theo>Bước tiếp theo</h2><p>Sau khi crawler hoạt động cục bộ:</p><ol><li><strong>Build & Push lên ECR</strong> — Xem <a href=5.9-AWS-Deploy/>AWS Deployment Prep</a></li><li><strong>Đăng ký Task Definition</strong> — Xem <a href=5.10-Fargate-Crawler/>Fargate Crawler</a></li><li><strong>Cấu hình SQS</strong> — Thay Kafka bằng SQS cho AWS deployment (xem <a href=5.11-Lambda-Consumer/>Lambda Consumer</a>)</li></ol><hr><p><strong>Tiếp theo:</strong> <a href=5.6-Ingestion/>Nhập dữ liệu (Kafka Consumer → PostgreSQL)</a></p><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/ title="Thiết lập phát triển cục bộ"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.6-ingestion/ title="Nhập dữ liệu (Kafka Consumer → PostgreSQL)" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=https://tutrong2706.github.io/NewsRagReport/js/clipboard.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.jquery.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery.sticky.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/featherlight.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/highlight.pack.js?1785509515></script><script>hljs.initHighlightingOnLoad()</script><script src=https://tutrong2706.github.io/NewsRagReport/js/modernizr.custom-3.6.0.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/learn.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/hugo-learn.js?1785509515></script><link href=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.js?1785509515></script><script>mermaid.initialize({startOnLoad:!0})</script><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,(e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date),(i=t.createElement(n),a=t.getElementsByTagName(n)[0]),i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-158079754-2","auto"),ga("send","pageview")</script></body></html>

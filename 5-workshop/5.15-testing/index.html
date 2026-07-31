@@ -1,0 +1,530 @@
+<!doctype html><html lang=en class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.134.3"><meta name=description content><meta name=author content="thienlh@thienlu.com"><link rel=icon href=https://tutrong2706.github.io/NewsRagReport/images/favicon.png type=image/png><title>Testing & Monitoring :: Internship Report</title>
+<link href=https://tutrong2706.github.io/NewsRagReport/css/nucleus.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/fontawesome-all.min.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hybrid.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/featherlight.min.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/perfect-scrollbar.min.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/auto-complete.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/atom-one-dark-reasonable.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hugo-theme.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme-workshop.css?1785509514 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery-3.3.1.min.js?1785509514></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.15-testing/><nav id=sidebar class=showVisitedLinks><div id=header-wrapper><div id=header><a id=logo href=https://tutrong2706.github.io/NewsRagReport/><svg id="Layer_1" data-name="Layer 1" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff}.cls-2{fill:#fff;fill-rule:evenodd}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09 10.85a4.7 4.7.0 00.19 1.48 7.73 7.73.0 00.54 1.19.77.77.0 01.12.38.64.64.0 01-.32.49l-1 .7a.83.83.0 01-.44.15.69.69.0 01-.49-.23 3.8 3.8.0 01-.6-.77q-.25-.42-.51-1a6.14 6.14.0 01-4.89 2.3 4.54 4.54.0 01-3.32-1.19 4.27 4.27.0 01-1.22-3.2 4.28 4.28.0 011.46-3.4A6.06 6.06.0 017.69 6.46a12.47 12.47.0 011.76.13q.92.13 1.91.36V5.73a3.65 3.65.0 00-.79-2.66A3.81 3.81.0 007.86 2.3a7.71 7.71.0 00-1.79.22 12.78 12.78.0 00-1.79.57 4.55 4.55.0 01-.58.22h-.26q-.35.0-.35-.52V2a1.09 1.09.0 01.12-.58 1.2 1.2.0 01.47-.35A10.88 10.88.0 015.77.32 10.19 10.19.0 018.36.0a6 6 0 014.35 1.35 5.49 5.49.0 011.38 4.09zM7.34 13.38a5.36 5.36.0 001.72-.31A3.63 3.63.0 0010.63 12 2.62 2.62.0 0011.19 11a5.63 5.63.0 00.16-1.44v-.7a14.35 14.35.0 00-1.53-.28 12.37 12.37.0 00-1.56-.1 3.84 3.84.0 00-2.47.67A2.34 2.34.0 005 11a2.35 2.35.0 00.61 1.76A2.4 2.4.0 007.34 13.38zm13.35 1.8a1 1 0 01-.64-.16 1.3 1.3.0 01-.35-.65L15.81 1.51a3 3 0 01-.15-.67.36.36.0 01.41-.41H17.7a1 1 0 01.65.16 1.4 1.4.0 01.33.65l2.79 11 2.59-11A1.17 1.17.0 0124.39.6a1.1 1.1.0 01.67-.16H26.4a1.1 1.1.0 01.67.16 1.17 1.17.0 01.32.65L30 12.39 32.88 1.25A1.39 1.39.0 0133.22.6a1 1 0 01.65-.16h1.54a.36.36.0 01.41.41 1.36 1.36.0 010 .26 3.64 3.64.0 01-.12.41l-4 12.86a1.3 1.3.0 01-.35.65 1 1 0 01-.64.16H29.25a1 1 0 01-.67-.17 1.26 1.26.0 01-.32-.67L25.67 3.64l-2.56 10.7a1.26 1.26.0 01-.32.67 1 1 0 01-.67.17zm21.36.44a11.28 11.28.0 01-2.56-.29 7.44 7.44.0 01-1.92-.67 1 1 0 01-.61-.93v-.84q0-.52.38-.52a.9.9.0 01.31.06l.42.17a8.77 8.77.0 001.83.58 9.78 9.78.0 002 .2 4.48 4.48.0 002.43-.55 1.76 1.76.0 00.86-1.57 1.61 1.61.0 00-.45-1.16A4.29 4.29.0 0043 9.22l-2.41-.76A5.15 5.15.0 0138 6.78a3.94 3.94.0 01-.83-2.41 3.7 3.7.0 01.45-1.85 4.47 4.47.0 011.19-1.37 5.27 5.27.0 011.7-.86A7.4 7.4.0 0142.6.0a8.87 8.87.0 011.12.07q.57.07 1.08.19t.95.26a4.27 4.27.0 01.7.29 1.59 1.59.0 01.49.41.94.94.0 01.15.55v.79q0 .52-.38.52a1.76 1.76.0 01-.64-.2 7.74 7.74.0 00-3.2-.64 4.37 4.37.0 00-2.21.47 1.6 1.6.0 00-.79 1.48 1.58 1.58.0 00.49 1.18 4.94 4.94.0 001.83.92L44.55 7a5.08 5.08.0 012.57 1.6A3.76 3.76.0 0147.9 11a4.21 4.21.0 01-.44 1.93 4.4 4.4.0 01-1.21 1.47 5.43 5.43.0 01-1.85.93A8.25 8.25.0 0142.05 15.62z"/><path class="cls-2" d="M45.19 23.81C39.72 27.85 31.78 30 25 30A36.64 36.64.0 01.22 20.57c-.51-.46-.06-1.09.56-.74A49.78 49.78.0 0025.53 26.4 49.23 49.23.0 0044.4 22.53C45.32 22.14 46.1 23.14 45.19 23.81z"/><path class="cls-2" d="M47.47 21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74 3.13-2.2 8.27-1.57 8.86-.83s-.16 5.89-3.09 8.35c-.45.38-.88.18-.68-.32C46.69 25.8 48.17 22.11 47.47 21.21z"/></svg></a></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/lunr.min.js?1785509514></script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/auto-complete.js?1785509514></script><script type=text/javascript>var baseurl="https://tutrong2706.github.io/NewsRagReport/"</script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/search.js?1785509514></script></div><div class=highlightable><ul class=topics><li data-nav-id=/1-worklog/ title=Worklog class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/><b>1. </b>Worklog
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/1-worklog/1.1-week1/ title="Week 1 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.1-week1/><b>1.1. </b>Week 1 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.2-week2/ title="Week 2 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.2-week2/><b>1.2. </b>Week 2 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.3-week3/ title="Week 3 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.3-week3/><b>1.3. </b>Week 3 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.4-week4/ title="Week 4 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.4-week4/><b>1.4. </b>Week 4 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.5-week5/ title="Week 5 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.5-week5/><b>1.5. </b>Week 5 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.6-week6/ title="Week 6 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.6-week6/><b>1.6. </b>Week 6 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.7-week7/ title="Week 7 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.7-week7/><b>1.7. </b>Week 7 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.8-week8/ title="Week 8 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.8-week8/><b>1.8. </b>Week 8 Worklog
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/2-proposal/ title=Proposal class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/2-proposal/><b>2. </b>Proposal
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/3-blogsposted/ title="Blogs & Experiences" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/><b>3. </b>Blogs & Experiences
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/3-blogsposted/3.1-blog1/ title="Blog 1: Overcoming Timeout with AWS Fargate" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/3.1-blog1/><b>3.1. </b>Blog 1: Overcoming Timeout with AWS Fargate
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/3-blogsposted/3.2-blog2/ title="Blog 2: Cost Optimization with SQS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/3.2-blog2/><b>3.2. </b>Blog 2: Cost Optimization with SQS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/3-blogsposted/3.3-blog3/ title="Blog 3: Building an Optimized RAG System" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/3.3-blog3/><b>3.3. </b>Blog 3: Building an Optimized RAG System
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/4-eventparticipated/ title="Participated Events" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/><b>4. </b>Participated Events
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/4-eventparticipated/4.1-event1/ title="Event 1 Report: Career Orientation, Skills, and Practical Mindset in Business" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/4.1-event1/>1. Event 1 Report: Career Orientation, Skills, and Practical Mindset in Business
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/4-eventparticipated/4.2-event2/ title="Event 2 Report: Operations Management, Web Security, and AWS Certification Roadmap" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/4.2-event2/>2. Event 2 Report: Operations Management, Web Security, and AWS Certification Roadmap
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/4-eventparticipated/4.3-event3/ title="Event 3 Report: Applied Agentic AI and Practical Hackathon Experience" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/4.3-event3/>3. Event 3 Report: Applied Agentic AI and Practical Hackathon Experience
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/5-workshop/ title=Workshop class="dd-item
+parent"><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/><b>5. </b>Workshop
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/5-workshop/5.1-workshop-overview/ title=Introduction class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.1-workshop-overview/><b>5.1. </b>Introduction
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.2-prerequisites/ title=Prerequisites class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.2-prerequisites/><b>5.2 </b>Prerequisites
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.3-infrastructure/ title="Infrastructure as Code (Terraform)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.3-infrastructure/><b>5.3 </b>Infrastructure as Code (Terraform)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.4-local-dev/ title="Local Development Setup" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.4-local-dev/><b>5.4 </b>Local Development Setup
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.5-crawler/ title="Crawler Development" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.5-crawler/><b>5.5 </b>Crawler Development
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.6-ingestion/ title="Data Ingestion (Kafka Consumer → PostgreSQL)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.6-ingestion/><b>5.6 </b>Data Ingestion (Kafka Consumer → PostgreSQL)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.7-etl/ title="ETL & Star Schema" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.7-etl/><b>5.7 </b>ETL & Star Schema
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.8-vectorize/ title="Vectorization (Local Dev - SentenceTransformer → Qdrant)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.8-vectorize/><b>5.8 </b>Vectorization (Local Dev - SentenceTransformer → Qdrant)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.9-aws-deploy/ title="AWS Deployment Preparation" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.9-aws-deploy/><b>5.9 </b>AWS Deployment Preparation
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.10-fargate-crawler/><b>5.10 </b>Fargate Crawler (ECS + EventBridge)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.11-lambda-consumer/><b>5.11 </b>Lambda Consumer (SQS → Aurora)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.12-lambda-etl/><b>5.12 </b>Lambda ETL + Bedrock Embedding
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.13-rag-api/><b>5.13 </b>RAG API (Lambda + API Gateway)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.14-frontend/ title="Frontend Integration (Next.js + FastAPI)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.14-frontend/><b>5.14 </b>Frontend Integration (Next.js + FastAPI)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.15-testing/ title="Testing & Monitoring" class="dd-item
+active"><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.15-testing/><b>5.15 </b>Testing & Monitoring
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.16-cost/ title="Cost Optimization" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.16-cost/><b>5.16 </b>Cost Optimization
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.17-cleanup/ title="Clean Up Resources" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.17-cleanup/><b>5.17 </b>Clean Up Resources
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/6-self-evaluation/ title=Self-evaluation class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/6-self-evaluation/><b>6. </b>Self-evaluation
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/7-feedback/ title="Feedback & Sharing" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/7-feedback/><b>7. </b>Feedback & Sharing
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/8-references/ title=References class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/8-references/><b>8. </b>References
+<i class="fas fa-check read-icon"></i></a></li></ul><section id=shortcuts><h3>More</h3><ul><li><a class=padding href=https://awsstudygroup.com><i class='fab fa-aws'></i> AWS Study Group - Blog</a></li><li><a class=padding href=https://www.facebook.com/groups/awsstudygroupfcj><i class='fab fa-facebook'></i> AWS Study Group - FB Group</a></li></ul></section><section id=prefooter><hr><ul><li><a class=padding><i class="fas fa-language fa-fw"></i><div class=select-style><select id=select-language onchange="location=this.value"><option id=en value=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.15-testing/ selected>English</option><option id=vi value=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.15-testing/>Tiếng Việt</option></select><svg id="Capa_1" xmlns:xlink="http://www.w3.org/1999/xlink" width="255" height="255" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255"><g><g id="arrow-drop-down"><polygon points="0,63.75 127.5,191.25 255,63.75"/></g></g></svg></div></a></li><li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li></ul></section><section id=footer><left><br><br><b>Last Updated</b><br><i><font color=orange>31-07-2026</font>
+</i></left><left><br><br><b>Team</b><br><i><a href=https://www.facebook.com/groups/660548818043427 style=color:orange>First Cloud AI Journey</a>
+</i></left><script async defer src=https://buttons.github.io/buttons.js></script></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i>
+</a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links><a href=https://tutrong2706.github.io/NewsRagReport/>Internship Report</a> > <a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/>Workshop</a> > Testing & Monitoring
+          
+        
+ </span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#test-suite-overview>Test Suite Overview</a></li><li><a href=#1-unit--integration-tests-local>1. Unit & Integration Tests (Local)</a><ul><li><a href=#pytest-configuration>pytest Configuration</a></li><li><a href=#test-database-fixture>Test Database Fixture</a></li><li><a href=#sample-unit-tests>Sample Unit Tests</a></li><li><a href=#run-tests>Run Tests</a></li></ul></li><li><a href=#2-rag-evaluation-with-ragas>2. RAG Evaluation with RAGAS</a><ul><li><a href=#why-ragas>Why RAGAS?</a></li><li><a href=#installation>Installation</a></li><li><a href=#evaluation-script>Evaluation Script</a></li><li><a href=#expected-output>Expected Output</a></li><li><a href=#improving-scores>Improving Scores</a></li></ul></li><li><a href=#3-load-testing-with-locust>3. Load Testing with Locust</a><ul><li><a href=#locustfilepy>locustfile.py</a></li><li><a href=#run-load-test>Run Load Test</a></li><li><a href=#target-metrics>Target Metrics</a></li></ul></li><li><a href=#4-production-monitoring>4. Production Monitoring</a><ul><li><a href=#cloudwatch-dashboards>CloudWatch Dashboards</a></li><li><a href=#cloudwatch-alarms>CloudWatch Alarms</a></li><li><a href=#structured-logging>Structured Logging</a></li><li><a href=#log-insights-queries>Log Insights Queries</a></li></ul></li><li><a href=#5-end-to-end-test-playwright>5. End-to-End Test (Playwright)</a></li><li><a href=#cicd-pipeline-github-actions>CI/CD Pipeline (GitHub Actions)</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>Testing & Monitoring</h1><h1 id=testing--monitoring>Testing & Monitoring</h1><p>This section covers end-to-end testing, RAG evaluation with RAGAS, and production monitoring setup.</p><h2 id=test-suite-overview>Test Suite Overview</h2><table><thead><tr><th style=text-align:left>Test Type</th><th style=text-align:left>Tool</th><th style=text-align:left>Purpose</th></tr></thead><tbody><tr><td style=text-align:left>Unit Tests</td><td style=text-align:left>pytest</td><td style=text-align:left>Individual function correctness</td></tr><tr><td style=text-align:left>Integration Tests</td><td style=text-align:left>pytest + Docker</td><td style=text-align:left>Pipeline stages locally</td></tr><tr><td style=text-align:left>E2E Tests</td><td style=text-align:left>Playwright</td><td style=text-align:left>Full user flows</td></tr><tr><td style=text-align:left>RAG Evaluation</td><td style=text-align:left>RAGAS</td><td style=text-align:left>Faithfulness, Relevancy, Precision, Recall</td></tr><tr><td style=text-align:left>Load Testing</td><td style=text-align:left>Locust</td><td style=text-align:left>API performance under load</td></tr><tr><td style=text-align:left>Chaos Testing</td><td style=text-align:left>AWS FIS</td><td style=text-align:left>Resilience validation</td></tr></tbody></table><h2 id=1-unit--integration-tests-local>1. Unit & Integration Tests (Local)</h2><h3 id=pytest-configuration>pytest Configuration</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#75715e># pytest.ini</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>[pytest]</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>testpaths</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>tests</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>python_files</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>test_*.py</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>python_functions</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>test_*</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>addopts</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>-v --tb=short --strict-markers</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>markers</span> <span style=color:#f92672>=</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    unit: Unit tests
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    integration: Integration tests (requires Docker)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    slow: Slow tests (&gt;10s)</span>
+</span></span></code></pre></div><h3 id=test-database-fixture>Test Database Fixture</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># tests/conftest.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> pytest
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> psycopg2
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> psycopg2.extras <span style=color:#f92672>import</span> RealDictCursor
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>@pytest.fixture</span>(scope<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;session&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>pg_dsn</span>():
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;postgresql://</span><span style=color:#e6db74>{</span>os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#39;DB_USER&#39;</span>)<span style=color:#e6db74>}</span><span style=color:#e6db74>:</span><span style=color:#e6db74>{</span>os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#39;DB_PASSWORD&#39;</span>)<span style=color:#e6db74>}</span><span style=color:#e6db74>@</span><span style=color:#e6db74>{</span>os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#39;DB_HOST&#39;</span>)<span style=color:#e6db74>}</span><span style=color:#e6db74>:</span><span style=color:#e6db74>{</span>os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#39;DB_PORT&#39;</span>)<span style=color:#e6db74>}</span><span style=color:#e6db74>/</span><span style=color:#e6db74>{</span>os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#39;DB_NAME&#39;</span>)<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>@pytest.fixture</span>(scope<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;function&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>db_conn</span>(pg_dsn):
+</span></span><span style=display:flex><span>    conn <span style=color:#f92672>=</span> psycopg2<span style=color:#f92672>.</span>connect(pg_dsn, cursor_factory<span style=color:#f92672>=</span>RealDictCursor)
+</span></span><span style=display:flex><span>    conn<span style=color:#f92672>.</span>autocommit <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>yield</span> conn
+</span></span><span style=display:flex><span>    conn<span style=color:#f92672>.</span>rollback()
+</span></span><span style=display:flex><span>    conn<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>@pytest.fixture</span>(scope<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;function&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>clean_db</span>(db_conn):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Truncate test tables before each test.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> db_conn<span style=color:#f92672>.</span>cursor() <span style=color:#66d9ef>as</span> cur:
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;TRUNCATE fact_chunks, fact_article_authors, fact_articles, dim_content, dim_author, dim_time, dim_source RESTART IDENTITY CASCADE&#34;</span>)
+</span></span><span style=display:flex><span>    db_conn<span style=color:#f92672>.</span>commit()
+</span></span></code></pre></div><h3 id=sample-unit-tests>Sample Unit Tests</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># tests/test_etl.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> pytest
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> etl.etl_warehouse <span style=color:#f92672>import</span> ETLWarehouse, clean_html, chunk_text
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TestETL</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>test_clean_html_removes_tags</span>(self):
+</span></span><span style=display:flex><span>        html <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&lt;p&gt;Hello &lt;b&gt;world&lt;/b&gt;&lt;/p&gt;&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> clean_html(html) <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;Hello world&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>test_chunk_text_basic</span>(self):
+</span></span><span style=display:flex><span>        text <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34; &#34;</span><span style=color:#f92672>.</span>join([<span style=color:#e6db74>&#34;word&#34;</span>] <span style=color:#f92672>*</span> <span style=color:#ae81ff>600</span>)
+</span></span><span style=display:flex><span>        chunks <span style=color:#f92672>=</span> chunk_text(text, chunk_size<span style=color:#f92672>=</span><span style=color:#ae81ff>500</span>, overlap<span style=color:#f92672>=</span><span style=color:#ae81ff>50</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> len(chunks) <span style=color:#f92672>==</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> len(chunks[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>split()) <span style=color:#f92672>==</span> <span style=color:#ae81ff>500</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> len(chunks[<span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>split()) <span style=color:#f92672>==</span> <span style=color:#ae81ff>150</span>  <span style=color:#75715e># 600 - 500 + 50 overlap</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>test_chunk_text_short</span>(self):
+</span></span><span style=display:flex><span>        text <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Short text&#34;</span>
+</span></span><span style=display:flex><span>        chunks <span style=color:#f92672>=</span> chunk_text(text)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> chunks <span style=color:#f92672>==</span> [<span style=color:#e6db74>&#34;Short text&#34;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># tests/test_vectorize.py</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TestVectorize</span>:
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>@pytest.mark.integration</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>test_embedding_generation</span>(self):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>from</span> vectorize.vectorize <span style=color:#f92672>import</span> get_embedding
+</span></span><span style=display:flex><span>        vec <span style=color:#f92672>=</span> get_embedding(<span style=color:#e6db74>&#34;Test article about technology&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> len(vec) <span style=color:#f92672>==</span> <span style=color:#ae81ff>384</span>  <span style=color:#75715e># BGE-small</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>assert</span> all(isinstance(x, float) <span style=color:#66d9ef>for</span> x <span style=color:#f92672>in</span> vec)
+</span></span></code></pre></div><h3 id=run-tests>Run Tests</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Unit tests only</span>
+</span></span><span style=display:flex><span>pytest -m unit
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Integration tests (requires Docker services)</span>
+</span></span><span style=display:flex><span>docker compose up -d
+</span></span><span style=display:flex><span>pytest -m integration
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># All tests with coverage</span>
+</span></span><span style=display:flex><span>pytest --cov<span style=color:#f92672>=</span>etl --cov<span style=color:#f92672>=</span>vectorize --cov<span style=color:#f92672>=</span>search --cov-report<span style=color:#f92672>=</span>term-missing
+</span></span></code></pre></div><h2 id=2-rag-evaluation-with-ragas>2. RAG Evaluation with RAGAS</h2><h3 id=why-ragas>Why RAGAS?</h3><p>RAGAS evaluates RAG systems using LLM-as-judge across 4 metrics:</p><table><thead><tr><th style=text-align:left>Metric</th><th style=text-align:left>What it measures</th><th style=text-align:left>Target</th></tr></thead><tbody><tr><td style=text-align:left><strong>Faithfulness</strong></td><td style=text-align:left>Answer grounded in retrieved context</td><td style=text-align:left>> 0.8</td></tr><tr><td style=text-align:left><strong>Answer Relevancy</strong></td><td style=text-align:left>Answer addresses the question</td><td style=text-align:left>> 0.8</td></tr><tr><td style=text-align:left><strong>Context Precision</strong></td><td style=text-align:left>Relevant chunks ranked higher</td><td style=text-align:left>> 0.7</td></tr><tr><td style=text-align:left><strong>Context Recall</strong></td><td style=text-align:left>All relevant chunks retrieved</td><td style=text-align:left>> 0.7</td></tr></tbody></table><h3 id=installation>Installation</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>pip install ragas langchain-openai datasets
+</span></span></code></pre></div><h3 id=evaluation-script>Evaluation Script</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># tests/test_ragas_evaluation.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> datasets <span style=color:#f92672>import</span> Dataset
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> ragas <span style=color:#f92672>import</span> evaluate
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> ragas.metrics <span style=color:#f92672>import</span> (
+</span></span><span style=display:flex><span>    faithfulness,
+</span></span><span style=display:flex><span>    answer_relevancy,
+</span></span><span style=display:flex><span>    context_precision,
+</span></span><span style=display:flex><span>    context_recall,
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> ragas.llms <span style=color:#f92672>import</span> LangchainLLMWrapper
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> langchain_openai <span style=color:#f92672>import</span> ChatOpenAI
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> search.engine <span style=color:#f92672>import</span> Pipeline
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Use Groq-compatible endpoint or local model for evaluation</span>
+</span></span><span style=display:flex><span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;OPENAI_API_KEY&#34;</span>] <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#34;GROQ_API_KEY&#34;</span>)
+</span></span><span style=display:flex><span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;OPENAI_API_BASE&#34;</span>] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;https://api.groq.com/openai/v1&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Initialize RAGAS with Groq LLM</span>
+</span></span><span style=display:flex><span>eval_llm <span style=color:#f92672>=</span> LangchainLLMWrapper(
+</span></span><span style=display:flex><span>    ChatOpenAI(
+</span></span><span style=display:flex><span>        model<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;llama-3.1-8b-instant&#34;</span>,
+</span></span><span style=display:flex><span>        temperature<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        base_url<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://api.groq.com/openai/v1&#34;</span>,
+</span></span><span style=display:flex><span>        api_key<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#34;GROQ_API_KEY&#34;</span>),
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Golden test set</span>
+</span></span><span style=display:flex><span>TEST_QUESTIONS <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;question&#34;</span>: <span style=color:#e6db74>&#34;Tóm tắt tin tức về kinh tế Việt Nam hôm nay&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;ground_truth&#34;</span>: <span style=color:#e6db74>&#34;GDP quý 4 tăng 6.5%, xuất khẩu tăng trưởng...&#34;</span>,
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;question&#34;</span>: <span style=color:#e6db74>&#34;Ai là tác giả bài viết về công nghệ mới nhất?&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;ground_truth&#34;</span>: <span style=color:#e6db74>&#34;Nguyễn Văn A&#34;</span>,
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;question&#34;</span>: <span style=color:#e6db74>&#34;So sánh quan điểm của VnExpress và Thanh Niên về chính sách mới&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;ground_truth&#34;</span>: <span style=color:#e6db74>&#34;VnExpress tập trung vào..., Thanh Niên nhấn mạnh...&#34;</span>,
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>run_ragas_evaluation</span>():
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Run RAGAS evaluation on current pipeline.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    pipeline <span style=color:#f92672>=</span> Pipeline()
+</span></span><span style=display:flex><span>    results <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> test <span style=color:#f92672>in</span> TEST_QUESTIONS:
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Get RAG response</span>
+</span></span><span style=display:flex><span>        response <span style=color:#f92672>=</span> pipeline<span style=color:#f92672>.</span>ask(test[<span style=color:#e6db74>&#34;question&#34;</span>])
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        results<span style=color:#f92672>.</span>append({
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;question&#34;</span>: test[<span style=color:#e6db74>&#34;question&#34;</span>],
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;answer&#34;</span>: response<span style=color:#f92672>.</span>summary,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;contexts&#34;</span>: [r<span style=color:#f92672>.</span>content <span style=color:#66d9ef>for</span> r <span style=color:#f92672>in</span> response<span style=color:#f92672>.</span>results],
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;ground_truth&#34;</span>: test[<span style=color:#e6db74>&#34;ground_truth&#34;</span>],
+</span></span><span style=display:flex><span>        })
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Create dataset</span>
+</span></span><span style=display:flex><span>    dataset <span style=color:#f92672>=</span> Dataset<span style=color:#f92672>.</span>from_list(results)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Evaluate</span>
+</span></span><span style=display:flex><span>    score <span style=color:#f92672>=</span> evaluate(
+</span></span><span style=display:flex><span>        dataset,
+</span></span><span style=display:flex><span>        metrics<span style=color:#f92672>=</span>[faithfulness, answer_relevancy, context_precision, context_recall],
+</span></span><span style=display:flex><span>        llm<span style=color:#f92672>=</span>eval_llm,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>=== RAGAS Results ===&#34;</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Faithfulness:       </span><span style=color:#e6db74>{</span>score[<span style=color:#e6db74>&#39;faithfulness&#39;</span>]<span style=color:#e6db74>:</span><span style=color:#e6db74>.3f</span><span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Answer Relevancy:   </span><span style=color:#e6db74>{</span>score[<span style=color:#e6db74>&#39;answer_relevancy&#39;</span>]<span style=color:#e6db74>:</span><span style=color:#e6db74>.3f</span><span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Context Precision:  </span><span style=color:#e6db74>{</span>score[<span style=color:#e6db74>&#39;context_precision&#39;</span>]<span style=color:#e6db74>:</span><span style=color:#e6db74>.3f</span><span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Context Recall:     </span><span style=color:#e6db74>{</span>score[<span style=color:#e6db74>&#39;context_recall&#39;</span>]<span style=color:#e6db74>:</span><span style=color:#e6db74>.3f</span><span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> score
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    run_ragas_evaluation()
+</span></span></code></pre></div><h3 id=expected-output>Expected Output</h3><pre tabindex=0><code>=== RAGAS Results ===
+Faithfulness:       0.72
+Answer Relevancy:   0.68
+Context Precision:  0.79
+Context Recall:     0.61
+</code></pre><h3 id=improving-scores>Improving Scores</h3><table><thead><tr><th style=text-align:left>Low Score</th><th style=text-align:left>Action</th></tr></thead><tbody><tr><td style=text-align:left>Faithfulness</td><td style=text-align:left>Improve prompt: &ldquo;Chỉ trả lời dựa trên ngữ cảnh, không bịa đặt&rdquo;</td></tr><tr><td style=text-align:left>Answer Relevancy</td><td style=text-align:left>Add &ldquo;Trả lời trực tiếp, ngắn gọn&rdquo; to prompt</td></tr><tr><td style=text-align:left>Context Precision</td><td style=text-align:left>Tune HNSW <code>ef_search</code>, increase top-K, add metadata filters</td></tr><tr><td style=text-align:left>Context Recall</td><td style=text-align:left>Better chunking (semantic), hybrid search (BM25 + vector)</td></tr></tbody></table><h2 id=3-load-testing-with-locust>3. Load Testing with Locust</h2><h3 id=locustfilepy>locustfile.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> locust <span style=color:#f92672>import</span> HttpUser, task, between
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> random
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>QUERIES <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;Tóm tắt tin tức kinh tế hôm nay&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;Công nghệ AI mới nhất là gì&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;Thời tiết Hà Nội tuần này&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;Bóng đá V-League kết quả&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;Chính sách thuế mới 2024&#34;</span>,
+</span></span><span style=display:flex><span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RAGUser</span>(HttpUser):
+</span></span><span style=display:flex><span>    wait_time <span style=color:#f92672>=</span> between(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>3</span>)
+</span></span><span style=display:flex><span>    host <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>getenv(<span style=color:#e6db74>&#34;RAG_API_URL&#34;</span>, <span style=color:#e6db74>&#34;https://xxx.execute-api.ap-southeast-2.amazonaws.com/prod&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>@task</span>(<span style=color:#ae81ff>3</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>ask_question</span>(self):
+</span></span><span style=display:flex><span>        query <span style=color:#f92672>=</span> random<span style=color:#f92672>.</span>choice(QUERIES)
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>client<span style=color:#f92672>.</span>post(<span style=color:#e6db74>&#34;/ask&#34;</span>, json<span style=color:#f92672>=</span>{
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;query&#34;</span>: query,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;top_k&#34;</span>: <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>        })
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>@task</span>(<span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>ask_complex</span>(self):
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>client<span style=color:#f92672>.</span>post(<span style=color:#e6db74>&#34;/ask&#34;</span>, json<span style=color:#f92672>=</span>{
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;query&#34;</span>: <span style=color:#e6db74>&#34;So sánh quan điểm các báo về chính sách đất đai mới&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;gemini-2.0-flash&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;top_k&#34;</span>: <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>        })
+</span></span></code></pre></div><h3 id=run-load-test>Run Load Test</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Install</span>
+</span></span><span style=display:flex><span>pip install locust
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Run (headless, 50 users, 2 min)</span>
+</span></span><span style=display:flex><span>locust -f locustfile.py --headless -u <span style=color:#ae81ff>50</span> -r <span style=color:#ae81ff>5</span> --run-time 2m --html report.html
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Or with UI</span>
+</span></span><span style=display:flex><span>locust -f locustfile.py
+</span></span><span style=display:flex><span><span style=color:#75715e># Open http://localhost:8089</span>
+</span></span></code></pre></div><h3 id=target-metrics>Target Metrics</h3><table><thead><tr><th style=text-align:left>Metric</th><th style=text-align:left>Target</th></tr></thead><tbody><tr><td style=text-align:left>p50 Latency</td><td style=text-align:left>&lt; 3s</td></tr><tr><td style=text-align:left>p95 Latency</td><td style=text-align:left>&lt; 8s</td></tr><tr><td style=text-align:left>p99 Latency</td><td style=text-align:left>&lt; 15s</td></tr><tr><td style=text-align:left>Error Rate</td><td style=text-align:left>&lt; 0.1%</td></tr><tr><td style=text-align:left>Throughput</td><td style=text-align:left>> 10 RPS</td></tr></tbody></table><h2 id=4-production-monitoring>4. Production Monitoring</h2><h3 id=cloudwatch-dashboards>CloudWatch Dashboards</h3><p>Create dashboard with these widgets:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;widgets&#34;</span>: [
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;metric&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;properties&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;metrics&#34;</span>: [
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;AWS/Lambda&#34;</span>, <span style=color:#e6db74>&#34;Invocations&#34;</span>, <span style=color:#e6db74>&#34;FunctionName&#34;</span>, <span style=color:#e6db74>&#34;newsrag-rag-api&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;Errors&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;Duration&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;Throttles&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>]
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;period&#34;</span>: <span style=color:#ae81ff>300</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;stat&#34;</span>: <span style=color:#e6db74>&#34;Sum&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;region&#34;</span>: <span style=color:#e6db74>&#34;ap-southeast-2&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;RAG API - Invocations &amp; Errors&#34;</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;metric&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;properties&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;metrics&#34;</span>: [
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;AWS/Lambda&#34;</span>, <span style=color:#e6db74>&#34;Duration&#34;</span>, <span style=color:#e6db74>&#34;FunctionName&#34;</span>, <span style=color:#e6db74>&#34;newsrag-etl&#34;</span>, { <span style=color:#f92672>&#34;stat&#34;</span>: <span style=color:#e6db74>&#34;p50&#34;</span> }],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, { <span style=color:#f92672>&#34;stat&#34;</span>: <span style=color:#e6db74>&#34;p95&#34;</span> }],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, { <span style=color:#f92672>&#34;stat&#34;</span>: <span style=color:#e6db74>&#34;p99&#34;</span> }]
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;ETL Lambda Duration (p50/p95/p99)&#34;</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;metric&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;properties&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;metrics&#34;</span>: [
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;AWS/SQS&#34;</span>, <span style=color:#e6db74>&#34;ApproximateNumberOfMessagesVisible&#34;</span>, <span style=color:#e6db74>&#34;QueueName&#34;</span>, <span style=color:#e6db74>&#34;newsrag-news-raw&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;ApproximateNumberOfMessagesNotVisible&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;NumberOfMessagesSent&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;NumberOfMessagesReceived&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>]
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;SQS Queue Depth &amp; Throughput&#34;</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;metric&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;properties&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;metrics&#34;</span>: [
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;AWS/RDS&#34;</span>, <span style=color:#e6db74>&#34;CPUUtilization&#34;</span>, <span style=color:#e6db74>&#34;DBClusterIdentifier&#34;</span>, <span style=color:#e6db74>&#34;newsrag-postgres&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;DatabaseConnections&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;FreeableMemory&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>]
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;Aurora Serverless v2 Metrics&#34;</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;metric&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;properties&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;metrics&#34;</span>: [
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;AWS/Bedrock&#34;</span>, <span style=color:#e6db74>&#34;Invocations&#34;</span>, <span style=color:#e6db74>&#34;ModelId&#34;</span>, <span style=color:#e6db74>&#34;amazon.titan-embed-text-v2:0&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;InvocationLatency&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>],
+</span></span><span style=display:flex><span>          [<span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;Throttles&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>, <span style=color:#e6db74>&#34;.&#34;</span>]
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;Bedrock Titan Embeddings&#34;</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  ]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=cloudwatch-alarms>CloudWatch Alarms</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#75715e># Terraform alarms
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_metric_alarm&#34; &#34;lambda_errors&#34;</span> {
+</span></span><span style=display:flex><span>  alarm_name          <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-rag-api-errors&#34;</span>
+</span></span><span style=display:flex><span>  comparison_operator <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;GreaterThanThreshold&#34;</span>
+</span></span><span style=display:flex><span>  evaluation_periods  <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>  metric_name         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Errors&#34;</span>
+</span></span><span style=display:flex><span>  namespace           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AWS/Lambda&#34;</span>
+</span></span><span style=display:flex><span>  period              <span style=color:#f92672>=</span> <span style=color:#ae81ff>300</span>
+</span></span><span style=display:flex><span>  statistic           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Sum&#34;</span>
+</span></span><span style=display:flex><span>  threshold           <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>  alarm_description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;RAG API Lambda errors detected&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  dimensions <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    FunctionName <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>rag_api</span>.<span style=color:#66d9ef>function_name</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  alarm_actions <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_sns_topic</span>.<span style=color:#66d9ef>alerts</span>.<span style=color:#66d9ef>arn</span>]
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_metric_alarm&#34; &#34;sqs_backlog&#34;</span> {
+</span></span><span style=display:flex><span>  alarm_name          <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-sqs-backlog&#34;</span>
+</span></span><span style=display:flex><span>  comparison_operator <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;GreaterThanThreshold&#34;</span>
+</span></span><span style=display:flex><span>  evaluation_periods  <span style=color:#f92672>=</span> <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>  metric_name         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ApproximateNumberOfMessagesVisible&#34;</span>
+</span></span><span style=display:flex><span>  namespace           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AWS/SQS&#34;</span>
+</span></span><span style=display:flex><span>  period              <span style=color:#f92672>=</span> <span style=color:#ae81ff>300</span>
+</span></span><span style=display:flex><span>  statistic           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Average&#34;</span>
+</span></span><span style=display:flex><span>  threshold           <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>  alarm_description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;SQS queue backing up - consumer may be down&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  dimensions <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    QueueName <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_sqs_queue</span>.<span style=color:#66d9ef>news_raw</span>.<span style=color:#66d9ef>name</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  alarm_actions <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_sns_topic</span>.<span style=color:#66d9ef>alerts</span>.<span style=color:#66d9ef>arn</span>]
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_cloudwatch_metric_alarm&#34; &#34;rag_latency&#34;</span> {
+</span></span><span style=display:flex><span>  alarm_name          <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-rag-api-high-latency&#34;</span>
+</span></span><span style=display:flex><span>  comparison_operator <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;GreaterThanThreshold&#34;</span>
+</span></span><span style=display:flex><span>  evaluation_periods  <span style=color:#f92672>=</span> <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>  metric_name         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Duration&#34;</span>
+</span></span><span style=display:flex><span>  namespace           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AWS/Lambda&#34;</span>
+</span></span><span style=display:flex><span>  period              <span style=color:#f92672>=</span> <span style=color:#ae81ff>300</span>
+</span></span><span style=display:flex><span>  statistic           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;p95&#34;</span>
+</span></span><span style=display:flex><span>  threshold           <span style=color:#f92672>=</span> <span style=color:#ae81ff>20000</span><span style=color:#75715e>  # 20 seconds in ms
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  alarm_description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;RAG API p95 latency &gt; 20s&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  dimensions <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    FunctionName <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>rag_api</span>.<span style=color:#66d9ef>function_name</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  alarm_actions <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_sns_topic</span>.<span style=color:#66d9ef>alerts</span>.<span style=color:#66d9ef>arn</span>]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=structured-logging>Structured Logging</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># In Lambda functions - use structured JSON logs</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>JsonFormatter</span>(logging<span style=color:#f92672>.</span>Formatter):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>format</span>(self, record):
+</span></span><span style=display:flex><span>        log_data <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;timestamp&#34;</span>: self<span style=color:#f92672>.</span>formatTime(record),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;level&#34;</span>: record<span style=color:#f92672>.</span>levelname,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;logger&#34;</span>: record<span style=color:#f92672>.</span>name,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;message&#34;</span>: record<span style=color:#f92672>.</span>getMessage(),
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;function&#34;</span>: record<span style=color:#f92672>.</span>funcName,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;line&#34;</span>: record<span style=color:#f92672>.</span>lineno,
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> hasattr(record, <span style=color:#e6db74>&#34;extra_fields&#34;</span>):
+</span></span><span style=display:flex><span>            log_data<span style=color:#f92672>.</span>update(record<span style=color:#f92672>.</span>extra_fields)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> json<span style=color:#f92672>.</span>dumps(log_data)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Usage</span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger()
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>handlers[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>setFormatter(JsonFormatter())
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Log with context</span>
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;ETL processing article&#34;</span>, extra<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;extra_fields&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;article_id&#34;</span>: article_id,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;source&#34;</span>: source_name,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;chunks&#34;</span>: len(chunks),
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;duration_ms&#34;</span>: duration_ms
+</span></span><span style=display:flex><span>}})
+</span></span></code></pre></div><h3 id=log-insights-queries>Log Insights Queries</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=display:flex><span><span style=color:#75715e>-- Find slow ETL invocations
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>fields <span style=color:#f92672>@</span><span style=color:#66d9ef>timestamp</span>, <span style=color:#f92672>@</span>duration, <span style=color:#f92672>@</span>message
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> filter <span style=color:#f92672>@</span>logStream <span style=color:#66d9ef>like</span> <span style=color:#f92672>/</span>etl<span style=color:#f92672>/</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> sort <span style=color:#f92672>@</span>duration <span style=color:#66d9ef>desc</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#66d9ef>limit</span> <span style=color:#ae81ff>20</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>-- Error patterns
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>fields <span style=color:#f92672>@</span><span style=color:#66d9ef>timestamp</span>, <span style=color:#f92672>@</span>message
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> filter <span style=color:#f92672>@</span>message <span style=color:#66d9ef>like</span> <span style=color:#f92672>/</span>ERROR<span style=color:#f92672>|</span><span style=color:#66d9ef>Exception</span><span style=color:#f92672>|</span>Traceback<span style=color:#f92672>/</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> sort <span style=color:#f92672>@</span><span style=color:#66d9ef>timestamp</span> <span style=color:#66d9ef>desc</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> <span style=color:#66d9ef>limit</span> <span style=color:#ae81ff>50</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>-- Bedrock throttling
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>fields <span style=color:#f92672>@</span><span style=color:#66d9ef>timestamp</span>, <span style=color:#f92672>@</span>message
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> filter <span style=color:#f92672>@</span>message <span style=color:#66d9ef>like</span> <span style=color:#f92672>/</span>Throttling<span style=color:#f92672>|</span>RateExceeded<span style=color:#f92672>/</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>|</span> sort <span style=color:#f92672>@</span><span style=color:#66d9ef>timestamp</span> <span style=color:#66d9ef>desc</span>
+</span></span></code></pre></div><h2 id=5-end-to-end-test-playwright>5. End-to-End Test (Playwright)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># tests/e2e/test_chat.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> playwright.sync_api <span style=color:#f92672>import</span> Page, expect
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> pytest
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>@pytest.mark.e2e</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>test_chat_flow</span>(page: Page):
+</span></span><span style=display:flex><span>    page<span style=color:#f92672>.</span>goto(<span style=color:#e6db74>&#34;https://your-dashboard.vercel.app/chat&#34;</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Wait for page load</span>
+</span></span><span style=display:flex><span>    expect(page<span style=color:#f92672>.</span>locator(<span style=color:#e6db74>&#34;h1&#34;</span>))<span style=color:#f92672>.</span>to_contain_text(<span style=color:#e6db74>&#34;AI Chat&#34;</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Select model</span>
+</span></span><span style=display:flex><span>    page<span style=color:#f92672>.</span>locator(<span style=color:#e6db74>&#34;select&#34;</span>)<span style=color:#f92672>.</span>select_option(<span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Send question</span>
+</span></span><span style=display:flex><span>    page<span style=color:#f92672>.</span>fill(<span style=color:#e6db74>&#34;input[placeholder*=&#39;Hỏi&#39;]&#34;</span>, <span style=color:#e6db74>&#34;Tóm tắt tin tức kinh tế hôm nay&#34;</span>)
+</span></span><span style=display:flex><span>    page<span style=color:#f92672>.</span>click(<span style=color:#e6db74>&#34;button:has-text(&#39;Send&#39;)&#34;</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Wait for response</span>
+</span></span><span style=display:flex><span>    expect(page<span style=color:#f92672>.</span>locator(<span style=color:#e6db74>&#34;text=Tóm tắt&#34;</span>))<span style=color:#f92672>.</span>to_be_visible(timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>30000</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Verify sources shown</span>
+</span></span><span style=display:flex><span>    expect(page<span style=color:#f92672>.</span>locator(<span style=color:#e6db74>&#34;text=Sources&#34;</span>))<span style=color:#f92672>.</span>to_be_visible()
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Click source link</span>
+</span></span><span style=display:flex><span>    page<span style=color:#f92672>.</span>locator(<span style=color:#e6db74>&#34;details summary&#34;</span>)<span style=color:#f92672>.</span>first<span style=color:#f92672>.</span>click()
+</span></span><span style=display:flex><span>    expect(page<span style=color:#f92672>.</span>locator(<span style=color:#e6db74>&#34;li&#34;</span>)<span style=color:#f92672>.</span>first)<span style=color:#f92672>.</span>to_be_visible()
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Run E2E tests</span>
+</span></span><span style=display:flex><span>npm install -g playwright
+</span></span><span style=display:flex><span>playwright install
+</span></span><span style=display:flex><span>pytest tests/e2e/ -v
+</span></span></code></pre></div><h2 id=cicd-pipeline-github-actions>CI/CD Pipeline (GitHub Actions)</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># .github/workflows/test.yml</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>name</span>: <span style=color:#ae81ff>Test &amp; Deploy</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>on</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>push</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>branches</span>: [<span style=color:#ae81ff>main]</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>pull_request</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>branches</span>: [<span style=color:#ae81ff>main]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>jobs</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>test</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>runs-on</span>: <span style=color:#ae81ff>ubuntu-latest</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>services</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>postgres</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>image</span>: <span style=color:#ae81ff>pgvector/pgvector:pg15</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>env</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>POSTGRES_DB</span>: <span style=color:#ae81ff>newsrag</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>POSTGRES_USER</span>: <span style=color:#ae81ff>postgres</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>POSTGRES_PASSWORD</span>: <span style=color:#ae81ff>postgres</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>ports</span>: [<span style=color:#ae81ff>5432</span>:<span style=color:#ae81ff>5432</span>]
+</span></span><span style=display:flex><span>        <span style=color:#f92672>options</span>: &gt;-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          --health-cmd &#34;pg_isready -U postgres&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          --health-interval 10s
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          --health-timeout 5s
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          --health-retries 5</span>          
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>steps</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>actions/checkout@v4</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>actions/setup-python@v5</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>with</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>python-version</span>: <span style=color:#e6db74>&#34;3.11&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>run</span>: <span style=color:#ae81ff>pip install -r requirements.txt</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>run</span>: <span style=color:#ae81ff>pip install pytest pytest-cov</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>run</span>: <span style=color:#ae81ff>pytest -m &#34;unit or integration&#34; --cov=src --cov-report=xml</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>codecov/codecov-action@v3</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>ragas-eval</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>runs-on</span>: <span style=color:#ae81ff>ubuntu-latest</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>if</span>: <span style=color:#ae81ff>github.event_name == &#39;push&#39; &amp;&amp; github.ref == &#39;refs/heads/main&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>steps</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>actions/checkout@v4</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>actions/setup-python@v5</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>with</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>python-version</span>: <span style=color:#e6db74>&#34;3.11&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>run</span>: <span style=color:#ae81ff>pip install ragas langchain-openai datasets</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>run</span>: <span style=color:#ae81ff>python tests/test_ragas_evaluation.py</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Comment PR with results</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>actions/github-script@v7</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>with</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>script</span>: |<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            const fs = require(&#39;fs&#39;);
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            const results = fs.readFileSync(&#39;ragas_results.json&#39;, &#39;utf8&#39;);
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            github.rest.issues.createComment({
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              issue_number: context.issue.number,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              owner: context.repo.owner,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              repo: context.repo.repo,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              body: `## RAGAS Evaluation Results\n\`\`\`json\n${results}\n\`\`\``
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            })</span>            
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>deploy</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>needs</span>: [<span style=color:#ae81ff>test, ragas-eval]</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>if</span>: <span style=color:#ae81ff>github.ref == &#39;refs/heads/main&#39; &amp;&amp; github.event_name == &#39;push&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>runs-on</span>: <span style=color:#ae81ff>ubuntu-latest</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>steps</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>actions/checkout@v4</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Configure AWS</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>uses</span>: <span style=color:#ae81ff>aws-actions/configure-aws-credentials@v4</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>with</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>aws-access-key-id</span>: <span style=color:#ae81ff>${{ secrets.AWS_ACCESS_KEY_ID }}</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>aws-secret-access-key</span>: <span style=color:#ae81ff>${{ secrets.AWS_SECRET_ACCESS_KEY }}</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>aws-region</span>: <span style=color:#ae81ff>ap-southeast-2</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Deploy Infrastructure</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>run</span>: |<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          terraform init
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          terraform apply -auto-approve</span>          
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Build &amp; Push Docker</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>run</span>: |<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          docker build -t news-crawler .
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_URI
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          docker tag news-crawler:latest $ECR_URI/newsrag-api:latest
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          docker push $ECR_URI/newsrag-api:latest</span>          
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Deploy Lambdas</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>run</span>: <span style=color:#ae81ff>./deploy.sh</span>
+</span></span></code></pre></div><hr><p><strong>Next:</strong> <a href=5.16-Cost/>Cost Optimization</a></p><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.14-frontend/ title="Frontend Integration (Next.js + FastAPI)"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.16-cost/ title="Cost Optimization" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=https://tutrong2706.github.io/NewsRagReport/js/clipboard.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.jquery.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery.sticky.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/featherlight.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/highlight.pack.js?1785509515></script><script>hljs.initHighlightingOnLoad()</script><script src=https://tutrong2706.github.io/NewsRagReport/js/modernizr.custom-3.6.0.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/learn.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/hugo-learn.js?1785509515></script><link href=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.js?1785509515></script><script>mermaid.initialize({startOnLoad:!0})</script><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,(e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date),(i=t.createElement(n),a=t.getElementsByTagName(n)[0]),i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-158079754-2","auto"),ga("send","pageview")</script></body></html>

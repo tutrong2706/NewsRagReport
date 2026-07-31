@@ -1,0 +1,307 @@
+<!doctype html><html lang=vi class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.134.3"><meta name=description content><meta name=author content="thienlh@thienlu.com"><link rel=icon href=https://tutrong2706.github.io/NewsRagReport/images/favicon.png type=image/png><title>Thiết lập phát triển cục bộ :: Báo cáo thực tập</title>
+<link href=https://tutrong2706.github.io/NewsRagReport/css/nucleus.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/fontawesome-all.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hybrid.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/featherlight.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/perfect-scrollbar.min.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/auto-complete.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/atom-one-dark-reasonable.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hugo-theme.css?1785509515 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme-workshop.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery-3.3.1.min.js?1785509515></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/><nav id=sidebar class=showVisitedLinks><div id=header-wrapper><div id=header><a id=logo href=https://tutrong2706.github.io/NewsRagReport/><svg id="Layer_1" data-name="Layer 1" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff}.cls-2{fill:#fff;fill-rule:evenodd}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09 10.85a4.7 4.7.0 00.19 1.48 7.73 7.73.0 00.54 1.19.77.77.0 01.12.38.64.64.0 01-.32.49l-1 .7a.83.83.0 01-.44.15.69.69.0 01-.49-.23 3.8 3.8.0 01-.6-.77q-.25-.42-.51-1a6.14 6.14.0 01-4.89 2.3 4.54 4.54.0 01-3.32-1.19 4.27 4.27.0 01-1.22-3.2 4.28 4.28.0 011.46-3.4A6.06 6.06.0 017.69 6.46a12.47 12.47.0 011.76.13q.92.13 1.91.36V5.73a3.65 3.65.0 00-.79-2.66A3.81 3.81.0 007.86 2.3a7.71 7.71.0 00-1.79.22 12.78 12.78.0 00-1.79.57 4.55 4.55.0 01-.58.22h-.26q-.35.0-.35-.52V2a1.09 1.09.0 01.12-.58 1.2 1.2.0 01.47-.35A10.88 10.88.0 015.77.32 10.19 10.19.0 018.36.0a6 6 0 014.35 1.35 5.49 5.49.0 011.38 4.09zM7.34 13.38a5.36 5.36.0 001.72-.31A3.63 3.63.0 0010.63 12 2.62 2.62.0 0011.19 11a5.63 5.63.0 00.16-1.44v-.7a14.35 14.35.0 00-1.53-.28 12.37 12.37.0 00-1.56-.1 3.84 3.84.0 00-2.47.67A2.34 2.34.0 005 11a2.35 2.35.0 00.61 1.76A2.4 2.4.0 007.34 13.38zm13.35 1.8a1 1 0 01-.64-.16 1.3 1.3.0 01-.35-.65L15.81 1.51a3 3 0 01-.15-.67.36.36.0 01.41-.41H17.7a1 1 0 01.65.16 1.4 1.4.0 01.33.65l2.79 11 2.59-11A1.17 1.17.0 0124.39.6a1.1 1.1.0 01.67-.16H26.4a1.1 1.1.0 01.67.16 1.17 1.17.0 01.32.65L30 12.39 32.88 1.25A1.39 1.39.0 0133.22.6a1 1 0 01.65-.16h1.54a.36.36.0 01.41.41 1.36 1.36.0 010 .26 3.64 3.64.0 01-.12.41l-4 12.86a1.3 1.3.0 01-.35.65 1 1 0 01-.64.16H29.25a1 1 0 01-.67-.17 1.26 1.26.0 01-.32-.67L25.67 3.64l-2.56 10.7a1.26 1.26.0 01-.32.67 1 1 0 01-.67.17zm21.36.44a11.28 11.28.0 01-2.56-.29 7.44 7.44.0 01-1.92-.67 1 1 0 01-.61-.93v-.84q0-.52.38-.52a.9.9.0 01.31.06l.42.17a8.77 8.77.0 001.83.58 9.78 9.78.0 002 .2 4.48 4.48.0 002.43-.55 1.76 1.76.0 00.86-1.57 1.61 1.61.0 00-.45-1.16A4.29 4.29.0 0043 9.22l-2.41-.76A5.15 5.15.0 0138 6.78a3.94 3.94.0 01-.83-2.41 3.7 3.7.0 01.45-1.85 4.47 4.47.0 011.19-1.37 5.27 5.27.0 011.7-.86A7.4 7.4.0 0142.6.0a8.87 8.87.0 011.12.07q.57.07 1.08.19t.95.26a4.27 4.27.0 01.7.29 1.59 1.59.0 01.49.41.94.94.0 01.15.55v.79q0 .52-.38.52a1.76 1.76.0 01-.64-.2 7.74 7.74.0 00-3.2-.64 4.37 4.37.0 00-2.21.47 1.6 1.6.0 00-.79 1.48 1.58 1.58.0 00.49 1.18 4.94 4.94.0 001.83.92L44.55 7a5.08 5.08.0 012.57 1.6A3.76 3.76.0 0147.9 11a4.21 4.21.0 01-.44 1.93 4.4 4.4.0 01-1.21 1.47 5.43 5.43.0 01-1.85.93A8.25 8.25.0 0142.05 15.62z"/><path class="cls-2" d="M45.19 23.81C39.72 27.85 31.78 30 25 30A36.64 36.64.0 01.22 20.57c-.51-.46-.06-1.09.56-.74A49.78 49.78.0 0025.53 26.4 49.23 49.23.0 0044.4 22.53C45.32 22.14 46.1 23.14 45.19 23.81z"/><path class="cls-2" d="M47.47 21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74 3.13-2.2 8.27-1.57 8.86-.83s-.16 5.89-3.09 8.35c-.45.38-.88.18-.68-.32C46.69 25.8 48.17 22.11 47.47 21.21z"/></svg></a></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/lunr.min.js?1785509515></script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/auto-complete.js?1785509515></script><script type=text/javascript>var baseurl="https://tutrong2706.github.io/NewsRagReport//vi"</script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/search.js?1785509515></script></div><div class=highlightable><ul class=topics><li data-nav-id=/vi/1-worklog/ title="Nhật ký công việc" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/><b>1. </b>Nhật ký công việc
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/1-worklog/1.1-week1/ title="Worklog Tuần 1" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.1-week1/><b>1.1. </b>Worklog Tuần 1
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.2-week2/ title="Worklog Tuần 2" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.2-week2/><b>1.2. </b>Worklog Tuần 2
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.3-week3/ title="Worklog Tuần 3" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.3-week3/><b>1.3. </b>Worklog Tuần 3
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.4-week4/ title="Worklog Tuần 4" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.4-week4/><b>1.4. </b>Worklog Tuần 4
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.5-week5/ title="Worklog Tuần 5" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.5-week5/><b>1.5. </b>Worklog Tuần 5
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.6-week6/ title="Worklog Tuần 6" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.6-week6/><b>1.6. </b>Worklog Tuần 6
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.7-week7/ title="Worklog Tuần 7" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.7-week7/><b>1.7. </b>Worklog Tuần 7
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/1-worklog/1.8-week8/ title="Worklog Tuần 8" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/1-worklog/1.8-week8/><b>1.8. </b>Worklog Tuần 8
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/2-proposal/ title="Bản đề xuất" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/2-proposal/><b>2. </b>Bản đề xuất
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/ title="Các bài Blogs & Kinh nghiệm" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/><b>3. </b>Các bài Blogs & Kinh nghiệm
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/3-blogsposted/3.1-blog1/ title="Blog 1: Vượt giới hạn Timeout với AWS Fargate" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.1-blog1/><b>3.1. </b>Blog 1: Vượt giới hạn Timeout với AWS Fargate
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.2-blog2/ title="Blog 2: Tối ưu chi phí bằng SQS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.2-blog2/><b>3.2. </b>Blog 2: Tối ưu chi phí bằng SQS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/3-blogsposted/3.3-blog3/ title="Blog 3: Xây dựng RAG tối ưu" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/3-blogsposted/3.3-blog3/><b>3.3. </b>Blog 3: Xây dựng RAG tối ưu
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/4-eventparticipated/ title="Sự kiện đã tham gia" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/><b>4. </b>Sự kiện đã tham gia
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/4-eventparticipated/4.1-event1/ title="Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.1-event1/>1. Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.2-event2/ title="Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.2-event2/>2. Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/4-eventparticipated/4.3-event3/ title="Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/4-eventparticipated/4.3-event3/>3. Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/5-workshop/ title="News RAG Pipeline on AWS — Workshop" class="dd-item
+parent"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/><b>5. </b>News RAG Pipeline on AWS — Workshop
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/vi/5-workshop/5.1-workshop-overview/ title="Tổng quan Workshop" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.1-workshop-overview/><b>5.1 </b>Tổng quan Workshop
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.2-prerequisites/ title="Điều kiện tiên quyết" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.2-prerequisites/><b>5.2 </b>Điều kiện tiên quyết
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.3-infrastructure/ title="Hạ tầng dưới dạng Code (Terraform)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.3-infrastructure/><b>5.3 </b>Hạ tầng dưới dạng Code (Terraform)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.4-local-dev/ title="Thiết lập phát triển cục bộ" class="dd-item
+active"><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/><b>5.4 </b>Thiết lập phát triển cục bộ
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.5-crawler/ title="Phát triển Crawler" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/><b>5.5 </b>Phát triển Crawler
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.6-ingestion/ title="Nhập dữ liệu (Kafka Consumer → PostgreSQL)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.6-ingestion/><b>5.6 </b>Nhập dữ liệu (Kafka Consumer → PostgreSQL)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.7-etl/ title="ETL & Star Schema" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.7-etl/><b>5.7 </b>ETL & Star Schema
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.8-vectorize/ title="Vector hóa (Local Dev - SentenceTransformer → Qdrant)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.8-vectorize/><b>5.8 </b>Vector hóa (Local Dev - SentenceTransformer → Qdrant)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.9-aws-deploy/ title="Chuẩn bị triển khai AWS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.9-aws-deploy/><b>5.9 </b>Chuẩn bị triển khai AWS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.10-fargate-crawler/><b>5.10 </b>Fargate Crawler (ECS + EventBridge)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.11-lambda-consumer/><b>5.11 </b>Lambda Consumer (SQS → Aurora)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.12-lambda-etl/><b>5.12 </b>Lambda ETL + Bedrock Embedding
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.13-rag-api/><b>5.13 </b>RAG API (Lambda + API Gateway)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.14-frontend/ title="Tích hợp Frontend (Next.js + FastAPI)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.14-frontend/><b>5.14 </b>Tích hợp Frontend (Next.js + FastAPI)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.15-testing/ title="Kiểm thử & Giám sát" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.15-testing/><b>5.15 </b>Kiểm thử & Giám sát
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.16-cost/ title="Tối ưu chi phí" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.16-cost/><b>5.16 </b>Tối ưu chi phí
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/5-workshop/5.17-cleanup/ title="Dọn dẹp tài nguyên" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.17-cleanup/><b>5.17 </b>Dọn dẹp tài nguyên
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/vi/6-self-evaluation/ title="Tự đánh giá" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/6-self-evaluation/><b>6. </b>Tự đánh giá
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/7-feedback/ title="Chia sẻ, đóng góp ý kiến" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/7-feedback/><b>7. </b>Chia sẻ, đóng góp ý kiến
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/vi/8-references/ title="Tài liệu tham khảo" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/vi/8-references/><b>8. </b>Tài liệu tham khảo
+<i class="fas fa-check read-icon"></i></a></li></ul><section id=shortcuts><h3>More</h3><ul><li><a class=padding href=http://awsstudygroup.com><i class='fab fa-aws'></i> AWS Study Group - Blog</a></li><li><a class=padding href=https://www.facebook.com/groups/awsstudygroupfcj><i class='fab fa-facebook'></i> AWS Study Group - Nhóm FB</a></li></ul></section><section id=prefooter><hr><ul><li><a class=padding><i class="fas fa-language fa-fw"></i><div class=select-style><select id=select-language onchange="location=this.value"><option id=en value=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.4-local-dev/>English</option><option id=vi value=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.4-local-dev/ selected>Tiếng Việt</option></select><svg id="Capa_1" xmlns:xlink="http://www.w3.org/1999/xlink" width="255" height="255" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255"><g><g id="arrow-drop-down"><polygon points="0,63.75 127.5,191.25 255,63.75"/></g></g></svg></div></a></li><li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li></ul></section><section id=footer><left><br><br><b>Last Updated</b><br><i><font color=orange>31-07-2026</font>
+</i></left><left><br><br><b>Team</b><br><i><a href=https://www.facebook.com/groups/660548818043427 style=color:orange>First Cloud AI Journey</a>
+</i></left><script async defer src=https://buttons.github.io/buttons.js></script></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i>
+</a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links><a href=https://tutrong2706.github.io/NewsRagReport/vi/>Báo cáo thực tập</a> > <a href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/>News RAG Pipeline on AWS — Workshop</a> > Thiết lập phát triển cục bộ</span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#tổng-quan-kiến-trúc-local>Tổng quan kiến trúc (Local)</a></li><li><a href=#các-dịch-vụ-docker-compose>Các dịch vụ Docker Compose</a></li><li><a href=#khởi-động-môi-trường>Khởi động môi trường</a></li><li><a href=#xác-minh-các-dịch-vụ>Xác minh các dịch vụ</a><ul><li><a href=#postgresql>PostgreSQL</a></li><li><a href=#qdrant>Qdrant</a></li><li><a href=#kafka>Kafka</a></li><li><a href=#kafka-ui>Kafka UI</a></li></ul></li><li><a href=#thiết-lập-môi-trường-python>Thiết lập môi trường Python</a><ul><li><a href=#requirementstxt>requirements.txt</a></li></ul></li><li><a href=#cấu-hình-biến-môi-trường>Cấu hình biến môi trường</a></li><li><a href=#chạy-pipeline-cục-bộ>Chạy Pipeline cục bộ</a><ul><li><a href=#1-crawl-tin-tức-scrapy--kafka>1. Crawl tin tức (Scrapy → Kafka)</a></li><li><a href=#2-chạy-etl-postgresql--star-schema>2. Chạy ETL (PostgreSQL → Star Schema)</a></li><li><a href=#3-vectorize-star-schema--qdrant>3. Vectorize (Star Schema → Qdrant)</a></li><li><a href=#4-chạy-full-pipeline-tự-động>4. Chạy Full Pipeline (Tự động)</a></li><li><a href=#5-test-rag-api-interactive>5. Test RAG API (Interactive)</a></li></ul></li><li><a href=#makefile-commands>Makefile Commands</a></li><li><a href=#xử-lý-sự-cố>Xử lý sự cố</a></li><li><a href=#quy-trình-phát-triển>Quy trình phát triển</a></li><li><a href=#bước-tiếp-theo>Bước tiếp theo</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>Thiết lập phát triển cục bộ</h1><h1 id=thiết-lập-phát-triển-cục-bộ>Thiết lập phát triển cục bộ</h1><p>Phần này bao gồm việc thiết lập môi trường phát triển cục bộ hoàn chỉnh sử dụng Docker Compose để mô phỏng các dịch vụ AWS cục bộ.</p><h2 id=tổng-quan-kiến-trúc-local>Tổng quan kiến trúc (Local)</h2><pre tabindex=0><code>┌─────────────┐     ┌─────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────┐
+│   Scrapy    │────►│  Kafka  │────►│  PostgreSQL  │────►│    ETL      │────►│  Qdrant  │
+│  Crawler    │     │         │     │  (Raw Data)  │     │(Star Schema)│     │ (Vectors)│
+└─────────────┘     └─────────┘     └──────────────┘     └─────────────┘     └──────────┘
+                           │                                     │                    │
+                           │                                     │                    │
+                           ▼                                     ▼                    ▼
+                    ┌─────────────┐                       ┌─────────────┐     ┌─────────────┐
+                    │  Zookeeper  │                       │  Sentence   │     │  RAG API    │
+                    │             │                       │  Transformer│     │  (FastAPI)  │
+                    └─────────────┘                       └─────────────┘     └─────────────┘
+</code></pre><h2 id=các-dịch-vụ-docker-compose>Các dịch vụ Docker Compose</h2><p>File <code>docker-compose.yml</code> định nghĩa tất cả các dịch vụ cần thiết cho phát triển cục bộ:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>version</span>: <span style=color:#e6db74>&#39;3.8&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>services</span>:
+</span></span><span style=display:flex><span>  <span style=color:#75715e># PostgreSQL with pgvector extension</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>postgres</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>pgvector/pgvector:pg15</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>newsrag-postgres</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>POSTGRES_DB</span>: <span style=color:#ae81ff>newsrag</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>POSTGRES_USER</span>: <span style=color:#ae81ff>postgres</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>POSTGRES_PASSWORD</span>: <span style=color:#ae81ff>postgres</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;5432:5432&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>postgres_data:/var/lib/postgresql/data</span>
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>./database/warehouse.sql:/docker-entrypoint-initdb.d/warehouse.sql</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>healthcheck</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>test</span>: [<span style=color:#e6db74>&#34;CMD-SHELL&#34;</span>, <span style=color:#e6db74>&#34;pg_isready -U postgres&#34;</span>]
+</span></span><span style=display:flex><span>      <span style=color:#f92672>interval</span>: <span style=color:#ae81ff>5s</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>timeout</span>: <span style=color:#ae81ff>5s</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>retries</span>: <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Qdrant Vector Database</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>qdrant</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>qdrant/qdrant:latest</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>newsrag-qdrant</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;6333:6333&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;6334:6334&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>qdrant_data:/qdrant/storage</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Kafka + Zookeeper</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>zookeeper</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>confluentinc/cp-zookeeper:7.5.0</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>newsrag-zookeeper</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>ZOOKEEPER_CLIENT_PORT</span>: <span style=color:#ae81ff>2181</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>ZOOKEEPER_TICK_TIME</span>: <span style=color:#ae81ff>2000</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>kafka</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>confluentinc/cp-kafka:7.5.0</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>newsrag-kafka</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>depends_on</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>zookeeper</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;9092:9092&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_BROKER_ID</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_ZOOKEEPER_CONNECT</span>: <span style=color:#ae81ff>zookeeper:2181</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_ADVERTISED_LISTENERS</span>: <span style=color:#ae81ff>PLAINTEXT://kafka:9092</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_TRANSACTION_STATE_LOG_MIN_ISR</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR</span>: <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e># Optional: Kafka UI for monitoring</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>kafka-ui</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>provectuslabs/kafka-ui:latest</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>container_name</span>: <span style=color:#ae81ff>newsrag-kafka-ui</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>depends_on</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#ae81ff>kafka</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;8080:8080&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>environment</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_CLUSTERS_0_NAME</span>: <span style=color:#ae81ff>local</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS</span>: <span style=color:#ae81ff>kafka:9092</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>KAFKA_CLUSTERS_0_ZOOKEEPER</span>: <span style=color:#ae81ff>zookeeper:2181</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>postgres_data</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>qdrant_data</span>:
+</span></span></code></pre></div><h2 id=khởi-động-môi-trường>Khởi động môi trường</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Khởi động tất cả dịch vụ nền</span>
+</span></span><span style=display:flex><span>docker compose up -d
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Kiểm tra trạng thái</span>
+</span></span><span style=display:flex><span>docker compose ps
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Xem logs</span>
+</span></span><span style=display:flex><span>docker compose logs -f postgres
+</span></span><span style=display:flex><span>docker compose logs -f kafka
+</span></span></code></pre></div><p>Kết quả mong đợi:</p><pre tabindex=0><code>NAME                 STATUS
+newsrag-postgres     Up (healthy)
+newsrag-qdrant       Up
+newsrag-zookeeper    Up
+newsrag-kafka        Up (healthy)
+newsrag-kafka-ui     Up
+</code></pre><h2 id=xác-minh-các-dịch-vụ>Xác minh các dịch vụ</h2><h3 id=postgresql>PostgreSQL</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Kết nối database</span>
+</span></span><span style=display:flex><span>psql -h localhost -U postgres -d newsrag
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Hoặc qua Docker</span>
+</span></span><span style=display:flex><span>docker exec -it newsrag-postgres psql -U postgres -d newsrag
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Xác minh tables được tạo từ warehouse.sql</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>\d</span>t
+</span></span></code></pre></div><p>Tables mong đợi:</p><pre tabindex=0><code>         List of relations
+ Schema |       Name       | Type  |  Owner
+--------+------------------+-------+----------
+ public | dim_author       | table | postgres
+ public | dim_content      | table | postgres
+ public | dim_source       | table | postgres
+ public | dim_time         | table | postgres
+ public | fact_article_authors | table | postgres
+ public | fact_articles    | table | postgres
+ public | fact_chunks      | table | postgres
+</code></pre><h3 id=qdrant>Qdrant</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Kiểm tra collections</span>
+</span></span><span style=display:flex><span>curl http://localhost:6333/collections
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Kết quả mong đợi: {&#34;result&#34;:{&#34;collections&#34;:[]},&#34;status&#34;:&#34;ok&#34;,&#34;time&#34;:0.0...}</span>
+</span></span></code></pre></div><h3 id=kafka>Kafka</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Liệt kê topics</span>
+</span></span><span style=display:flex><span>docker exec newsrag-kafka kafka-topics --bootstrap-server localhost:9092 --list
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Tạo news_raw topic (nếu chưa auto-created)</span>
+</span></span><span style=display:flex><span>docker exec newsrag-kafka kafka-topics --bootstrap-server localhost:9092 --create --topic news_raw --partitions <span style=color:#ae81ff>3</span> --replication-factor <span style=color:#ae81ff>1</span>
+</span></span></code></pre></div><h3 id=kafka-ui>Kafka UI</h3><p>Mở http://localhost:8080 trong trình duyệt để xem topics, messages, consumer groups.</p><h2 id=thiết-lập-môi-trường-python>Thiết lập môi trường Python</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Tạo virtual environment</span>
+</span></span><span style=display:flex><span>python3 -m venv venv
+</span></span><span style=display:flex><span>source venv/bin/activate  <span style=color:#75715e># Linux/macOS</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># venv\Scripts\activate   # Windows</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Nâng cấp pip và cài đặt dependencies</span>
+</span></span><span style=display:flex><span>pip install --upgrade pip
+</span></span><span style=display:flex><span>pip install -r requirements.txt
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Cài đặt package ở chế độ development</span>
+</span></span><span style=display:flex><span>pip install -e .
+</span></span></code></pre></div><h3 id=requirementstxt>requirements.txt</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span># Core
+</span></span><span style=display:flex><span>scrapy&gt;=2.11
+</span></span><span style=display:flex><span>kafka-python&gt;=2.0
+</span></span><span style=display:flex><span>psycopg2-binary&gt;=2.9
+</span></span><span style=display:flex><span>qdrant-client&gt;=1.7
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># ETL &amp; NLP
+</span></span><span style=display:flex><span>beautifulsoup4&gt;=4.12
+</span></span><span style=display:flex><span>newspaper3k&gt;=0.2.8
+</span></span><span style=display:flex><span>sentence-transformers&gt;=2.2
+</span></span><span style=display:flex><span>langchain&gt;=0.1
+</span></span><span style=display:flex><span>langchain-community&gt;=0.0
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># RAG &amp; LLM
+</span></span><span style=display:flex><span>groq&gt;=0.4
+</span></span><span style=display:flex><span>google-generativeai&gt;=0.3
+</span></span><span style=display:flex><span>pydantic&gt;=2.5
+</span></span><span style=display:flex><span>pydantic-settings&gt;=2.1
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># Utilities
+</span></span><span style=display:flex><span>python-dotenv&gt;=1.0
+</span></span><span style=display:flex><span>schedule&gt;=1.2
+</span></span><span style=display:flex><span>tqdm&gt;=4.66
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># API
+</span></span><span style=display:flex><span>fastapi&gt;=0.104
+</span></span><span style=display:flex><span>uvicorn&gt;=0.24
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># Testing
+</span></span><span style=display:flex><span>pytest&gt;=7.4
+</span></span><span style=display:flex><span>pytest-asyncio&gt;=0.21
+</span></span></code></pre></div><h2 id=cấu-hình-biến-môi-trường>Cấu hình biến môi trường</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Sao chép file mẫu</span>
+</span></span><span style=display:flex><span>cp .env.example .env
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Chỉnh sửa .env với giá trị của bạn</span>
+</span></span><span style=display:flex><span>cat &gt; .env <span style=color:#e6db74>&lt;&lt; &#39;EOF&#39;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># Database (Local PostgreSQL)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>DB_NAME=newsrag
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>DB_USER=postgres
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>DB_PASSWORD=postgres
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>DB_HOST=localhost
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>DB_PORT=5432
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># Qdrant (Local)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>QDRANT_HOST=localhost
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>QDRANT_PORT=6333
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>QDRANT_COLLECTION_NAME=news_chunks
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>QDRANT_API_KEY=
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># Kafka (Local)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>KAFKA_TOPIC_NEWS=news_raw
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># Embedding Model (Local SentenceTransformer)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EMBEDDING_SIZE=384
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># LLM APIs (Lấy từ respective consoles)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>GEMINI_API_KEY=AIza_xxxxxxxxxxxxxxxxxxxx
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># Model Config
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>NUM_MODEL_SUPPORT=3
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_1_NAME=qwen3-8b-instant
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_1_MODEL_ID=qwen/qwen3-8b-instant
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_1_PROVIDER=groq
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_1_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_2_NAME=llama-3.1-8b-instant
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_2_MODEL_ID=meta-llama/llama-3.1-8b-instant
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_2_PROVIDER=groq
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_2_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_3_NAME=gemini-2.0-flash
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_3_MODEL_ID=gemini-2.0-flash
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_3_PROVIDER=google
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>MODEL_3_API_KEY=AIza_xxxxxxxxxxxxxxxxxxxx
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74># AWS
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>AWS_REGION=ap-southeast-2
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><h2 id=chạy-pipeline-cục-bộ>Chạy Pipeline cục bộ</h2><h3 id=1-crawl-tin-tức-scrapy--kafka>1. Crawl tin tức (Scrapy → Kafka)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Terminal 1: Khởi động Kafka Consumer (ghi vào PostgreSQL)</span>
+</span></span><span style=display:flex><span>python consumer/consumer.py
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Terminal 2: Chạy Crawler</span>
+</span></span><span style=display:flex><span>python main.py --mode crawl
+</span></span></code></pre></div><p>Crawler:</p><ul><li>Đọc <code>config/config_site.json</code> để lấy danh sách URL báo</li><li>Chạy Scrapy SitemapSpider cho mỗi trang</li><li>Đẩy dữ liệu bài viết vào Kafka topic <code>news_raw</code></li></ul><h3 id=2-chạy-etl-postgresql--star-schema>2. Chạy ETL (PostgreSQL → Star Schema)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Sau khi crawler xong và consumer đã xử lý messages</span>
+</span></span><span style=display:flex><span>python main.py --mode etl
+</span></span></code></pre></div><p>ETL process:</p><ul><li>Đọc bài thô từ bảng <code>article_metadata</code></li><li>Làm sạch HTML, trích xuất text</li><li>Chunk text thành các đoạn ~500 token</li><li>Điền Star Schema tables (<code>dim_*</code>, <code>fact_*</code>)</li><li>Cập nhật <code>embedded = true</code> trên bài đã xử lý</li></ul><h3 id=3-vectorize-star-schema--qdrant>3. Vectorize (Star Schema → Qdrant)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>python main.py --mode vectorize
+</span></span></code></pre></div><p>Vectorizer:</p><ul><li>Đọc chunks từ bảng <code>fact_chunks</code></li><li>Tạo embeddings bằng SentenceTransformer (model local)</li><li>Upsert vectors vào Qdrant collection <code>news_chunks</code></li></ul><h3 id=4-chạy-full-pipeline-tự-động>4. Chạy Full Pipeline (Tự động)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Chạy crawl → ETL → vectorize lần lượt</span>
+</span></span><span style=display:flex><span>python main.py --mode full
+</span></span></code></pre></div><h3 id=5-test-rag-api-interactive>5. Test RAG API (Interactive)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Khởi động FastAPI server</span>
+</span></span><span style=display:flex><span>uvicorn search.api:app --reload --port <span style=color:#ae81ff>8000</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Hoặc dùng Makefile</span>
+</span></span><span style=display:flex><span>make test-interactive
+</span></span></code></pre></div><p>Test trên trình duyệt: http://localhost:8000/docs (Swagger UI)</p><p>Hoặc CLI:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>python -c <span style=color:#e6db74>&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>from search.engine import Pipeline
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>p = Pipeline()
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>result = p.ask(&#39;Tóm tắt tin tức về kinh tế Việt Nam hôm nay&#39;)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>print(result.summary)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>print(f&#39;Sources: {result.total}, Time: {result.duration_ms}ms&#39;)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>&#34;</span>
+</span></span></code></pre></div><h2 id=makefile-commands>Makefile Commands</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Xem tất cả lệnh</span>
+</span></span><span style=display:flex><span>make help
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Các lệnh thường dùng</span>
+</span></span><span style=display:flex><span>make setup              <span style=color:#75715e># Tạo venv, cài deps</span>
+</span></span><span style=display:flex><span>make up                 <span style=color:#75715e># docker compose up -d</span>
+</span></span><span style=display:flex><span>make down               <span style=color:#75715e># docker compose down -v</span>
+</span></span><span style=display:flex><span>make crawl              <span style=color:#75715e># python main.py --mode crawl</span>
+</span></span><span style=display:flex><span>make etl                <span style=color:#75715e># python main.py --mode etl</span>
+</span></span><span style=display:flex><span>make vectorize          <span style=color:#75715e># python main.py --mode vectorize</span>
+</span></span><span style=display:flex><span>make full               <span style=color:#75715e># python main.py --mode full</span>
+</span></span><span style=display:flex><span>make test-interactive   <span style=color:#75715e># Khởi động RAG API để test</span>
+</span></span><span style=display:flex><span>make logs-postgres      <span style=color:#75715e># docker compose logs -f postgres</span>
+</span></span><span style=display:flex><span>make logs-kafka         <span style=color:#75715e># docker compose logs -f kafka</span>
+</span></span></code></pre></div><h2 id=xử-lý-sự-cố>Xử lý sự cố</h2><table><thead><tr><th style=text-align:left>Vấn đề</th><th style=text-align:left>Giải pháp</th></tr></thead><tbody><tr><td style=text-align:left><code>PostgreSQL connection refused</code></td><td style=text-align:left>Kiểm tra <code>docker compose ps postgres</code>, chờ healthy. Xem <code>docker compose logs postgres</code></td></tr><tr><td style=text-align:left><code>Kafka not ready</code></td><td style=text-align:left>Đợi Kafka healthy (30-60s). Kiểm tra <code>docker compose logs -f kafka</code></td></tr><tr><td style=text-align:left><code>Qdrant collection issues</code></td><td style=text-align:left>Xóa và tạo lại collection: <code>curl -X DELETE http://localhost:6333/collections/news_chunks</code></td></tr><tr><td style=text-align:left><code>SentenceTransformer model download</code></td><td style=text-align:left>Lần đầu tải model (~100MB). Lần sau dùng cache tại <code>~/.cache/huggingface/</code></td></tr><tr><td style=text-align:left><code>Port conflicts</code></td><td style=text-align:left>Kiểm tra port 5432, 6333, 9092, 8080. Dừng dịch vụ xung đột hoặc đổi port trong docker-compose.yml</td></tr></tbody></table><h2 id=quy-trình-phát-triển>Quy trình phát triển</h2><pre tabindex=0><code>1. Sửa code (crawler/spiders/spider.py, etl/etl_warehouse.py, etc.)
+2. Test cục bộ: make crawl / make etl / make vectorize
+3. Kiểm tra logs: docker compose logs -f &lt;service&gt;
+4. Xác minh DB: psql -h localhost -U postgres -d newsrag -c &#34;SELECT * FROM fact_chunks LIMIT 5;&#34;
+5. Test RAG: make test-interactive
+6. Commit changes
+7. Build Docker image cho AWS deployment (xem 5.9-AWS-Deploy)
+</code></pre><h2 id=bước-tiếp-theo>Bước tiếp theo</h2><p>Sau khi phát triển cục bộ hoạt động:</p><ol><li><strong>Build Docker image</strong> cho AWS: <a href=5.9-AWS-Deploy/>AWS Deployment Prep</a></li><li><strong>Deploy lên AWS</strong> — <a href=5.10-Fargate-Crawler/>Fargate Crawler</a>, <a href=5.11-Lambda-Consumer/>Lambda Consumer</a>, <a href=5.12-Lambda-ETL/>Lambda ETL</a></li><li><strong>Test RAG API</strong> — <a href=5.13-RAG-API/>RAG API</a></li></ol><hr><p><strong>Tiếp theo:</strong> <a href=5.5-Crawler/>Phát triển Crawler</a></p><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.3-infrastructure/ title="Hạ tầng dưới dạng Code (Terraform)"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.5-crawler/ title="Phát triển Crawler" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=https://tutrong2706.github.io/NewsRagReport/js/clipboard.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.jquery.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery.sticky.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/featherlight.min.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/highlight.pack.js?1785509515></script><script>hljs.initHighlightingOnLoad()</script><script src=https://tutrong2706.github.io/NewsRagReport/js/modernizr.custom-3.6.0.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/learn.js?1785509515></script><script src=https://tutrong2706.github.io/NewsRagReport/js/hugo-learn.js?1785509515></script><link href=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.css?1785509515 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.js?1785509515></script><script>mermaid.initialize({startOnLoad:!0})</script><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,(e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date),(i=t.createElement(n),a=t.getElementsByTagName(n)[0]),i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-158079754-2","auto"),ga("send","pageview")</script></body></html>

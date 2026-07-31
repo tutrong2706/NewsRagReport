@@ -1,0 +1,586 @@
+<!doctype html><html lang=en class="js csstransforms3d"><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.134.3"><meta name=description content><meta name=author content="thienlh@thienlu.com"><link rel=icon href=https://tutrong2706.github.io/NewsRagReport/images/favicon.png type=image/png><title>RAG API (Lambda + API Gateway) :: Internship Report</title>
+<link href=https://tutrong2706.github.io/NewsRagReport/css/nucleus.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/fontawesome-all.min.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hybrid.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/featherlight.min.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/perfect-scrollbar.min.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/auto-complete.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/atom-one-dark-reasonable.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/hugo-theme.css?1785509514 rel=stylesheet><link href=https://tutrong2706.github.io/NewsRagReport/css/theme-workshop.css?1785509514 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery-3.3.1.min.js?1785509514></script><style>:root #header+#content>#left>#rlblock_left{display:none!important}</style></head><body data-url=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.13-rag-api/><nav id=sidebar class=showVisitedLinks><div id=header-wrapper><div id=header><a id=logo href=https://tutrong2706.github.io/NewsRagReport/><svg id="Layer_1" data-name="Layer 1" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff}.cls-2{fill:#fff;fill-rule:evenodd}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09 10.85a4.7 4.7.0 00.19 1.48 7.73 7.73.0 00.54 1.19.77.77.0 01.12.38.64.64.0 01-.32.49l-1 .7a.83.83.0 01-.44.15.69.69.0 01-.49-.23 3.8 3.8.0 01-.6-.77q-.25-.42-.51-1a6.14 6.14.0 01-4.89 2.3 4.54 4.54.0 01-3.32-1.19 4.27 4.27.0 01-1.22-3.2 4.28 4.28.0 011.46-3.4A6.06 6.06.0 017.69 6.46a12.47 12.47.0 011.76.13q.92.13 1.91.36V5.73a3.65 3.65.0 00-.79-2.66A3.81 3.81.0 007.86 2.3a7.71 7.71.0 00-1.79.22 12.78 12.78.0 00-1.79.57 4.55 4.55.0 01-.58.22h-.26q-.35.0-.35-.52V2a1.09 1.09.0 01.12-.58 1.2 1.2.0 01.47-.35A10.88 10.88.0 015.77.32 10.19 10.19.0 018.36.0a6 6 0 014.35 1.35 5.49 5.49.0 011.38 4.09zM7.34 13.38a5.36 5.36.0 001.72-.31A3.63 3.63.0 0010.63 12 2.62 2.62.0 0011.19 11a5.63 5.63.0 00.16-1.44v-.7a14.35 14.35.0 00-1.53-.28 12.37 12.37.0 00-1.56-.1 3.84 3.84.0 00-2.47.67A2.34 2.34.0 005 11a2.35 2.35.0 00.61 1.76A2.4 2.4.0 007.34 13.38zm13.35 1.8a1 1 0 01-.64-.16 1.3 1.3.0 01-.35-.65L15.81 1.51a3 3 0 01-.15-.67.36.36.0 01.41-.41H17.7a1 1 0 01.65.16 1.4 1.4.0 01.33.65l2.79 11 2.59-11A1.17 1.17.0 0124.39.6a1.1 1.1.0 01.67-.16H26.4a1.1 1.1.0 01.67.16 1.17 1.17.0 01.32.65L30 12.39 32.88 1.25A1.39 1.39.0 0133.22.6a1 1 0 01.65-.16h1.54a.36.36.0 01.41.41 1.36 1.36.0 010 .26 3.64 3.64.0 01-.12.41l-4 12.86a1.3 1.3.0 01-.35.65 1 1 0 01-.64.16H29.25a1 1 0 01-.67-.17 1.26 1.26.0 01-.32-.67L25.67 3.64l-2.56 10.7a1.26 1.26.0 01-.32.67 1 1 0 01-.67.17zm21.36.44a11.28 11.28.0 01-2.56-.29 7.44 7.44.0 01-1.92-.67 1 1 0 01-.61-.93v-.84q0-.52.38-.52a.9.9.0 01.31.06l.42.17a8.77 8.77.0 001.83.58 9.78 9.78.0 002 .2 4.48 4.48.0 002.43-.55 1.76 1.76.0 00.86-1.57 1.61 1.61.0 00-.45-1.16A4.29 4.29.0 0043 9.22l-2.41-.76A5.15 5.15.0 0138 6.78a3.94 3.94.0 01-.83-2.41 3.7 3.7.0 01.45-1.85 4.47 4.47.0 011.19-1.37 5.27 5.27.0 011.7-.86A7.4 7.4.0 0142.6.0a8.87 8.87.0 011.12.07q.57.07 1.08.19t.95.26a4.27 4.27.0 01.7.29 1.59 1.59.0 01.49.41.94.94.0 01.15.55v.79q0 .52-.38.52a1.76 1.76.0 01-.64-.2 7.74 7.74.0 00-3.2-.64 4.37 4.37.0 00-2.21.47 1.6 1.6.0 00-.79 1.48 1.58 1.58.0 00.49 1.18 4.94 4.94.0 001.83.92L44.55 7a5.08 5.08.0 012.57 1.6A3.76 3.76.0 0147.9 11a4.21 4.21.0 01-.44 1.93 4.4 4.4.0 01-1.21 1.47 5.43 5.43.0 01-1.85.93A8.25 8.25.0 0142.05 15.62z"/><path class="cls-2" d="M45.19 23.81C39.72 27.85 31.78 30 25 30A36.64 36.64.0 01.22 20.57c-.51-.46-.06-1.09.56-.74A49.78 49.78.0 0025.53 26.4 49.23 49.23.0 0044.4 22.53C45.32 22.14 46.1 23.14 45.19 23.81z"/><path class="cls-2" d="M47.47 21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74 3.13-2.2 8.27-1.57 8.86-.83s-.16 5.89-3.09 8.35c-.45.38-.88.18-.68-.32C46.69 25.8 48.17 22.11 47.47 21.21z"/></svg></a></div><div class=searchbox><label for=search-by><i class="fas fa-search"></i></label>
+<input data-search-input id=search-by type=search placeholder=Search...>
+<span data-search-clear><i class="fas fa-times"></i></span></div><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/lunr.min.js?1785509514></script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/auto-complete.js?1785509514></script><script type=text/javascript>var baseurl="https://tutrong2706.github.io/NewsRagReport/"</script><script type=text/javascript src=https://tutrong2706.github.io/NewsRagReport/js/search.js?1785509514></script></div><div class=highlightable><ul class=topics><li data-nav-id=/1-worklog/ title=Worklog class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/><b>1. </b>Worklog
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/1-worklog/1.1-week1/ title="Week 1 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.1-week1/><b>1.1. </b>Week 1 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.2-week2/ title="Week 2 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.2-week2/><b>1.2. </b>Week 2 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.3-week3/ title="Week 3 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.3-week3/><b>1.3. </b>Week 3 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.4-week4/ title="Week 4 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.4-week4/><b>1.4. </b>Week 4 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.5-week5/ title="Week 5 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.5-week5/><b>1.5. </b>Week 5 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.6-week6/ title="Week 6 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.6-week6/><b>1.6. </b>Week 6 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.7-week7/ title="Week 7 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.7-week7/><b>1.7. </b>Week 7 Worklog
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/1-worklog/1.8-week8/ title="Week 8 Worklog" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/1-worklog/1.8-week8/><b>1.8. </b>Week 8 Worklog
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/2-proposal/ title=Proposal class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/2-proposal/><b>2. </b>Proposal
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/3-blogsposted/ title="Blogs & Experiences" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/><b>3. </b>Blogs & Experiences
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/3-blogsposted/3.1-blog1/ title="Blog 1: Overcoming Timeout with AWS Fargate" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/3.1-blog1/><b>3.1. </b>Blog 1: Overcoming Timeout with AWS Fargate
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/3-blogsposted/3.2-blog2/ title="Blog 2: Cost Optimization with SQS" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/3.2-blog2/><b>3.2. </b>Blog 2: Cost Optimization with SQS
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/3-blogsposted/3.3-blog3/ title="Blog 3: Building an Optimized RAG System" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/3-blogsposted/3.3-blog3/><b>3.3. </b>Blog 3: Building an Optimized RAG System
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/4-eventparticipated/ title="Participated Events" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/><b>4. </b>Participated Events
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/4-eventparticipated/4.1-event1/ title="Event 1 Report: Career Orientation, Skills, and Practical Mindset in Business" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/4.1-event1/>1. Event 1 Report: Career Orientation, Skills, and Practical Mindset in Business
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/4-eventparticipated/4.2-event2/ title="Event 2 Report: Operations Management, Web Security, and AWS Certification Roadmap" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/4.2-event2/>2. Event 2 Report: Operations Management, Web Security, and AWS Certification Roadmap
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/4-eventparticipated/4.3-event3/ title="Event 3 Report: Applied Agentic AI and Practical Hackathon Experience" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/4-eventparticipated/4.3-event3/>3. Event 3 Report: Applied Agentic AI and Practical Hackathon Experience
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/5-workshop/ title=Workshop class="dd-item
+parent"><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/><b>5. </b>Workshop
+<i class="fas fa-check read-icon"></i></a><ul><li data-nav-id=/5-workshop/5.1-workshop-overview/ title=Introduction class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.1-workshop-overview/><b>5.1. </b>Introduction
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.2-prerequisites/ title=Prerequisites class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.2-prerequisites/><b>5.2 </b>Prerequisites
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.3-infrastructure/ title="Infrastructure as Code (Terraform)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.3-infrastructure/><b>5.3 </b>Infrastructure as Code (Terraform)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.4-local-dev/ title="Local Development Setup" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.4-local-dev/><b>5.4 </b>Local Development Setup
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.5-crawler/ title="Crawler Development" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.5-crawler/><b>5.5 </b>Crawler Development
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.6-ingestion/ title="Data Ingestion (Kafka Consumer → PostgreSQL)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.6-ingestion/><b>5.6 </b>Data Ingestion (Kafka Consumer → PostgreSQL)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.7-etl/ title="ETL & Star Schema" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.7-etl/><b>5.7 </b>ETL & Star Schema
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.8-vectorize/ title="Vectorization (Local Dev - SentenceTransformer → Qdrant)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.8-vectorize/><b>5.8 </b>Vectorization (Local Dev - SentenceTransformer → Qdrant)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.9-aws-deploy/ title="AWS Deployment Preparation" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.9-aws-deploy/><b>5.9 </b>AWS Deployment Preparation
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.10-fargate-crawler/ title="Fargate Crawler (ECS + EventBridge)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.10-fargate-crawler/><b>5.10 </b>Fargate Crawler (ECS + EventBridge)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.11-lambda-consumer/ title="Lambda Consumer (SQS → Aurora)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.11-lambda-consumer/><b>5.11 </b>Lambda Consumer (SQS → Aurora)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.12-lambda-etl/><b>5.12 </b>Lambda ETL + Bedrock Embedding
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.13-rag-api/ title="RAG API (Lambda + API Gateway)" class="dd-item
+active"><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.13-rag-api/><b>5.13 </b>RAG API (Lambda + API Gateway)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.14-frontend/ title="Frontend Integration (Next.js + FastAPI)" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.14-frontend/><b>5.14 </b>Frontend Integration (Next.js + FastAPI)
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.15-testing/ title="Testing & Monitoring" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.15-testing/><b>5.15 </b>Testing & Monitoring
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.16-cost/ title="Cost Optimization" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.16-cost/><b>5.16 </b>Cost Optimization
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/5-workshop/5.17-cleanup/ title="Clean Up Resources" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.17-cleanup/><b>5.17 </b>Clean Up Resources
+<i class="fas fa-check read-icon"></i></a></li></ul></li><li data-nav-id=/6-self-evaluation/ title=Self-evaluation class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/6-self-evaluation/><b>6. </b>Self-evaluation
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/7-feedback/ title="Feedback & Sharing" class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/7-feedback/><b>7. </b>Feedback & Sharing
+<i class="fas fa-check read-icon"></i></a></li><li data-nav-id=/8-references/ title=References class=dd-item><a href=https://tutrong2706.github.io/NewsRagReport/8-references/><b>8. </b>References
+<i class="fas fa-check read-icon"></i></a></li></ul><section id=shortcuts><h3>More</h3><ul><li><a class=padding href=https://awsstudygroup.com><i class='fab fa-aws'></i> AWS Study Group - Blog</a></li><li><a class=padding href=https://www.facebook.com/groups/awsstudygroupfcj><i class='fab fa-facebook'></i> AWS Study Group - FB Group</a></li></ul></section><section id=prefooter><hr><ul><li><a class=padding><i class="fas fa-language fa-fw"></i><div class=select-style><select id=select-language onchange="location=this.value"><option id=en value=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.13-rag-api/ selected>English</option><option id=vi value=https://tutrong2706.github.io/NewsRagReport/vi/5-workshop/5.13-rag-api/>Tiếng Việt</option></select><svg id="Capa_1" xmlns:xlink="http://www.w3.org/1999/xlink" width="255" height="255" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255"><g><g id="arrow-drop-down"><polygon points="0,63.75 127.5,191.25 255,63.75"/></g></g></svg></div></a></li><li><a class=padding href=# data-clear-history-toggle><i class="fas fa-history fa-fw"></i> Clear History</a></li></ul></section><section id=footer><left><br><br><b>Last Updated</b><br><i><font color=orange>31-07-2026</font>
+</i></left><left><br><br><b>Team</b><br><i><a href=https://www.facebook.com/groups/660548818043427 style=color:orange>First Cloud AI Journey</a>
+</i></left><script async defer src=https://buttons.github.io/buttons.js></script></section></div></nav><section id=body><div id=overlay></div><div class="padding highlightable"><div><div id=top-bar><div id=breadcrumbs itemscope itemtype=http://data-vocabulary.org/Breadcrumb><span id=sidebar-toggle-span><a href=# id=sidebar-toggle data-sidebar-toggle><i class="fas fa-bars"></i>
+</a></span><span id=toc-menu><i class="fas fa-list-alt"></i></span>
+<span class=links><a href=https://tutrong2706.github.io/NewsRagReport/>Internship Report</a> > <a href=https://tutrong2706.github.io/NewsRagReport/5-workshop/>Workshop</a> > RAG API (Lambda + API Gateway)</span></div><div class=progress><div class=wrapper><nav id=TableOfContents><ul><li><a href=#architecture>Architecture</a></li><li><a href=#requestresponse-format>Request/Response Format</a><ul><li><a href=#request>Request</a></li><li><a href=#response>Response</a></li></ul></li><li><a href=#lambda-function-code>Lambda Function Code</a><ul><li><a href=#file-structure>File Structure</a></li><li><a href=#schemaspy>schemas.py</a></li><li><a href=#retrieverpy>retriever.py</a></li><li><a href=#generatorpy>generator.py</a></li><li><a href=#lambda_functionpy>lambda_function.py</a></li><li><a href=#requirementstxt>requirements.txt</a></li></ul></li><li><a href=#terraform-deployment>Terraform Deployment</a><ul><li><a href=#api-gateway--lambda>API Gateway + Lambda</a></li></ul></li><li><a href=#testing-the-api>Testing the API</a><ul><li><a href=#1-get-api-url>1. Get API URL</a></li><li><a href=#2-test-with-curl>2. Test with curl</a></li><li><a href=#3-test-vanilla-no-rag>3. Test vanilla (no RAG)</a></li><li><a href=#4-test-from-nextjs-frontend>4. Test from Next.js Frontend</a></li></ul></li><li><a href=#monitoring>Monitoring</a><ul><li><a href=#cloudwatch-logs>CloudWatch Logs</a></li><li><a href=#key-metrics-to-alert>Key Metrics to Alert</a></li></ul></li><li><a href=#cost-estimation>Cost Estimation</a></li><li><a href=#next-steps>Next Steps</a></li></ul></nav></div></div></div></div><div id=head-tags></div><div id=body-inner><h1>RAG API (Lambda + API Gateway)</h1><h1 id=rag-api-lambda--api-gateway>RAG API: Lambda + API Gateway</h1><p>This section covers the REST API that accepts natural language queries, retrieves relevant chunks via pgvector similarity search, and generates answers using LLMs (Groq/Gemini).</p><h2 id=architecture>Architecture</h2><pre tabindex=0><code>Client (Next.js/FastAPI)
+       │
+       ▼
+API Gateway (REST, /ask endpoint)
+       │
+       ▼
+Lambda RAG API (Python 3.11, 30s timeout, 1024 MB)
+       │
+       ├────► Bedrock Titan Embed v2 (embed query)
+       │
+       ├────► Aurora pgvector (HNSW similarity search)
+       │
+       └────► Groq / Gemini API (generate answer)
+       │
+       ▼
+Client (JSON response with answer + sources)
+</code></pre><h2 id=requestresponse-format>Request/Response Format</h2><h3 id=request>Request</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>POST</span> <span style=color:#960050;background-color:#1e0010>/ask</span>
+</span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>Content-Type:</span> <span style=color:#960050;background-color:#1e0010>application/json</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;query&#34;</span>: <span style=color:#e6db74>&#34;Tóm tắt tin tức về kinh tế Việt Nam hôm nay&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>,      <span style=color:#75715e>// optional: qwen3-8b-instant, llama-3.1-8b-instant, gemini-2.0-flash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#f92672>&#34;top_k&#34;</span>: <span style=color:#ae81ff>5</span>,                        <span style=color:#75715e>// optional: default 5
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#f92672>&#34;is_vanilla&#34;</span>: <span style=color:#66d9ef>false</span>                <span style=color:#75715e>// optional: true = no RAG context, just LLM
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span></code></pre></div><h3 id=response>Response</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;query&#34;</span>: <span style=color:#e6db74>&#34;Tóm tắt tin tức về kinh tế Việt Nam hôm nay&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;summary&#34;</span>: <span style=color:#e6db74>&#34;Hôm nay, GDP quý 4 năm 2023 tăng 6.5%... [trả lời tiếng Việt dựa trên ngữ cảnh]&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;results&#34;</span>: [
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;chunk_id&#34;</span>: <span style=color:#ae81ff>12345</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;article_id&#34;</span>: <span style=color:#ae81ff>678</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;content&#34;</span>: <span style=color:#e6db74>&#34;GDP quý 4 tăng 6.5% so với cùng kỳ...&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;GDP quý 4 tăng 6.5%&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;source_name&#34;</span>: <span style=color:#e6db74>&#34;VnExpress&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;source_domain&#34;</span>: <span style=color:#e6db74>&#34;vnexpress.net&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;published_at&#34;</span>: <span style=color:#e6db74>&#34;2024-01-15T08:30:00+07:00&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;score&#34;</span>: <span style=color:#ae81ff>0.89</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#960050;background-color:#1e0010>...</span>
+</span></span><span style=display:flex><span>  ],
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;total&#34;</span>: <span style=color:#ae81ff>5</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;duration_ms&#34;</span>: <span style=color:#ae81ff>1250.5</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=lambda-function-code>Lambda Function Code</h2><h3 id=file-structure>File Structure</h3><pre tabindex=0><code>deploy/
+├── rag/
+│   ├── lambda_function.py
+│   ├── requirements.txt
+│   ├── retriever.py
+│   ├── generator.py
+│   └── schemas.py
+</code></pre><h3 id=schemaspy>schemas.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> List, Optional
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> pydantic <span style=color:#f92672>import</span> BaseModel, Field
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SearchHit</span>(BaseModel):
+</span></span><span style=display:flex><span>    chunk_id: int
+</span></span><span style=display:flex><span>    article_id: int
+</span></span><span style=display:flex><span>    content: str
+</span></span><span style=display:flex><span>    title: str
+</span></span><span style=display:flex><span>    source_name: str
+</span></span><span style=display:flex><span>    source_domain: str
+</span></span><span style=display:flex><span>    published_at: str
+</span></span><span style=display:flex><span>    score: float
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GeneratorResponse</span>(BaseModel):
+</span></span><span style=display:flex><span>    query: str
+</span></span><span style=display:flex><span>    summary: str
+</span></span><span style=display:flex><span>    results: List[SearchHit]
+</span></span><span style=display:flex><span>    total: int
+</span></span><span style=display:flex><span>    duration_ms: float
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AskRequest</span>(BaseModel):
+</span></span><span style=display:flex><span>    query: str
+</span></span><span style=display:flex><span>    model: Optional[str] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>
+</span></span><span style=display:flex><span>    top_k: Optional[int] <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>    is_vanilla: Optional[bool] <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>
+</span></span></code></pre></div><h3 id=retrieverpy>retriever.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> List
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> psycopg2
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> psycopg2.extras <span style=color:#f92672>import</span> RealDictCursor
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> bedrock_utils <span style=color:#f92672>import</span> embed_text, EMBEDDING_DIM
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger(__name__)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_db_connection</span>():
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> psycopg2<span style=color:#f92672>.</span>connect(
+</span></span><span style=display:flex><span>        host<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_HOST&#34;</span>],
+</span></span><span style=display:flex><span>        port<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_PORT&#34;</span>],
+</span></span><span style=display:flex><span>        database<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_NAME&#34;</span>],
+</span></span><span style=display:flex><span>        user<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_USER&#34;</span>],
+</span></span><span style=display:flex><span>        password<span style=color:#f92672>=</span>os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;DB_PASSWORD&#34;</span>],
+</span></span><span style=display:flex><span>        cursor_factory<span style=color:#f92672>=</span>RealDictCursor,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>retrieve</span>(query: str, top_k: int <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span>) <span style=color:#f92672>-&gt;</span> List[dict]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Embed query with Bedrock, search pgvector for similar chunks.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Returns list of dicts with chunk data + similarity score.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 1. Embed query</span>
+</span></span><span style=display:flex><span>    query_vec <span style=color:#f92672>=</span> embed_text(query)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 2. Search Aurora pgvector</span>
+</span></span><span style=display:flex><span>    conn <span style=color:#f92672>=</span> get_db_connection()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>with</span> conn<span style=color:#f92672>.</span>cursor() <span style=color:#66d9ef>as</span> cur:
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Set HNSW ef_search for better recall (default 40)</span>
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;SET LOCAL hnsw.ef_search = 64&#34;</span>)
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Vector similarity search with metadata join</span>
+</span></span><span style=display:flex><span>            cur<span style=color:#f92672>.</span>execute(<span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                SELECT
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    fc.chunk_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    fc.article_id,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    fc.content,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    fc.chunk_index,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    dc.title,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    ds.source_name,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    ds.source_domain,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    dt.full_datetime as published_at,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    1 - (fc.embedding &lt;=&gt; </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>::vector) as similarity
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                FROM fact_chunks fc
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                JOIN fact_articles fa ON fc.article_id = fa.article_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                JOIN dim_content dc ON fa.content_id = dc.content_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                JOIN dim_source ds ON fa.source_id = ds.source_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                JOIN dim_time dt ON fa.time_id = dt.time_id
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                WHERE fc.embedding IS NOT NULL
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                ORDER BY fc.embedding &lt;=&gt; </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>::vector
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                LIMIT </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            &#34;&#34;&#34;</span>, (query_vec, query_vec, top_k))
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>            results <span style=color:#f92672>=</span> cur<span style=color:#f92672>.</span>fetchall()
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>finally</span>:
+</span></span><span style=display:flex><span>        conn<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Retrieved </span><span style=color:#e6db74>{</span>len(results)<span style=color:#e6db74>}</span><span style=color:#e6db74> chunks for query: </span><span style=color:#e6db74>{</span>query[:<span style=color:#ae81ff>50</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>...&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> results
+</span></span></code></pre></div><h3 id=generatorpy>generator.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> requests
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> List, Dict, Optional
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> schemas <span style=color:#f92672>import</span> SearchHit, AskRequest, GeneratorResponse
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger(__name__)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Model configurations</span>
+</span></span><span style=display:flex><span>MODELS <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;provider&#34;</span>: <span style=color:#e6db74>&#34;groq&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;model_id&#34;</span>: <span style=color:#e6db74>&#34;qwen/qwen3-8b-instant&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;api_key_env&#34;</span>: <span style=color:#e6db74>&#34;GROQ_API_KEY&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;api_url&#34;</span>: <span style=color:#e6db74>&#34;https://api.groq.com/openai/v1/chat/completions&#34;</span>,
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;llama-3.1-8b-instant&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;provider&#34;</span>: <span style=color:#e6db74>&#34;groq&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;model_id&#34;</span>: <span style=color:#e6db74>&#34;meta-llama/llama-3.1-8b-instant&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;api_key_env&#34;</span>: <span style=color:#e6db74>&#34;GROQ_API_KEY&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;api_url&#34;</span>: <span style=color:#e6db74>&#34;https://api.groq.com/openai/v1/chat/completions&#34;</span>,
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;gemini-2.0-flash&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;provider&#34;</span>: <span style=color:#e6db74>&#34;google&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;model_id&#34;</span>: <span style=color:#e6db74>&#34;gemini-2.0-flash&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;api_key_env&#34;</span>: <span style=color:#e6db74>&#34;GEMINI_API_KEY&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;api_url&#34;</span>: <span style=color:#e6db74>&#34;https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent&#34;</span>,
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>build_prompt</span>(query: str, hits: List[SearchHit], is_vanilla: bool <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>) <span style=color:#f92672>-&gt;</span> List[dict]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Build messages for LLM.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> is_vanilla <span style=color:#f92672>or</span> <span style=color:#f92672>not</span> hits:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;role&#34;</span>: <span style=color:#e6db74>&#34;system&#34;</span>, <span style=color:#e6db74>&#34;content&#34;</span>: <span style=color:#e6db74>&#34;Bạn là một trợ lý AI hữu ích. Trả lời bằng tiếng Việt.&#34;</span>},
+</span></span><span style=display:flex><span>            {<span style=color:#e6db74>&#34;role&#34;</span>: <span style=color:#e6db74>&#34;user&#34;</span>, <span style=color:#e6db74>&#34;content&#34;</span>: query}
+</span></span><span style=display:flex><span>        ]
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Build context from retrieved chunks</span>
+</span></span><span style=display:flex><span>    context_parts <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> i, hit <span style=color:#f92672>in</span> enumerate(hits, <span style=color:#ae81ff>1</span>):
+</span></span><span style=display:flex><span>        context_parts<span style=color:#f92672>.</span>append(
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;[Nguồn </span><span style=color:#e6db74>{</span>i<span style=color:#e6db74>}</span><span style=color:#e6db74>] </span><span style=color:#e6db74>{</span>hit<span style=color:#f92672>.</span>source_name<span style=color:#e6db74>}</span><span style=color:#e6db74> (</span><span style=color:#e6db74>{</span>hit<span style=color:#f92672>.</span>source_domain<span style=color:#e6db74>}</span><span style=color:#e6db74>) - </span><span style=color:#e6db74>{</span>hit<span style=color:#f92672>.</span>published_at<span style=color:#e6db74>}</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Tiêu đề: </span><span style=color:#e6db74>{</span>hit<span style=color:#f92672>.</span>title<span style=color:#e6db74>}</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Nội dung: </span><span style=color:#e6db74>{</span>hit<span style=color:#f92672>.</span>content[:<span style=color:#ae81ff>500</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>...&#34;</span>
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    context <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>join(context_parts)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;role&#34;</span>: <span style=color:#e6db74>&#34;system&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;content&#34;</span>: (
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Bạn là một trợ lý AI phân tích tin tức. &#34;</span>
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Trả lời câu hỏi dựa CHỈ trên ngữ cảnh tin tức được cung cấp. &#34;</span>
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Nếu ngữ cảnh không đủ thông tin, hãy nói rõ. &#34;</span>
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Trả lời bằng tiếng Việt, súc tích, chính xác. &#34;</span>
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Luôn trích dẫn nguồn [Nguồn X] trong câu trả lời.&#34;</span>
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;role&#34;</span>: <span style=color:#e6db74>&#34;user&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;content&#34;</span>: <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Ngữ cảnh tin tức:</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>{</span>context<span style=color:#e6db74>}</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>Câu hỏi: </span><span style=color:#e6db74>{</span>query<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>call_groq</span>(model_config: dict, messages: List[dict]) <span style=color:#f92672>-&gt;</span> str:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Call Groq API (OpenAI-compatible).&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    api_key <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ[model_config[<span style=color:#e6db74>&#34;api_key_env&#34;</span>]]
+</span></span><span style=display:flex><span>    headers <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;Authorization&#34;</span>: <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Bearer </span><span style=color:#e6db74>{</span>api_key<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;Content-Type&#34;</span>: <span style=color:#e6db74>&#34;application/json&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    payload <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;model&#34;</span>: model_config[<span style=color:#e6db74>&#34;model_id&#34;</span>],
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;messages&#34;</span>: messages,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;temperature&#34;</span>: <span style=color:#ae81ff>0.3</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;max_tokens&#34;</span>: <span style=color:#ae81ff>1024</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;stream&#34;</span>: <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    resp <span style=color:#f92672>=</span> requests<span style=color:#f92672>.</span>post(model_config[<span style=color:#e6db74>&#34;api_url&#34;</span>], headers<span style=color:#f92672>=</span>headers, json<span style=color:#f92672>=</span>payload, timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>30</span>)
+</span></span><span style=display:flex><span>    resp<span style=color:#f92672>.</span>raise_for_status()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> resp<span style=color:#f92672>.</span>json()[<span style=color:#e6db74>&#34;choices&#34;</span>][<span style=color:#ae81ff>0</span>][<span style=color:#e6db74>&#34;message&#34;</span>][<span style=color:#e6db74>&#34;content&#34;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>call_gemini</span>(model_config: dict, messages: List[dict]) <span style=color:#f92672>-&gt;</span> str:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Call Google Gemini API.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    api_key <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ[model_config[<span style=color:#e6db74>&#34;api_key_env&#34;</span>]]
+</span></span><span style=display:flex><span>    url <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{</span>model_config[<span style=color:#e6db74>&#39;api_url&#39;</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>?key=</span><span style=color:#e6db74>{</span>api_key<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Convert messages to Gemini format</span>
+</span></span><span style=display:flex><span>    contents <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> msg <span style=color:#f92672>in</span> messages:
+</span></span><span style=display:flex><span>        role <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;user&#34;</span> <span style=color:#66d9ef>if</span> msg[<span style=color:#e6db74>&#34;role&#34;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;user&#34;</span> <span style=color:#66d9ef>else</span> <span style=color:#e6db74>&#34;model&#34;</span>
+</span></span><span style=display:flex><span>        contents<span style=color:#f92672>.</span>append({<span style=color:#e6db74>&#34;role&#34;</span>: role, <span style=color:#e6db74>&#34;parts&#34;</span>: [{<span style=color:#e6db74>&#34;text&#34;</span>: msg[<span style=color:#e6db74>&#34;content&#34;</span>]}]})
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    payload <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;contents&#34;</span>: contents}
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    resp <span style=color:#f92672>=</span> requests<span style=color:#f92672>.</span>post(url, json<span style=color:#f92672>=</span>payload, timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>30</span>)
+</span></span><span style=display:flex><span>    resp<span style=color:#f92672>.</span>raise_for_status()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> resp<span style=color:#f92672>.</span>json()[<span style=color:#e6db74>&#34;candidates&#34;</span>][<span style=color:#ae81ff>0</span>][<span style=color:#e6db74>&#34;content&#34;</span>][<span style=color:#e6db74>&#34;parts&#34;</span>][<span style=color:#ae81ff>0</span>][<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>generate_answer</span>(request: AskRequest, hits: List[SearchHit]) <span style=color:#f92672>-&gt;</span> GeneratorResponse:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>import</span> time
+</span></span><span style=display:flex><span>    start <span style=color:#f92672>=</span> time<span style=color:#f92672>.</span>time()
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    model_name <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span>model <span style=color:#f92672>or</span> <span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>
+</span></span><span style=display:flex><span>    model_config <span style=color:#f92672>=</span> MODELS<span style=color:#f92672>.</span>get(model_name, MODELS[<span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>])
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    messages <span style=color:#f92672>=</span> build_prompt(request<span style=color:#f92672>.</span>query, hits, request<span style=color:#f92672>.</span>is_vanilla)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> model_config[<span style=color:#e6db74>&#34;provider&#34;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;groq&#34;</span>:
+</span></span><span style=display:flex><span>            answer <span style=color:#f92672>=</span> call_groq(model_config, messages)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>elif</span> model_config[<span style=color:#e6db74>&#34;provider&#34;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;google&#34;</span>:
+</span></span><span style=display:flex><span>            answer <span style=color:#f92672>=</span> call_gemini(model_config, messages)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>raise</span> <span style=color:#a6e22e>ValueError</span>(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Unknown provider: </span><span style=color:#e6db74>{</span>model_config[<span style=color:#e6db74>&#39;provider&#39;</span>]<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;LLM call failed: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Fallback to Gemini if Groq fails</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> model_config[<span style=color:#e6db74>&#34;provider&#34;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;groq&#34;</span>:
+</span></span><span style=display:flex><span>            logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;Falling back to Gemini...&#34;</span>)
+</span></span><span style=display:flex><span>            gemini_config <span style=color:#f92672>=</span> MODELS[<span style=color:#e6db74>&#34;gemini-2.0-flash&#34;</span>]
+</span></span><span style=display:flex><span>            answer <span style=color:#f92672>=</span> call_gemini(gemini_config, messages)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>raise</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    duration_ms <span style=color:#f92672>=</span> (time<span style=color:#f92672>.</span>time() <span style=color:#f92672>-</span> start) <span style=color:#f92672>*</span> <span style=color:#ae81ff>1000</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> GeneratorResponse(
+</span></span><span style=display:flex><span>        query<span style=color:#f92672>=</span>request<span style=color:#f92672>.</span>query,
+</span></span><span style=display:flex><span>        summary<span style=color:#f92672>=</span>answer,
+</span></span><span style=display:flex><span>        results<span style=color:#f92672>=</span>hits,
+</span></span><span style=display:flex><span>        total<span style=color:#f92672>=</span>len(hits),
+</span></span><span style=display:flex><span>        duration_ms<span style=color:#f92672>=</span>round(duration_ms, <span style=color:#ae81ff>2</span>)
+</span></span><span style=display:flex><span>    )
+</span></span></code></pre></div><h3 id=lambda_functionpy>lambda_function.py</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> json
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> time
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> Dict, Any
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> schemas <span style=color:#f92672>import</span> AskRequest, SearchHit
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> retriever <span style=color:#f92672>import</span> retrieve
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> generator <span style=color:#f92672>import</span> generate_answer
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger()
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>setLevel(logging<span style=color:#f92672>.</span>INFO)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>lambda_handler</span>(event: Dict[str, Any], context) <span style=color:#f92672>-&gt;</span> Dict[str, Any]:
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;API Gateway proxy integration handler.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Event: </span><span style=color:#e6db74>{</span>json<span style=color:#f92672>.</span>dumps(event)<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Parse request</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> event<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;body&#34;</span>):
+</span></span><span style=display:flex><span>            body <span style=color:#f92672>=</span> json<span style=color:#f92672>.</span>loads(event[<span style=color:#e6db74>&#34;body&#34;</span>])
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            body <span style=color:#f92672>=</span> event
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        request <span style=color:#f92672>=</span> AskRequest(<span style=color:#f92672>**</span>body)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Retrieve relevant chunks</span>
+</span></span><span style=display:flex><span>        hits_data <span style=color:#f92672>=</span> retrieve(request<span style=color:#f92672>.</span>query, request<span style=color:#f92672>.</span>top_k)
+</span></span><span style=display:flex><span>        hits <span style=color:#f92672>=</span> [SearchHit(<span style=color:#f92672>**</span>h) <span style=color:#66d9ef>for</span> h <span style=color:#f92672>in</span> hits_data]
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Generate answer</span>
+</span></span><span style=display:flex><span>        response <span style=color:#f92672>=</span> generate_answer(request, hits)
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>200</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;headers&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Content-Type&#34;</span>: <span style=color:#e6db74>&#34;application/json&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Access-Control-Allow-Origin&#34;</span>: <span style=color:#e6db74>&#34;*&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Access-Control-Allow-Headers&#34;</span>: <span style=color:#e6db74>&#34;Content-Type&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Access-Control-Allow-Methods&#34;</span>: <span style=color:#e6db74>&#34;POST,OPTIONS&#34;</span>
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;body&#34;</span>: response<span style=color:#f92672>.</span>model_dump_json()
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>        logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;RAG API error: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;statusCode&#34;</span>: <span style=color:#ae81ff>500</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;headers&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Content-Type&#34;</span>: <span style=color:#e6db74>&#34;application/json&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;Access-Control-Allow-Origin&#34;</span>: <span style=color:#e6db74>&#34;*&#34;</span>
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;body&#34;</span>: json<span style=color:#f92672>.</span>dumps({
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;error&#34;</span>: <span style=color:#e6db74>&#34;Internal server error&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#34;message&#34;</span>: str(e)
+</span></span><span style=display:flex><span>            })
+</span></span><span style=display:flex><span>        }
+</span></span></code></pre></div><h3 id=requirementstxt>requirements.txt</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>psycopg2-binary==2.9.9
+</span></span><span style=display:flex><span>pydantic==2.5.3
+</span></span><span style=display:flex><span>requests==2.31.0
+</span></span><span style=display:flex><span>boto3==1.34.0
+</span></span><span style=display:flex><span>botocore==1.34.0
+</span></span></code></pre></div><h2 id=terraform-deployment>Terraform Deployment</h2><h3 id=api-gateway--lambda>API Gateway + Lambda</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#75715e># Lambda Function
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_lambda_function&#34; &#34;rag_api&#34;</span> {
+</span></span><span style=display:flex><span>  function_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-rag-api&#34;</span>
+</span></span><span style=display:flex><span>  description   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;RAG Query API: embed query -&gt; pgvector search -&gt; LLM generate&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  runtime       <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;python3.11&#34;</span>
+</span></span><span style=display:flex><span>  handler       <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;lambda_function.lambda_handler&#34;</span>
+</span></span><span style=display:flex><span>  timeout       <span style=color:#f92672>=</span> <span style=color:#ae81ff>30</span>
+</span></span><span style=display:flex><span>  memory_size   <span style=color:#f92672>=</span> <span style=color:#ae81ff>1024</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  filename         <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;rag.zip&#34;</span>
+</span></span><span style=display:flex><span>  source_code_hash <span style=color:#f92672>=</span> <span style=color:#66d9ef>filebase64sha256</span>(<span style=color:#e6db74>&#34;rag.zip&#34;</span>)
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>vpc_config</span> {
+</span></span><span style=display:flex><span>    subnet_ids         <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_subnet</span>.<span style=color:#66d9ef>pub_a</span>.<span style=color:#66d9ef>id</span>, <span style=color:#66d9ef>aws_subnet</span>.<span style=color:#66d9ef>pub_b</span>.<span style=color:#66d9ef>id</span>]
+</span></span><span style=display:flex><span>    security_group_ids <span style=color:#f92672>=</span> [<span style=color:#66d9ef>aws_security_group</span>.<span style=color:#66d9ef>lambda_sg</span>.<span style=color:#66d9ef>id</span>]
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  role <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>lambda_role</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>environment</span> {
+</span></span><span style=display:flex><span>    variables <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>      DB_HOST     <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_rds_cluster</span>.<span style=color:#66d9ef>main</span>.<span style=color:#66d9ef>endpoint</span>
+</span></span><span style=display:flex><span>      DB_PORT     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;5432&#34;</span>
+</span></span><span style=display:flex><span>      DB_NAME     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag&#34;</span>
+</span></span><span style=display:flex><span>      DB_USER     <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>db_user</span>
+</span></span><span style=display:flex><span>      DB_PASSWORD <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>db_password</span>
+</span></span><span style=display:flex><span>      GROQ_API_KEY    <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>groq_api_key</span>
+</span></span><span style=display:flex><span>      GEMINI_API_KEY  <span style=color:#f92672>=</span> <span style=color:#66d9ef>var</span>.<span style=color:#66d9ef>gemini_api_key</span>
+</span></span><span style=display:flex><span>      AWS_REGION      <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ap-southeast-2&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># API Gateway REST API
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_rest_api&#34; &#34;rag&#34;</span> {
+</span></span><span style=display:flex><span>  name        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;newsrag-api&#34;</span>
+</span></span><span style=display:flex><span>  description <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;News RAG Query API&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>endpoint_configuration</span> {
+</span></span><span style=display:flex><span>    types <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;REGIONAL&#34;</span>]
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># Resource /ask
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_resource&#34; &#34;ask&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  parent_id   <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>root_resource_id</span>
+</span></span><span style=display:flex><span>  path_part   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ask&#34;</span>
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># POST method
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_method&#34; &#34;ask_post&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id   <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id   <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;POST&#34;</span>
+</span></span><span style=display:flex><span>  authorization <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;NONE&#34;</span>
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># Lambda integration
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_integration&#34; &#34;ask_lambda&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_method</span>.<span style=color:#66d9ef>ask_post</span>.<span style=color:#66d9ef>http_method</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  integration_http_method <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;POST&#34;</span>
+</span></span><span style=display:flex><span>  type                    <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AWS_PROXY&#34;</span>
+</span></span><span style=display:flex><span>  uri                     <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>rag_api</span>.<span style=color:#66d9ef>invoke_arn</span>
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># OPTIONS method for CORS
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_method&#34; &#34;ask_options&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id   <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id   <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;OPTIONS&#34;</span>
+</span></span><span style=display:flex><span>  authorization <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;NONE&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_integration&#34; &#34;ask_options&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_method</span>.<span style=color:#66d9ef>ask_options</span>.<span style=color:#66d9ef>http_method</span>
+</span></span><span style=display:flex><span>  type        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;MOCK&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  request_templates <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    &#34;application/json&#34; <span style=color:#f92672>=</span> <span style=color:#960050;background-color:#1e0010>&#39;</span>{<span style=color:#e6db74>&#34;statusCode&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> <span style=color:#ae81ff>200</span>}<span style=color:#960050;background-color:#1e0010>&#39;</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_method_response&#34; &#34;ask_200&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_method</span>.<span style=color:#66d9ef>ask_post</span>.<span style=color:#66d9ef>http_method</span>
+</span></span><span style=display:flex><span>  status_code <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;200&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  response_parameters <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Origin&#34; <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_method_response&#34; &#34;ask_options_200&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_method</span>.<span style=color:#66d9ef>ask_options</span>.<span style=color:#66d9ef>http_method</span>
+</span></span><span style=display:flex><span>  status_code <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;200&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  response_parameters <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Origin&#34; <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Methods&#34; <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Headers&#34; <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_integration_response&#34; &#34;ask_options&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  resource_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  http_method <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_method</span>.<span style=color:#66d9ef>ask_options</span>.<span style=color:#66d9ef>http_method</span>
+</span></span><span style=display:flex><span>  status_code <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_method_response</span>.<span style=color:#66d9ef>ask_options_200</span>.<span style=color:#66d9ef>status_code</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  response_parameters <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Origin&#34; <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#39;*&#39;&#34;</span>
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Methods&#34; <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#39;POST,OPTIONS&#39;&#34;</span>
+</span></span><span style=display:flex><span>    &#34;method.response.header.Access-Control-Allow-Headers&#34; <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#39;Content-Type,Authorization&#39;&#34;</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># Deployment
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_api_gateway_deployment&#34; &#34;rag&#34;</span> {
+</span></span><span style=display:flex><span>  rest_api_id <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_api_gateway_rest_api</span>.<span style=color:#66d9ef>rag</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  stage_name  <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;prod&#34;</span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  triggers <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    redeployment <span style=color:#f92672>=</span> <span style=color:#66d9ef>sha256</span>(<span style=color:#66d9ef>jsonencode</span>([
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>aws_api_gateway_resource</span>.<span style=color:#66d9ef>ask</span>.<span style=color:#66d9ef>id</span>,
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>aws_api_gateway_method</span>.<span style=color:#66d9ef>ask_post</span>.<span style=color:#66d9ef>id</span>,
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>aws_api_gateway_integration</span>.<span style=color:#66d9ef>ask_lambda</span>.<span style=color:#66d9ef>id</span>,
+</span></span><span style=display:flex><span>    ]))
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>lifecycle</span> {
+</span></span><span style=display:flex><span>    create_before_destroy <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># Lambda permission for API Gateway
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_lambda_permission&#34; &#34;api_gateway&#34;</span> {
+</span></span><span style=display:flex><span>  statement_id  <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;AllowAPIGatewayInvoke&#34;</span>
+</span></span><span style=display:flex><span>  action        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;lambda:InvokeFunction&#34;</span>
+</span></span><span style=display:flex><span>  function_name <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_lambda_function</span>.<span style=color:#66d9ef>rag_api</span>.<span style=color:#66d9ef>function_name</span>
+</span></span><span style=display:flex><span>  principal     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;apigateway.amazonaws.com&#34;</span>
+</span></span><span style=display:flex><span>  source_arn    <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;${aws_api_gateway_rest_api.rag.execution_arn}/*/*&#34;</span>
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># Output API URL
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>output</span> <span style=color:#e6db74>&#34;api_url&#34;</span> {
+</span></span><span style=display:flex><span>  value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;${aws_api_gateway_deployment.rag.invoke_url}/ask&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=testing-the-api>Testing the API</h2><h3 id=1-get-api-url>1. Get API URL</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>API_URL<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>terraform output -raw api_url<span style=color:#66d9ef>)</span>
+</span></span><span style=display:flex><span>echo $API_URL
+</span></span><span style=display:flex><span><span style=color:#75715e># https://xxxxx.execute-api.ap-southeast-2.amazonaws.com/prod/ask</span>
+</span></span></code></pre></div><h3 id=2-test-with-curl>2. Test with curl</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>curl -X POST <span style=color:#e6db74>&#34;</span>$API_URL<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -H <span style=color:#e6db74>&#34;Content-Type: application/json&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -d <span style=color:#e6db74>&#39;{
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;query&#34;: &#34;Tóm tắt tin tức về kinh tế Việt Nam hôm nay&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;model&#34;: &#34;qwen3-8b-instant&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;top_k&#34;: 5
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  }&#39;</span> | jq .
+</span></span></code></pre></div><h3 id=3-test-vanilla-no-rag>3. Test vanilla (no RAG)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>curl -X POST <span style=color:#e6db74>&#34;</span>$API_URL<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -H <span style=color:#e6db74>&#34;Content-Type: application/json&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -d <span style=color:#e6db74>&#39;{
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;query&#34;: &#34;Việt Nam có bao nhiêu tỉnh thành?&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;model&#34;: &#34;gemini-2.0-flash&#34;,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;is_vanilla&#34;: true
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  }&#39;</span> | jq .
+</span></span></code></pre></div><h3 id=4-test-from-nextjs-frontend>4. Test from Next.js Frontend</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=display:flex><span><span style=color:#75715e>// lib/api.ts
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>askRAG</span>(<span style=color:#a6e22e>query</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>model</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;qwen3-8b-instant&#34;</span>, <span style=color:#a6e22e>topK</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>res</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>fetch</span>(<span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>env</span>.<span style=color:#a6e22e>NEXT_PUBLIC_RAG_API_URL</span><span style=color:#e6db74>}</span><span style=color:#e6db74>/ask`</span>, {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>method</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;POST&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>headers</span><span style=color:#f92672>:</span> { <span style=color:#e6db74>&#34;Content-Type&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;application/json&#34;</span> },
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>JSON.stringify</span>({ <span style=color:#a6e22e>query</span>, <span style=color:#a6e22e>model</span>, <span style=color:#a6e22e>top_k</span>: <span style=color:#66d9ef>topK</span> })
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>ok</span>) <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> Error(<span style=color:#e6db74>&#34;API error&#34;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>res</span>.<span style=color:#a6e22e>json</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=monitoring>Monitoring</h2><h3 id=cloudwatch-logs>CloudWatch Logs</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>aws logs tail /aws/lambda/newsrag-rag-api --follow
+</span></span></code></pre></div><h3 id=key-metrics-to-alert>Key Metrics to Alert</h3><table><thead><tr><th style=text-align:left>Metric</th><th style=text-align:left>Threshold</th></tr></thead><tbody><tr><td style=text-align:left><code>Duration</code> (p95)</td><td style=text-align:left>> 20s</td></tr><tr><td style=text-align:left><code>Errors</code></td><td style=text-align:left>> 0 in 5min</td></tr><tr><td style=text-align:left><code>Throttles</code></td><td style=text-align:left>> 0</td></tr><tr><td style=text-align:left><code>Invocations</code></td><td style=text-align:left>= 0 for 1 hour (if expected traffic)</td></tr></tbody></table><h2 id=cost-estimation>Cost Estimation</h2><table><thead><tr><th style=text-align:left>Component</th><th style=text-align:left>Usage</th><th style=text-align:left>Monthly Cost</th></tr></thead><tbody><tr><td style=text-align:left>Lambda (1M req, 1GB, 500ms avg)</td><td style=text-align:left>1M × 500ms × 1GB</td><td style=text-align:left>~$3.50</td></tr><tr><td style=text-align:left>API Gateway (1M req)</td><td style=text-align:left>1M requests</td><td style=text-align:left>~$3.50</td></tr><tr><td style=text-align:left>Bedrock Titan Embed (query)</td><td style=text-align:left>1M queries × 50 tokens</td><td style=text-align:left>~$0.50</td></tr><tr><td style=text-align:left>Groq API (free tier)</td><td style=text-align:left>1M req</td><td style=text-align:left>$0 (free tier)</td></tr><tr><td style=text-align:left>Aurora (query only)</td><td style=text-align:left>Included in DB cost</td><td style=text-align:left>-</td></tr><tr><td style=text-align:left><strong>Total</strong></td><td style=text-align:left></td><td style=text-align:left><strong>~$7.50/month</strong></td></tr></tbody></table><h2 id=next-steps>Next Steps</h2><p>After RAG API works:</p><ol><li><strong>Frontend Integration</strong> - Next.js Dashboard: <a href=5.14-Frontend/>Frontend</a></li><li><strong>Testing & Evaluation</strong> - RAGAS metrics: <a href=5.15-Testing/>Testing</a></li><li><strong>Cost Optimization</strong> - Serverless tuning: <a href=5.16-Cost/>Cost</a></li></ol><hr><p><strong>Next:</strong> <a href=5.14-Frontend/>Frontend Integration (Next.js + FastAPI)</a></p><footer class=footline></footer></div></div><div id=navigation><a class="nav nav-prev" href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.12-lambda-etl/ title="Lambda ETL + Bedrock Embedding"><i class="fa fa-chevron-left"></i></a>
+<a class="nav nav-next" href=https://tutrong2706.github.io/NewsRagReport/5-workshop/5.14-frontend/ title="Frontend Integration (Next.js + FastAPI)" style=margin-right:0><i class="fa fa-chevron-right"></i></a></div></section><div style=left:-1000px;overflow:scroll;position:absolute;top:-1000px;border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px><div style=border:none;box-sizing:content-box;height:200px;margin:0;padding:0;width:200px></div></div><script src=https://tutrong2706.github.io/NewsRagReport/js/clipboard.min.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.min.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/perfect-scrollbar.jquery.min.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/jquery.sticky.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/featherlight.min.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/highlight.pack.js?1785509514></script><script>hljs.initHighlightingOnLoad()</script><script src=https://tutrong2706.github.io/NewsRagReport/js/modernizr.custom-3.6.0.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/learn.js?1785509514></script><script src=https://tutrong2706.github.io/NewsRagReport/js/hugo-learn.js?1785509514></script><link href=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.css?1785509514 rel=stylesheet><script src=https://tutrong2706.github.io/NewsRagReport/mermaid/mermaid.js?1785509514></script><script>mermaid.initialize({startOnLoad:!0})</script><script>(function(e,t,n,s,o,i,a){e.GoogleAnalyticsObject=o,(e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date),(i=t.createElement(n),a=t.getElementsByTagName(n)[0]),i.async=1,i.src=s,a.parentNode.insertBefore(i,a)})(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-158079754-2","auto"),ga("send","pageview")</script></body></html>
