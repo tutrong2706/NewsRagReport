@@ -1,0 +1,227 @@
+\hypertarget{news-rag-pipeline-on-aws-workshop-overview}{%
+\section{News RAG Pipeline on AWS --- Workshop
+Overview}}
+
+This workshop guides you through building a complete \textbf{News RAG
+(Retrieval-Augmented Generation) Pipeline} on AWS using serverless
+architecture. You will learn to design, deploy, and operate an
+end-to-end system that automatically crawls news articles, processes
+them into a Data Warehouse, generates vector embeddings, and enables
+intelligent Q\&A using LLMs.
+
+\hypertarget{workshop-architecture}{%
+\subsection{Workshop Architecture}}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.1-Workshop-overview/architecture.png}
+\caption{Workshop Architecture}
+\end{figure}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{learning-objectives}{%
+\subsection{Learning Objectives}}
+
+By the end of this workshop, you will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Infrastructure as Code}: Define AWS infrastructure using
+  Terraform (VPC, Aurora, ECS, Lambda, EventBridge)
+\item
+  \textbf{Serverless Containers}: Package and deploy Scrapy crawlers on
+  ECS Fargate with ECR
+\item
+  \textbf{Data Warehouse Design}: Implement Star Schema in Aurora
+  PostgreSQL with pgvector extension
+\item
+  \textbf{Workflow Automation}: Schedule daily pipelines using
+  EventBridge Scheduler
+\item
+  \textbf{RAG System}: Build retrieval-augmented generation with Bedrock
+  embeddings and external LLMs
+\item
+  \textbf{Cost Optimization}: Leverage serverless services to minimize
+  operational costs (\textasciitilde\$21-26/month)
+\end{enumerate}
+
+\hypertarget{workshop-modules}{%
+\subsection{Workshop Modules}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2105}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1842}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3421}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2632}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Module
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Title
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Duration
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+5.1 & \textbf{Workshop Overview} & Architecture, objectives,
+prerequisites, cost estimation & 30 min \\
+5.2 & \textbf{Prerequisites} & AWS CLI, Terraform, Docker, Python setup
+& 30 min \\
+5.3 & \textbf{Infrastructure (Terraform)} & VPC, Aurora pgvector, ECS
+Cluster, ECR, IAM, EventBridge & 60 min \\
+5.4 & \textbf{Crawler (ECS Fargate)} & Dockerfile, Scrapy SitemapSpider,
+ECR push, Task Definition & 45 min \\
+5.5 & \textbf{Queue \& Consumer (SQS + Lambda)} & SQS queue, Lambda
+Consumer, SHA256 dedup, Aurora insert & 45 min \\
+5.6 & \textbf{ETL + Embedding (Lambda + Bedrock)} & HTML clean,
+chunking, Titan Embed v2, pgvector HNSW insert & 60 min \\
+5.7 & \textbf{RAG API (Lambda + API Gateway)} & Query embed, pgvector
+search, LLM generation, response & 45 min \\
+5.8 & \textbf{Frontend Integration} & Next.js Dashboard, Search, Chat,
+Explorer, Pipeline Monitor & 60 min \\
+5.9 & \textbf{Testing \& Monitoring} & CloudWatch Logs, query testing,
+RAG evaluation & 30 min \\
+5.10 & \textbf{Clean Up} & Terraform destroy, resource cleanup & 15
+min \\
+\end{longtable}
+\endgroup
+
+\hypertarget{prerequisites}{%
+\subsection{Prerequisites}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AWS Account} with permissions for: VPC, EC2, RDS, ECS, ECR,
+  Lambda, SQS, EventBridge, API Gateway, Bedrock, CloudWatch, IAM
+\item
+  \textbf{AWS CLI} configured (\texttt{aws\ configure}) with appropriate
+  credentials
+\item
+  \textbf{Terraform} \textgreater= 1.5.0 installed
+\item
+  \textbf{Docker} \& \textbf{Docker Compose} installed
+\item
+  \textbf{Python} 3.10+ with pip
+\item
+  \textbf{Git} for version control
+\item
+  \textbf{Code Editor} (VS Code recommended)
+\end{itemize}
+
+\hypertarget{cost-estimation-monthly-ap-southeast-2}{%
+\subsection{Cost Estimation (Monthly,
+ap-southeast-2)}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2571}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4286}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3143}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Service
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Configuration
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est. Cost
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Aurora Serverless v2 & 2 ACU (db.t4g.medium) & \textasciitilde\$15-20 \\
+ECS Fargate Crawler & 0.25 vCPU, 0.5 GB, 30 min/day &
+\textasciitilde\$0.50 \\
+Lambda (Consumer, ETL, RAG) & \textasciitilde1M invocations, 15 min
+timeout & \textasciitilde\$2-3 \\
+SQS Standard & \textasciitilde30K messages/month & \textasciitilde\$0 \\
+API Gateway & \textasciitilde10K requests/month &
+\textasciitilde\$0.30 \\
+Bedrock Titan Embed & \textasciitilde500K tokens/month &
+\textasciitilde\$0.50 \\
+CloudWatch Logs & 7-day retention & \textasciitilde\$1-2 \\
+\textbf{Total} & & \textbf{\textasciitilde\$21-26/month} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Note:} Costs vary by region and usage. Check
+\href{https://calculator.aws/}{AWS Pricing Calculator} for current
+rates.
+\end{quote}
+
+\hypertarget{project-structure}{%
+\subsection{Project Structure}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{architecture-comparison-v1-vs-v2}{%
+\subsection{Architecture Comparison: v1 vs
+v2}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2157}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2549}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3725}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1569}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v1 (Thesis)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v2 (This Workshop)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reason
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Crawler} & Lambda + Scrapy (15 min timeout) & \textbf{Fargate +
+SitemapSpider} & No timeout, crawl historical via sitemap \\
+\textbf{Stream} & Kafka on Docker & \textbf{SQS Standard
+(\textasciitilde\$0)} & Simpler, serverless, cost-effective \\
+\textbf{Embedding} & Local BGE models & \textbf{Bedrock Titan Embed v2}
+& AWS native, serverless, consistent vector space \\
+\textbf{Vector DB} & Qdrant Cloud & \textbf{Aurora + pgvector} & Unified
+DB, no external dependency \\
+\textbf{Vectorize} & Separate Fargate task & \textbf{Merged into ETL
+Lambda} & Fewer services, simpler pipeline \\
+\textbf{RAG Query Embed} & Local model (cold start 5-10s) &
+\textbf{Bedrock API} & Consistent embeddings, no cold start \\
+\textbf{Monthly Cost} & \textasciitilde\$35 &
+\textbf{\textasciitilde\$21-26} & \textasciitilde30\% reduction \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Key Principle:} ETL and RAG API \textbf{must use the same
+embedding model} (\texttt{amazon.titan-embed-text-v2:0}). Different
+models = different vector spaces = broken search.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.2-Prerequisites/}{Prerequisites}

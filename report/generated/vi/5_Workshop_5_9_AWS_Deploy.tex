@@ -1,0 +1,171 @@
+\hypertarget{chuux1ea9n-bux1ecb-triux1ec3n-khai-aws}{%
+\section{Chuẩn bị triển khai
+AWS}}
+
+Phần này bao gồm việc build Docker images, push lên ECR, và chuẩn bị
+Lambda deployment packages cho kiến trúc serverless AWS.
+
+\hypertarget{ux111iux1ec1u-kiux1ec7n-tiuxean-quyux1ebft}{%
+\subsection{Điều kiện tiên
+quyết}}
+
+\begin{itemize}
+\tightlist
+\item
+  Terraform infrastructure đã deploy (xem
+  \href{5.3-Infrastructure/}{Infrastructure})
+\item
+  AWS CLI đã cấu hình với quyền phù hợp
+\item
+  Docker đã cài đặt và chạy
+\end{itemize}
+
+\hypertarget{lux1ea5y-terraform-outputs}{%
+\subsection{Lấy Terraform Outputs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Sau khi terraform apply}
+\VariableTok{ECR\_URL}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ ecr\_repository\_url}\VariableTok{)}
+\VariableTok{ECS\_CLUSTER}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ ecs\_cluster\_name}\VariableTok{)}
+\VariableTok{RDS\_ENDPOINT}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ rds\_endpoint}\VariableTok{)}
+
+\BuiltInTok{echo} \StringTok{"ECR: }\VariableTok{$ECR\_URL}\StringTok{"}
+\BuiltInTok{echo} \StringTok{"ECS Cluster: }\VariableTok{$ECS\_CLUSTER}\StringTok{"}
+\BuiltInTok{echo} \StringTok{"RDS: }\VariableTok{$RDS\_ENDPOINT}\StringTok{"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{build-docker-image-multi-stage}{%
+\subsection{Build Docker Image
+(Multi-stage)}}
+
+\texttt{Dockerfile} build single image dùng cho tất cả ECS tasks
+(crawler, etl, vectorize):
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{build-vuxe0-push-luxean-ecr}{%
+\subsection{Build và Push lên ECR}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{alternative-buildx-cho-multi-platform-arm64-cho-fargate-graviton}{%
+\subsection{Alternative: Buildx cho Multi-platform (ARM64 cho Fargate
+Graviton)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Cost Tip:} Graviton2 (ARM64) Fargate \textasciitilde20\% rẻ hơn
+x86. Dùng \texttt{db.t4g.medium} cho Aurora và \texttt{linux/arm64} cho
+Fargate.
+\end{quote}
+
+\hypertarget{lambda-deployment-package}{%
+\subsection{Lambda Deployment Package}}
+
+Cho Lambda functions (Consumer, ETL, RAG API), tạo deployment packages:
+
+\hypertarget{cux1ea5u-truxfac-thux1b0-mux1ee5c-cho-lambda}{%
+\subsubsection{Cấu trúc thư mục cho
+Lambda}}
+
+\begin{verbatim}
+deploy/
+|--- consumer/
+|   |--- lambda_function.py
+|   `--- requirements.txt
+|--- etl/
+|   |--- lambda_function.py
+|   `--- requirements.txt
+`--- rag/
+    |--- lambda_function.py
+    `--- requirements.txt
+\end{verbatim}
+
+\hypertarget{build-lambda-layer-shared-dependencies}{%
+\subsubsection{Build Lambda Layer (Shared
+Dependencies)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{package-individual-lambda-functions}{%
+\subsubsection{Package Individual Lambda
+Functions}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{deploy-lambda-functions-deploy.sh}{%
+\subsection{Deploy Lambda Functions
+(deploy.sh)}}
+
+Script \texttt{deploy.sh} tự động hóa việc deploy Lambda:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{iam-role-cho-lambda}{%
+\subsection{IAM Role cho Lambda}}
+
+Tạo role với permissions cần thiết:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{secrets-manager-cho-credentials}{%
+\subsection{Secrets Manager cho
+Credentials}}
+
+Lưu các giá trị nhạy cảm trong AWS Secrets Manager:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{xuxe1c-minh-deployment}{%
+\subsection{Xác minh Deployment}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cicd-vux1edbi-github-actions-optional}{%
+\subsection{CI/CD với GitHub Actions
+(Optional)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Deploy Infrastructure}: \texttt{terraform\ apply} (xem
+  \href{5.3-Infrastructure/}{Infrastructure})
+\item
+  \textbf{Build \& Push Docker}: Phần này
+\item
+  \textbf{Deploy Lambdas}: Chạy \texttt{deploy.sh} hoặc dùng CI/CD
+\item
+  \textbf{Test Fargate Crawler}: \href{5.10-Fargate-Crawler/}{Fargate
+  Crawler}
+\item
+  \textbf{Test Lambda Consumer}: \href{5.11-Lambda-Consumer/}{Lambda
+  Consumer}
+\item
+  \textbf{Test Lambda ETL + Embedding}: \href{5.12-Lambda-ETL/}{Lambda
+  ETL}
+\item
+  \textbf{Test RAG API}: \href{5.13-RAG-API/}{RAG API}
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.10-Fargate-Crawler/}{Fargate Crawler}

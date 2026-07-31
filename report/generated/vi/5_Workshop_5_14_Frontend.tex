@@ -1,0 +1,139 @@
+\hypertarget{tuxedch-hux1ee3p-frontend-next.js-dashboard-fastapi-backend}{%
+\section{Tích hợp Frontend: Next.js Dashboard + FastAPI
+Backend}}
+
+Phần này bao gồm giao diện web cho News RAG system, bao gồm Dashboard,
+Search, AI Chat, Article Explorer, và Pipeline Monitor.
+
+\hypertarget{kiux1ebfn-truxfac}{%
+\subsection{Kiến trúc}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cux1ea5u-truxfac-dux1ef1-uxe1n}{%
+\subsection{Cấu trúc dự án}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{next.js-dashboard-setup}{%
+\subsection{Next.js Dashboard Setup}}
+
+\hypertarget{package.json}{%
+\subsubsection{package.json}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{tailwind.config.ts}{%
+\subsubsection{tailwind.config.ts}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{api-client-libapi.ts}{%
+\subsubsection{API Client (lib/api.ts)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{dashboard-page-apppage.tsx}{%
+\subsection{Dashboard Page
+(app/page.tsx)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{ai-chat-page-appchatpage.tsx}{%
+\subsection{AI Chat Page
+(app/chat/page.tsx)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{fastapi-backend-optional---cho-direct-db-queries}{%
+\subsection{FastAPI Backend (Optional - cho direct DB
+queries)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{deployment}{%
+\subsection{Deployment}}
+
+\hypertarget{next.js-on-vercel}{%
+\subsubsection{Next.js on Vercel}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Connect GitHub repo to Vercel}
+\CommentTok{\# Add environment variables:}
+\CommentTok{\# NEXT\_PUBLIC\_RAG\_API\_URL=https://xxx.execute{-}api.ap{-}southeast{-}2.amazonaws.com/prod}
+\CommentTok{\# NEXT\_PUBLIC\_FASTAPI\_URL=https://your{-}fastapi{-}url}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fastapi-on-cloud-run-ecs-fargate}{%
+\subsubsection{FastAPI on Cloud Run / ECS
+Fargate}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Dockerfile}
+\KeywordTok{FROM}\NormalTok{ python:3.11{-}slim}
+\KeywordTok{WORKDIR}\NormalTok{ /app}
+\KeywordTok{COPY}\NormalTok{ requirements.txt .}
+\KeywordTok{RUN} \ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}no{-}cache{-}dir} \AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\KeywordTok{COPY}\NormalTok{ . .}
+\KeywordTok{CMD}\NormalTok{ [}\StringTok{"uvicorn"}\NormalTok{, }\StringTok{"main:app"}\NormalTok{, }\StringTok{"{-}{-}host"}\NormalTok{, }\StringTok{"0.0.0.0"}\NormalTok{, }\StringTok{"{-}{-}port"}\NormalTok{, }\StringTok{"8000"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Build \& push}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ newsrag{-}fastapi .}
+\ExtensionTok{docker}\NormalTok{ tag newsrag{-}fastapi }\VariableTok{$\{ECR\_URI\}}\NormalTok{/newsrag{-}fastapi:latest}
+\ExtensionTok{docker}\NormalTok{ push }\VariableTok{$\{ECR\_URI\}}\NormalTok{/newsrag{-}fastapi:latest}
+
+\CommentTok{\# Deploy to ECS Fargate (similar to crawler task definition)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{environment-variables}{%
+\subsection{Environment Variables}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Variable & Next.js & FastAPI & Description \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{NEXT\_PUBLIC\_RAG\_API\_URL} & \checkmark & & Lambda RAG API
+endpoint \\
+\texttt{NEXT\_PUBLIC\_FASTAPI\_URL} & \checkmark & & FastAPI backend
+URL \\
+\texttt{DB\_HOST} & & \checkmark & Aurora endpoint \\
+\texttt{DB\_USER} / \texttt{DB\_PASSWORD} & & \checkmark & DB
+credentials \\
+\texttt{GROQ\_API\_KEY} & & & For direct LLM calls if needed \\
+\end{longtable}
+\endgroup
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+Sau khi frontend hoạt động: 1. \textbf{Testing \& Monitoring} - RAGAS
+evaluation: \href{5.15-Testing/}{Testing} 2. \textbf{Cost Optimization}
+- Serverless tuning: \href{5.16-Cost/}{Cost} 3. \textbf{Cleanup} -
+Remove resources: \href{5.17-Cleanup/}{Cleanup}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.15-Testing/}{Kiểm thử \& Giám sát}

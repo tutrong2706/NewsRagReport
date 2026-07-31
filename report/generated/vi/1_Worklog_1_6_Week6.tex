@@ -1,0 +1,136 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-6}{%
+\subsubsection{Mục tiêu tuần 6:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Viết Terraform \texttt{main.tf} để provisioning toàn bộ infrastructure
+  trên AWS.
+\item
+  Cấu hình EventBridge Scheduler để tự động chạy pipeline theo lịch.
+\item
+  Thiết lập IAM Roles, Security Groups, VPC cho ECS + RDS.
+\item
+  Test terraform apply và kiểm tra tài nguyên trên AWS Console.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1621}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Viết Terraform --- VPC \& Networking: \qquad  + VPC
+\texttt{newsrag-vpc} (CIDR 10.0.0.0/16) \qquad  + 2 Public Subnets
+(ap-southeast-2a, 2b) \qquad  + Internet Gateway + Route Table \qquad  +
+Security Groups: \texttt{ecs\_sg} (egress all), \texttt{rds\_sg}
+(ingress 5432 from ECS) & 07/07/2026 & 07/07/2026 & main.tf \\
+3 & - Viết Terraform --- RDS Aurora PostgreSQL: \qquad  + Cluster:
+\texttt{newsrag-postgres}, engine aurora-postgresql 15.4 \qquad  +
+Instance: \texttt{db.t4g.medium} (2 vCPU, 4GB RAM) \qquad  + DB Subnet
+Group cho multi-AZ & 08/07/2026 & 08/07/2026 & main.tf \\
+4 & - Viết Terraform --- ECS + ECR: \qquad  + ECR Repository:
+\texttt{newsrag-api} \qquad  + ECS Cluster: \texttt{newsrag-cluster}
+\qquad  + 3 Task Definitions: crawler (256 CPU/512 MB), etl (512/1024),
+vectorize (512/1024) \qquad  + IAM Roles: execution role + task role
+\qquad  + CloudWatch Log Group: \texttt{/ecs/newsrag-project} &
+09/07/2026 & 09/07/2026 & main.tf \\
+5 & - Viết Terraform --- EventBridge Scheduler: \qquad  + Crawler:
+\texttt{cron(0\ 1\ *\ *\ ?\ *)} --- 01:00 UTC hàng ngày \qquad  + ETL:
+\texttt{cron(0\ 2\ *\ *\ ?\ *)} --- 02:00 UTC \qquad  + Vectorize:
+\texttt{cron(0\ 3\ *\ *\ ?\ *)} --- 03:00 UTC \qquad  + Mỗi rule target
+tới ECS Fargate Task tương ứng & 10/07/2026 & 10/07/2026 & main.tf \\
+6 & - \texttt{terraform\ init} \& \texttt{terraform\ plan} --- review
+changes - \texttt{terraform\ apply} --- deploy infrastructure - Kiểm tra
+tài nguyên trên AWS Console - Test EventBridge trigger manual &
+11/07/2026 & 11/07/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-6}{%
+\subsubsection{Kết quả đạt được tuần
+6:}}
+
+\begin{itemize}
+\item
+  Hoàn thành \texttt{main.tf} (371 dòng) quản lý toàn bộ infrastructure:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{VPC}: 1 VPC, 2 public subnets, Internet Gateway, Route Table
+  \item
+    \textbf{Security Groups}: ECS (egress all), RDS (ingress 5432 chỉ từ
+    ECS SG)
+  \item
+    \textbf{RDS}: Aurora PostgreSQL 15.4, instance
+    \texttt{db.t4g.medium}, skip final snapshot
+  \item
+    \textbf{ECR}: Repository \texttt{newsrag-api}
+  \item
+    \textbf{ECS}: Cluster + 3 Task Definitions (crawler, etl, vectorize)
+  \item
+    \textbf{IAM}: Execution role (ECS Task Execution Policy) + Task role
+  \item
+    \textbf{CloudWatch}: Log group \texttt{/ecs/newsrag-project},
+    retention 7 ngày
+  \item
+    \textbf{EventBridge}: 3 scheduled rules
+  \end{itemize}
+\item
+  Cấu hình EventBridge Scheduler: \textbar{} Tên rule \textbar{} Cron
+  expression \textbar{} Thời gian (UTC) \textbar{} Target Task
+  \textbar{}
+  \textbar------------------------\textbar----------------------\textbar-----------------\textbar-------------------\textbar{}
+  \textbar{} \texttt{newsrag-crawler-rule} \textbar{}
+  \texttt{cron(0\ 1\ *\ *\ ?\ *)} \textbar{} 01:00 \textbar{}
+  newsrag-crawler \textbar{} \textbar{} \texttt{newsrag-etl-rule}
+  \textbar{} \texttt{cron(0\ 2\ *\ *\ ?\ *)} \textbar{} 02:00 \textbar{}
+  newsrag-etl \textbar{} \textbar{}
+  \texttt{newsrag-vectorize-rule}\textbar{}
+  \texttt{cron(0\ 3\ *\ *\ ?\ *)} \textbar{} 03:00 \textbar{}
+  newsrag-vectorize \textbar{}
+\item
+  Environment variables được quản lý qua \texttt{locals.common\_env}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    DB credentials \(\rightarrow\) tự động lấy RDS endpoint
+  \item
+    Qdrant, Kafka, Embedding, LLM configs
+  \item
+    Sensitive values (passwords, API keys) \(\rightarrow\) Terraform
+    variables (type=string, sensitive=true)
+  \end{itemize}
+\item
+  Outputs: \texttt{rds\_endpoint}, \texttt{ecr\_repository\_url},
+  \texttt{ecs\_cluster\_name}
+\item
+  \texttt{terraform\ apply} thành công, tất cả tài nguyên được tạo trên
+  AWS
+\end{itemize}

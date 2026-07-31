@@ -1,0 +1,62 @@
+\hypertarget{requirements-before-starting}{%
+\paragraph{Requirements Before
+Starting}}
+
+\textbf{Accounts and Tools:} - AWS Account (Free Tier) - AWS CLI
+configured (access key, secret key, region \texttt{ap-southeast-2}) -
+Python 3.10+ - Docker Desktop - Terraform CLI - Git
+
+\textbf{Clone the repository:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{git}\NormalTok{ clone }\OperatorTok{\textless{}}\NormalTok{repository{-}url}\OperatorTok{\textgreater{}}
+\BuiltInTok{cd}\NormalTok{ NewsRagProject}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Set up Python environment:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{make}\NormalTok{ setup}
+\CommentTok{\# or}
+\ExtensionTok{python3} \AttributeTok{{-}m}\NormalTok{ venv venv}
+\ExtensionTok{./venv/bin/pip}\NormalTok{ install }\AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Configure environment variables:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cp}\NormalTok{ .env.example .env}
+\CommentTok{\# Fill in .env:}
+\CommentTok{\# DB\_NAME, DB\_USER, DB\_PASSWORD, DB\_HOST, DB\_PORT}
+\CommentTok{\# QDRANT\_HOST, QDRANT\_API\_KEY}
+\CommentTok{\# KAFKA\_BOOTSTRAP\_SERVERS}
+\CommentTok{\# EMBEDDING\_MODEL, EMBEDDING\_SIZE}
+\CommentTok{\# MODEL\_1\_API\_KEY (Groq), MODEL\_3\_API\_KEY (Google)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Start Docker services:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{docker{-}compose}\NormalTok{ up }\AttributeTok{{-}d}
+\CommentTok{\# Starts PostgreSQL + Kafka locally}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Verify connections:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# PostgreSQL}
+\ExtensionTok{psql} \AttributeTok{{-}h}\NormalTok{ localhost }\AttributeTok{{-}U}\NormalTok{ postgres }\AttributeTok{{-}d}\NormalTok{ newsrag}
+
+\CommentTok{\# Kafka}
+\ExtensionTok{docker}\NormalTok{ exec }\AttributeTok{{-}it}\NormalTok{ kafka\_newsrag /opt/kafka/bin/kafka{-}topics.sh }\AttributeTok{{-}{-}list} \AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092}
+\end{Highlighting}
+\end{Shaded}

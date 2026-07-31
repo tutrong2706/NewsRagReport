@@ -1,0 +1,316 @@
+\hypertarget{infrastructure-as-code-terraform}{%
+\section{Infrastructure as Code
+(Terraform)}}
+
+This section covers the complete AWS infrastructure defined in
+\texttt{main.tf} using Terraform for the News RAG Pipeline.
+
+\hypertarget{architecture-overview}{%
+\subsection{Architecture Overview}}
+
+The Terraform configuration provisions:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{VPC \& Networking}: Custom VPC, public subnets in 2 AZs,
+  Internet Gateway, Route Tables
+\item
+  \textbf{Security}: Security Groups for ECS tasks and RDS, IAM Roles
+  for ECS execution and tasks
+\item
+  \textbf{Database}: Aurora Serverless v2 PostgreSQL with pgvector
+  extension
+\item
+  \textbf{Container Registry}: ECR repository for Docker images
+\item
+  \textbf{Container Orchestration}: ECS Cluster with Fargate task
+  definitions
+\item
+  \textbf{Scheduling}: EventBridge Scheduler rules for daily pipeline
+  execution
+\item
+  \textbf{Observability}: CloudWatch Log Groups
+\end{itemize}
+
+\hypertarget{file-structure}{%
+\subsection{File Structure}}
+
+\begin{verbatim}
+AWS-Projects/
+|--- main.tf              # Main Terraform configuration
+|--- terraform.tfvars     # Sensitive variables (gitignored)
+|--- .env.example         # Environment variable template
+`--- database/
+    `--- warehouse.sql    # Star Schema + pgvector DDL
+\end{verbatim}
+
+\hypertarget{provider-configuration}{%
+\subsection{Provider Configuration}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{provider "aws" \{}
+\NormalTok{  region = "ap{-}southeast{-}2"  \# Sydney {-} supports Bedrock Titan Embed v2}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{Region Note:} Ensure \texttt{amazon.titan-embed-text-v2:0} is
+available in your region. Check
+\href{https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html}{Bedrock
+Model Regions}.
+\end{quote}
+
+\hypertarget{variables-terraform.tfvars}{%
+\subsection{Variables
+(terraform.tfvars)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Security:} Never commit \texttt{terraform.tfvars}. It's in
+\texttt{.gitignore}.
+\end{quote}
+
+\hypertarget{vpc-networking-main.tf40-80}{%
+\subsection{VPC \& Networking
+(main.tf:40-80)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Why public subnets?} Fargate tasks with
+\texttt{assign\_public\_ip\ =\ true} need public subnets to: 1. Pull
+Docker images from ECR 2. Call Bedrock, Groq, Gemini APIs 3. Reach SQS,
+CloudWatch endpoints
+
+\hypertarget{security-groups-main.tf82-114}{%
+\subsection{Security Groups
+(main.tf:82-114)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Key Design:} ECS tasks can reach Internet (for APIs, ECR). RDS
+only accepts connections from ECS security group on port 5432.
+
+\hypertarget{rds-aurora-serverless-v2-main.tf116-144}{%
+\subsection{RDS Aurora Serverless v2
+(main.tf:116-144)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Aurora Serverless v2 Benefits:} - Auto-scales capacity (0.5 -
+128 ACUs) - Pay per second for actual usage - \texttt{db.t4g.medium} = 2
+ACU baseline (\textasciitilde\$0.12/hr = \textasciitilde\$87/month at
+100\% usage) - Typical usage \textasciitilde2 ACU =
+\textasciitilde\$15-20/month
+
+\hypertarget{ecr-repository-main.tf147}{%
+\subsection{ECR Repository
+(main.tf:147)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_ecr\_repository" "api" \{}
+\NormalTok{  name = "newsrag{-}api"}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ecs-cluster-main.tf150}{%
+\subsection{ECS Cluster (main.tf:150)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_ecs\_cluster" "cluster" \{}
+\NormalTok{  name = "newsrag{-}cluster"}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{iam-roles-main.tf152-180}{%
+\subsection{IAM Roles
+(main.tf:152-180)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Note:} The Task Role needs inline policy for
+\texttt{bedrock:InvokeModel}, \texttt{sqs:*},
+\texttt{secretsmanager:GetSecretValue}. See
+\href{5.12-Lambda-ETL/\#iam-policy-for-lambda}{IAM Policy for Lambda}
+section.
+\end{quote}
+
+\hypertarget{cloudwatch-log-group-main.tf183-186}{%
+\subsection{CloudWatch Log Group
+(main.tf:183-186)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_cloudwatch\_log\_group" "logs" \{}
+\NormalTok{  name              = "/ecs/newsrag{-}project"}
+\NormalTok{  retention\_in\_days = 7}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{environment-variables-main.tf189-218}{%
+\subsection{Environment Variables
+(main.tf:189-218)}}
+
+All task definitions share these environment variables:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Note:} Kafka/Qdrant/local embedding vars are kept for
+compatibility but not used in AWS v2 architecture.
+\end{quote}
+
+\hypertarget{ecs-task-definitions-main.tf222-292}{%
+\subsection{ECS Task Definitions
+(main.tf:222-292)}}
+
+\hypertarget{crawler-task-main.tf222-244}{%
+\subsubsection{Crawler Task
+(main.tf:222-244)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{etl-task-main.tf246-268}{%
+\subsubsection{ETL Task
+(main.tf:246-268)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{vectorize-task-main.tf270-292}{%
+\subsubsection{Vectorize Task
+(main.tf:270-292)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{AWS v2 Note:} In production v2, the vectorize task is merged
+into ETL Lambda. This task definition is kept for reference/local
+compatibility.
+\end{quote}
+
+\hypertarget{eventbridge-scheduler-main.tf294-357}{%
+\subsection{EventBridge Scheduler
+(main.tf:294-357)}}
+
+Daily cron jobs (UTC timezone):
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Cron Expression Format:}
+\texttt{cron(minutes\ hours\ day-of-month\ month\ day-of-week\ year)} -
+\texttt{cron(0\ 1\ *\ *\ ?\ *)} = Daily at 01:00 UTC - \texttt{?} = no
+specific day-of-week (use day-of-month instead)
+
+\hypertarget{outputs-main.tf360-370}{%
+\subsection{Outputs (main.tf:360-370)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{deployment-commands}{%
+\subsection{Deployment Commands}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{post-deployment-initialize-database}{%
+\subsection{Post-Deployment: Initialize
+Database}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Get RDS endpoint}
+\VariableTok{ENDPOINT}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ rds\_endpoint}\VariableTok{)}
+
+\CommentTok{\# Run schema}
+\ExtensionTok{psql} \StringTok{"postgresql://postgres:your\_password@}\VariableTok{$\{ENDPOINT\}}\StringTok{:5432/newsrag"} \AttributeTok{{-}f}\NormalTok{ database/warehouse.sql}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{warehouse.sql} creates: - \textbf{Dimension Tables}:
+\texttt{dim\_source}, \texttt{dim\_time}, \texttt{dim\_content},
+\texttt{dim\_author} - \textbf{Fact Tables}: \texttt{fact\_articles},
+\texttt{fact\_article\_authors}, \texttt{fact\_chunks} -
+\textbf{pgvector Extension + HNSW Index} on
+\texttt{fact\_chunks.embedding\ vector(1024)}
+
+\hypertarget{verification}{%
+\subsection{Verification}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cost-estimation-monthly-ap-southeast-2}{%
+\subsection{Cost Estimation (Monthly,
+ap-southeast-2)}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Resource & Configuration & Est. Cost \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Aurora Serverless v2 & 2 ACU avg (db.t4g.medium) &
+\textasciitilde\$15-20 \\
+ECS Fargate Crawler & 0.25 vCPU, 0.5 GB, 30 min/day &
+\textasciitilde\$0.50 \\
+ECS Fargate ETL & 0.5 vCPU, 1 GB, 30 min/day & \textasciitilde\$1.00 \\
+ECS Fargate Vectorize & 0.5 vCPU, 1 GB, 30 min/day &
+\textasciitilde\$1.00 \\
+ECR & 1 repository, \textasciitilde2 GB storage &
+\textasciitilde\$0.20 \\
+CloudWatch Logs & 7-day retention, \textasciitilde1 GB ingest &
+\textasciitilde\$1.00 \\
+\textbf{Total (Infrastructure)} & &
+\textbf{\textasciitilde\$19-24/month} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Note:} Lambda + Bedrock + API Gateway costs (covered in later
+sections) add \textasciitilde\$2-5/month. \textbf{Total
+\textasciitilde\$21-29/month}.
+\end{quote}
+
+\hypertarget{cleanup}{%
+\subsection{Cleanup}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{terraform}\NormalTok{ destroy}
+\CommentTok{\# Type \textquotesingle{}yes\textquotesingle{} to confirm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+! \textbf{WARNING:} This destroys the Aurora cluster and \textbf{all
+data permanently}. Backup first if needed.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.4-Local-Dev/}{Local Development Setup}

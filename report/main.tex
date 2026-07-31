@@ -1,0 +1,253 @@
+\documentclass[a4paper]{article}
+\usepackage{vntex}
+\usepackage{mathptmx}[ptm]
+\usepackage{a4wide,amssymb,epsfig,latexsym,array,hhline,fancyhdr}
+\usepackage[normalem]{ulem}
+
+\usepackage[makeroom]{cancel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{multicol,longtable,amscd}
+\usepackage{diagbox}
+\usepackage{booktabs}
+\usepackage{alltt}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{caption,subcaption}
+
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},fontsize=\small}
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+\usepackage{graphicx}
+\let\oldincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+  \oldincludegraphics[width=\textwidth,keepaspectratio,#1]{#2}%
+}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{array}
+\usepackage{tabularx, caption}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{rotating}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{epsfig}
+\usepackage{tikz}
+\usepackage{url}
+
+\renewcommand{\arraystretch}{1.3}
+
+\usetikzlibrary{arrows,snakes,backgrounds,calc}
+\usepackage[unicode]{hyperref}
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true}
+\usepackage{listings}
+
+\IfFileExists{grffile.sty}{\usepackage{grffile}}{}
+
+\graphicspath{{../static/images/}}
+
+\newtheorem{theorem}{{\bf Định lý}}
+\newtheorem{property}{{\bf Tính chất}}
+\newtheorem{proposition}{{\bf Mệnh đề}}
+\newtheorem{corollary}[proposition]{{\bf Hệ quả}}
+\newtheorem{lemma}[proposition]{{\bf Bổ đề}}
+\theoremstyle{definition}
+\newtheorem{exer}{Bài toán}
+
+\def\thesislayout{
+	\geometry{
+		a4paper,
+		total={160mm,240mm},
+		left=30mm,
+		top=30mm,
+	}
+}
+\thesislayout
+
+\lstset{
+basicstyle=\footnotesize\ttfamily,
+breaklines=true,
+breakatwhitespace=false,
+frame=single,
+numbers=left,
+numberstyle=\tiny,
+stepnumber=1,
+numbersep=5pt,
+tabsize=2,
+showspaces=false,
+showstringspaces=false,
+backgroundcolor=\color{white},
+captionpos=b,
+}
+
+\setlength{\headheight}{40pt}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{
+ \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=10mm, height=10mm]{Images/hcmut.png}}
+   \end{picture}&
+	\begin{tabular}{l}
+		\textbf{  Trường Đại Học Bách Khoa - ĐHQG TP.HCM}\\
+		\textbf{  Khoa Khoa Học \& Kỹ Thuật Máy Tính}
+	\end{tabular}
+ \end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf
+	\end{tabular}}
+\fancyfoot{}
+\fancyfoot[L]{\scriptsize  Báo cáo Thực tập Ngoài trường (CO3335)}
+\fancyfoot[R]{\scriptsize  Trang {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+\makeatletter
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection .\@alph\c@subsubsubsection}
+\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+\newcommand*\l@subsubsubsection{\@dottedtocline{3}{10.0em}{4.1em}}
+\newcommand*{\subsubsubsectionmark}[1]{}
+\makeatother
+
+\everymath{\color{black}}
+\sloppy
+\captionsetup[figure]{labelfont={small,bf},textfont={small,it},belowskip=-1pt,aboveskip=-9pt}
+\captionsetup[table]{labelfont={small,bf},textfont={small,it},belowskip=-1pt,aboveskip=7pt}
+\setlength{\floatsep}{5pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{5pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+
+\thesislayout
+
+\begin{document}
+
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 4pt] ($(current page.north west) + (0.4in,-0.5in)$) rectangle ($(current page.south east) + (-0.4in,0.5in)$);
+  \draw[line width=1.5pt]
+    ($ (current page.north west) + (0.45in,-0.55in) $)
+    rectangle
+    ($ (current page.south east) + (-0.45in,0.55in) $);
+\end{tikzpicture}
+
+\begin{center}
+\Large \textbf{ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH} \\
+\vspace{0.2cm}
+\Large \textbf{TRƯỜNG ĐẠI HỌC BÁCH KHOA} \\
+\vspace{0.2cm}
+\Large \textbf{KHOA KHOA HỌC VÀ KĨ THUẬT MÁY TÍNH}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=4cm]{Images/hcmut.png}
+\end{center}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{c}
+\multicolumn{1}{c}{\textbf{{\LARGE BÁO CÁO}}}\\
+\\{\textbf{{\LARGE THỰC TẬP NGOÀI TRƯỜNG}}}
+\\
+\\
+\textbf{\Large HỌC KỲ 252 NĂM HỌC 2025-2026} \\
+\end{tabular}
+\end{center}
+\vspace{0.7cm}
+\begin{center}
+\Large
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}ll@{}}
+\textbf{NGÀNH:} & \textbf{Khoa học máy tính} \\
+\textbf{CHƯƠNG TRÌNH ĐÀO TẠO:} & \textbf{Đại trà} \\
+\multicolumn{2}{c}{} \\
+\textbf{ĐƠN VỊ NHẬN THỰC TẬP:} & \textbf{Công ty TNHH AWS Việt Nam} \\
+\textbf{CBHD TRỰC TIẾP:} & \textbf{Anh Lữ Hoàn Thiện} \\
+\textbf{CBHD CỦA KHOA:} & \textbf{GV Dương Đức Tín} \\
+\textbf{SINH VIÊN THỰC HIỆN:} & \textbf{Nguyễn Lê Trọng \quad MSSV: 2313648}
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+\begin{center}
+{\Large TP. Hồ Chí Minh, Tháng 08/2026}
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\input{ChuongTrinhThucTap}
+\input{KetQuaXetTuyen}
+\input{generated/content_body_vi}
+
+\newpage
+\section{Tổng kết}
+Kết thúc kỳ thực tập 8 tuần tại chương trình First Cloud AI Journey (AWS Vietnam) với dự án NewsRAG, em đã đạt được nhiều kết quả đáng giá và tích lũy được những kinh nghiệm thực tiễn quan trọng:
+
+\textbf{1. Kỹ năng và kiến thức đạt được}
+\begin{itemize}
+    \item \textbf{Kiến thức chuyên môn:} Nắm vững cách thiết kế kiến trúc Serverless trên AWS. Ứng dụng thành thạo các dịch vụ đám mây như ECS Fargate, SQS, Aurora PostgreSQL, và API Gateway.
+    \item \textbf{Kỹ năng lập trình:} Cải thiện đáng kể tư duy lập trình Python, Web Scraping với Scrapy, đóng gói ứng dụng bằng Docker và triển khai hạ tầng qua mã nguồn (Terraform).
+    \item \textbf{Kỹ năng mềm:} Nâng cao khả năng làm việc nhóm, viết tài liệu kỹ thuật (documentation), và chủ động nghiên cứu giải quyết các bài toán hóc búa (edge cases).
+\end{itemize}
+
+\textbf{2. Cảm nhận cá nhân về doanh nghiệp và chương trình thực tập}
+\begin{itemize}
+    \item \textbf{Môi trường chuyên nghiệp:} Em thực sự ấn tượng với không gian làm việc cởi mở, văn hóa hỗ trợ lẫn nhau và sự tận tâm của các mentor.
+    \item \textbf{Tính thực tiễn cao:} Dự án NewsRAG cực kỳ bám sát với xu hướng công nghệ hiện tại (RAG/LLM, Cloud computing), giúp sinh viên cọ xát với những công nghệ mà thị trường đang rất cần.
+    \item \textbf{Khẳng định:} Chương trình thực tập mang lại những trải nghiệm vô cùng quý báu, tạo bước đệm vững chắc cho em trên con đường phát triển sự nghiệp theo hướng Cloud/DevOps.
+\end{itemize}
+\input{TongKet}
+
+\end{document}

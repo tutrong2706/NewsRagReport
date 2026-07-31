@@ -1,0 +1,77 @@
+\hypertarget{triux1ec3n-khai-infrastructure-as-code-vux1edbi-terraform}{%
+\paragraph{Triển khai Infrastructure as Code với
+Terraform}}
+
+Thay vì cấu hình thủ công từng dịch vụ trên AWS Console, dự án NewsRAG
+sử dụng Terraform để tự động hóa việc khởi tạo toàn bộ hạ tầng
+(Infrastructure as Code - IaC).
+
+\textbf{1. Cấu trúc Terraform}
+
+File \texttt{main.tf} (hơn 370 dòng) quản lý tất cả các tài nguyên: -
+\textbf{Networking}: VPC (\texttt{10.0.0.0/16}), 2 Public Subnets
+(multi-AZ), Internet Gateway, Route Tables. - \textbf{Security Groups}:
+Phân quyền truy cập nguyên tắc đặc quyền tối thiểu (Least Privilege) ---
+ví dụ RDS chỉ nhận traffic từ ECS Security Group. - \textbf{Database}:
+Cụm RDS Aurora PostgreSQL Serverless. - \textbf{Compute}: ECS Cluster,
+ECR Repository, và các Task Definitions cho Crawler, ETL, Vectorize chạy
+trên nền Fargate. - \textbf{Scheduling}: EventBridge Rules để trigger
+các ECS Tasks theo cron schedule (01:00, 02:00, 03:00 UTC).
+
+\textbf{2. Triển khai lên AWS}
+
+Để triển khai hệ thống, bạn chỉ cần cấu hình AWS CLI và chạy các lệnh:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Khởi tạo Terraform provider}
+\ExtensionTok{terraform}\NormalTok{ init}
+
+\CommentTok{\# Xem trước các tài nguyên sẽ được tạo}
+\ExtensionTok{terraform}\NormalTok{ plan}
+
+\CommentTok{\# Thực thi tạo tài nguyên trên AWS}
+\ExtensionTok{terraform}\NormalTok{ apply }\AttributeTok{{-}auto{-}approve}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3. Tự động hóa Deployment (CI/CD)}
+
+Script \texttt{deploy.sh} được cung cấp để tự động build Docker images,
+tag và push lên Amazon ECR, sau đó update ECS service để force
+deployment phiên bản mới nhất:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#!/bin/bash}
+\CommentTok{\# deploy.sh}
+
+\CommentTok{\# 1. Lấy thông tin xác thực ECR}
+\ExtensionTok{aws}\NormalTok{ ecr get{-}login{-}password }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2 }\KeywordTok{|} \ExtensionTok{docker}\NormalTok{ login }\AttributeTok{{-}{-}username}\NormalTok{ AWS }\AttributeTok{{-}{-}password{-}stdin} \VariableTok{$ACCOUNT\_ID}\NormalTok{.dkr.ecr.ap{-}southeast{-}2.amazonaws.com}
+
+\CommentTok{\# 2. Build Docker images}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ newsrag{-}crawler }\AttributeTok{{-}f}\NormalTok{ crawler/Dockerfile .}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ newsrag{-}etl }\AttributeTok{{-}f}\NormalTok{ etl/Dockerfile .}
+
+\CommentTok{\# 3. Tag và Push lên ECR}
+\ExtensionTok{docker}\NormalTok{ tag newsrag{-}crawler:latest }\VariableTok{$ACCOUNT\_ID}\NormalTok{.dkr.ecr.ap{-}southeast{-}2.amazonaws.com/newsrag{-}api:crawler{-}latest}
+\ExtensionTok{docker}\NormalTok{ push }\VariableTok{$ACCOUNT\_ID}\NormalTok{.dkr.ecr.ap{-}southeast{-}2.amazonaws.com/newsrag{-}api:crawler{-}latest}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{4. Dọn dẹp tài nguyên (Cleanup)}
+
+Khi không sử dụng hệ thống để tránh phát sinh chi phí, bạn có thể xóa
+toàn bộ tài nguyên bằng 1 lệnh duy nhất:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{terraform}\NormalTok{ destroy}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{Lưu ý}: Lệnh này sẽ xóa tất cả VPC, ECS, RDS, EventBridge được
+định nghĩa trong \texttt{main.tf}. Dữ liệu trong database sẽ bị mất nếu
+bạn không cấu hình snapshot.
+\end{quote}

@@ -1,0 +1,440 @@
+\contentsline {section}{\numberline {1}Chương trình thực tập}{10}{section.1}%
+\contentsline {section}{\numberline {2}Kết quả xét tuyển}{19}{section.2}%
+\contentsline {section}{\numberline {3}Báo cáo thực tập}{26}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Nhật ký công việc}{26}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Worklog Tuần 1}{26}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Mục tiêu tuần 1:}{26}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Các công việc cần triển khai trong tuần này:}{26}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.4}Kết quả đạt được tuần 1:}{26}{subsubsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {3.1.5}Worklog Tuần 2}{27}{subsubsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.6}Mục tiêu tuần 2:}{27}{subsubsection.3.1.6}%
+\contentsline {subsubsection}{\numberline {3.1.7}Các công việc cần triển khai trong tuần này:}{27}{subsubsection.3.1.7}%
+\contentsline {subsubsection}{\numberline {3.1.8}Kết quả đạt được tuần 2:}{27}{subsubsection.3.1.8}%
+\contentsline {subsubsection}{\numberline {3.1.9}Worklog Tuần 3}{28}{subsubsection.3.1.9}%
+\contentsline {subsubsection}{\numberline {3.1.10}Mục tiêu tuần 3:}{28}{subsubsection.3.1.10}%
+\contentsline {subsubsection}{\numberline {3.1.11}Các công việc cần triển khai trong tuần này:}{28}{subsubsection.3.1.11}%
+\contentsline {subsubsection}{\numberline {3.1.12}Kết quả đạt được tuần 3:}{28}{subsubsection.3.1.12}%
+\contentsline {subsubsection}{\numberline {3.1.13}Worklog Tuần 4}{29}{subsubsection.3.1.13}%
+\contentsline {subsubsection}{\numberline {3.1.14}Mục tiêu tuần 4:}{29}{subsubsection.3.1.14}%
+\contentsline {subsubsection}{\numberline {3.1.15}Các công việc cần triển khai trong tuần này:}{29}{subsubsection.3.1.15}%
+\contentsline {subsubsection}{\numberline {3.1.16}Kết quả đạt được tuần 4:}{29}{subsubsection.3.1.16}%
+\contentsline {subsubsection}{\numberline {3.1.17}Worklog Tuần 5}{30}{subsubsection.3.1.17}%
+\contentsline {subsubsection}{\numberline {3.1.18}Mục tiêu tuần 5:}{30}{subsubsection.3.1.18}%
+\contentsline {subsubsection}{\numberline {3.1.19}Các công việc cần triển khai trong tuần này:}{30}{subsubsection.3.1.19}%
+\contentsline {subsubsection}{\numberline {3.1.20}Kết quả đạt được tuần 5:}{30}{subsubsection.3.1.20}%
+\contentsline {subsubsection}{\numberline {3.1.21}Worklog Tuần 6}{31}{subsubsection.3.1.21}%
+\contentsline {subsubsection}{\numberline {3.1.22}Mục tiêu tuần 6:}{31}{subsubsection.3.1.22}%
+\contentsline {subsubsection}{\numberline {3.1.23}Các công việc cần triển khai trong tuần này:}{31}{subsubsection.3.1.23}%
+\contentsline {subsubsection}{\numberline {3.1.24}Kết quả đạt được tuần 6:}{31}{subsubsection.3.1.24}%
+\contentsline {subsubsection}{\numberline {3.1.25}Worklog Tuần 7}{32}{subsubsection.3.1.25}%
+\contentsline {subsubsection}{\numberline {3.1.26}Mục tiêu tuần 7:}{32}{subsubsection.3.1.26}%
+\contentsline {subsubsection}{\numberline {3.1.27}Các công việc cần triển khai trong tuần này:}{32}{subsubsection.3.1.27}%
+\contentsline {subsubsection}{\numberline {3.1.28}Kết quả đạt được tuần 7:}{32}{subsubsection.3.1.28}%
+\contentsline {subsubsection}{\numberline {3.1.29}Worklog Tuần 8}{33}{subsubsection.3.1.29}%
+\contentsline {subsubsection}{\numberline {3.1.30}Mục tiêu tuần 8:}{33}{subsubsection.3.1.30}%
+\contentsline {subsubsection}{\numberline {3.1.31}Các công việc cần triển khai trong tuần này:}{33}{subsubsection.3.1.31}%
+\contentsline {subsubsection}{\numberline {3.1.32}Kết quả đạt được tuần 8:}{33}{subsubsection.3.1.32}%
+\contentsline {subsection}{\numberline {3.2}Đề xuất}{35}{subsection.3.2}%
+\contentsline {section}{\numberline {4}News RAG Pipeline trên AWS}{35}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Đường ống dữ liệu Serverless với RAG cho hỏi đáp tin tức thông minh}{35}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}1. Tóm tắt điều hành}{35}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}2. Tuyên bố vấn đề}{35}{subsubsection.4.1.2}%
+\contentsline {paragraph}{\numberline {4.1.2.1}Vấn đề hiện tại}{35}{paragraph.4.1.2.1}%
+\contentsline {paragraph}{\numberline {4.1.2.2}Giải pháp}{35}{paragraph.4.1.2.2}%
+\contentsline {paragraph}{\numberline {4.1.2.3}Lợi ích và hoàn vốn đầu tư}{35}{paragraph.4.1.2.3}%
+\contentsline {subsubsection}{\numberline {4.1.3}3. Kiến trúc giải pháp}{35}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Các dịch vụ AWS sử dụng}{35}{subsubsection.4.1.4}%
+\contentsline {subsubsection}{\numberline {4.1.5}Thiết kế thành phần}{36}{subsubsection.4.1.5}%
+\contentsline {subsubsection}{\numberline {4.1.6}4. Triển khai kỹ thuật}{36}{subsubsection.4.1.6}%
+\contentsline {paragraph}{\numberline {4.1.6.1}Các giai đoạn triển khai}{36}{paragraph.4.1.6.1}%
+\contentsline {paragraph}{\numberline {4.1.6.2}Yêu cầu kỹ thuật}{36}{paragraph.4.1.6.2}%
+\contentsline {subsubsection}{\numberline {4.1.7}5. Timeline \& Milestones}{37}{subsubsection.4.1.7}%
+\contentsline {subsubsection}{\numberline {4.1.8}6. Dự toán ngân sách}{37}{subsubsection.4.1.8}%
+\contentsline {paragraph}{\numberline {4.1.8.1}Chi phí hạ tầng (Hàng tháng)}{37}{paragraph.4.1.8.1}%
+\contentsline {subsubsection}{\numberline {4.1.9}7. Đánh giá rủi ro}{37}{subsubsection.4.1.9}%
+\contentsline {paragraph}{\numberline {4.1.9.1}Ma trận rủi ro}{37}{paragraph.4.1.9.1}%
+\contentsline {paragraph}{\numberline {4.1.9.2}Chiến lược giảm thiểu}{37}{paragraph.4.1.9.2}%
+\contentsline {paragraph}{\numberline {4.1.9.3}Kế hoạch dự phòng}{37}{paragraph.4.1.9.3}%
+\contentsline {subsubsection}{\numberline {4.1.10}8. Kết quả mong đợi}{37}{subsubsection.4.1.10}%
+\contentsline {paragraph}{\numberline {4.1.10.1}Cải thiện kỹ thuật:}{37}{paragraph.4.1.10.1}%
+\contentsline {paragraph}{\numberline {4.1.10.2}Giá trị dài hạn}{37}{paragraph.4.1.10.2}%
+\contentsline {subsection}{\numberline {4.2}Các bài blogs đã đăng}{38}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Blog 1: Vượt giới hạn Timeout với AWS Fargate}{38}{subsubsection.4.2.1}%
+\contentsline {section}{\numberline {5}Vượt qua giới hạn 15 phút của AWS Lambda bằng kiến trúc ECS Fargate}{38}{section.5}%
+\contentsline {subsubsection}{\numberline {5.0.1}Bài toán đặt ra: Giới hạn thời gian (Timeout)}{38}{subsubsection.5.0.1}%
+\contentsline {subsubsection}{\numberline {5.0.2}Giải pháp: Chuyển đổi sang Amazon ECS Fargate}{38}{subsubsection.5.0.2}%
+\contentsline {subsubsection}{\numberline {5.0.3}Kết quả đạt được}{38}{subsubsection.5.0.3}%
+\contentsline {subsubsection}{\numberline {5.0.4}Blog 2: Tối ưu chi phí bằng SQS}{38}{subsubsection.5.0.4}%
+\contentsline {section}{\numberline {6}Tối ưu hóa chi phí hệ thống: Chuyển đổi từ Apache Kafka sang Amazon SQS}{38}{section.6}%
+\contentsline {subsubsection}{\numberline {6.0.1}Bài toán chi phí với Kafka}{38}{subsubsection.6.0.1}%
+\contentsline {subsubsection}{\numberline {6.0.2}Lựa chọn thay thế: Amazon SQS (Simple Queue Service)}{39}{subsubsection.6.0.2}%
+\contentsline {subsubsection}{\numberline {6.0.3}Đánh giá từ quyết định thiết kế}{39}{subsubsection.6.0.3}%
+\contentsline {subsubsection}{\numberline {6.0.4}Blog 3: Xây dựng RAG tối ưu}{39}{subsubsection.6.0.4}%
+\contentsline {section}{\numberline {7}Hiện thực hóa hệ thống RAG với Amazon Bedrock và Aurora pgvector}{39}{section.7}%
+\contentsline {subsubsection}{\numberline {7.0.1}1. Amazon Bedrock: Sức mạnh nhúng (Embedding)}{39}{subsubsection.7.0.1}%
+\contentsline {subsubsection}{\numberline {7.0.2}2. Amazon Aurora Serverless v2 + pgvector}{39}{subsubsection.7.0.2}%
+\contentsline {subsubsection}{\numberline {7.0.3}Kết luận}{40}{subsubsection.7.0.3}%
+\contentsline {subsection}{\numberline {7.1}Các sự kiện đã tham gia}{41}{subsection.7.1}%
+\contentsline {subsubsection}{\numberline {7.1.1}Báo cáo Thu hoạch Event 1: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp}{41}{subsubsection.7.1.1}%
+\contentsline {section}{\numberline {8}Báo cáo Thu hoạch: Định hướng Nghề nghiệp, Kỹ năng và Tư duy Thực tế trong Doanh nghiệp}{41}{section.8}%
+\contentsline {subsection}{\numberline {8.1}1. Mục tiêu Sự kiện}{41}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}2. Diễn giả Khách mời}{41}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}3. Những Điểm Nhấn Quan Trọng (Key Highlights)}{41}{subsection.8.3}%
+\contentsline {subsubsection}{\numberline {8.3.1}Thực tế khốc liệt và bản chất công việc DevOps trong doanh nghiệp}{41}{subsubsection.8.3.1}%
+\contentsline {subsubsection}{\numberline {8.3.2}Sự linh hoạt của Kỹ sư Dữ liệu theo từng lĩnh vực kinh doanh}{41}{subsubsection.8.3.2}%
+\contentsline {subsection}{\numberline {8.4}4. Bài Học Đúc Kết (Key Takeaways)}{41}{subsection.8.4}%
+\contentsline {subsubsection}{\numberline {8.4.1}Tư duy phát triển sự nghiệp qua 5 giai đoạn}{41}{subsubsection.8.4.1}%
+\contentsline {subsubsection}{\numberline {8.4.2}Nền tảng kỹ thuật và hành trình 8 bước tự thân}{41}{subsubsection.8.4.2}%
+\contentsline {subsubsection}{\numberline {8.4.3}Văn hóa doanh nghiệp và triết lý ``Đúng Việc''}{42}{subsubsection.8.4.3}%
+\contentsline {subsection}{\numberline {8.5}5. Ứng Dụng Vào Thực Tế (Applying to Work)}{42}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}6. Trải Nghiệm Khóa Học (Event Experience)}{42}{subsection.8.6}%
+\contentsline {subsection}{\numberline {8.7}7. Tổng Kết (Lessons Learned)}{42}{subsection.8.7}%
+\contentsline {subsubsection}{\numberline {8.7.1}Báo cáo Thu hoạch Event 2: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS}{43}{subsubsection.8.7.1}%
+\contentsline {section}{\numberline {9}Báo cáo Thu hoạch: Quản trị Vận hành, Bảo mật Hệ thống Web và Lộ trình Chứng chỉ AWS}{43}{section.9}%
+\contentsline {subsection}{\numberline {9.1}1. Mục tiêu Sự kiện}{43}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}2. Diễn giả Khách mời}{43}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}3. Những Điểm Nhấn Quan Trọng (Key Highlights)}{43}{subsection.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.1}Sự thật phũ phàng về giám sát vận hành hệ thống: ``Hạ tầng xanh nhưng người dùng khóc''}{43}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}Cuộc cách mạng bảo mật tự động hóa với Frontier Agent và Agentic AI}{43}{subsubsection.9.3.2}%
+\contentsline {subsubsection}{\numberline {9.3.3}Chiến lược chinh phục chứng chỉ AWS Certified Cloud Practitioner (CLF-C02)}{43}{subsubsection.9.3.3}%
+\contentsline {subsection}{\numberline {9.4}4. Bài Học Đúc Kết (Key Takeaways)}{43}{subsection.9.4}%
+\contentsline {subsubsection}{\numberline {9.4.1}Tư duy quản trị rủi ro và SLA thực chất (Risk Management \& True SLA Mindset)}{43}{subsubsection.9.4.1}%
+\contentsline {subsubsection}{\numberline {9.4.2}Tích hợp bảo mật toàn diện trong kỷ nguyên AI (Autonomous DevSecOps \& Security Reasoning)}{44}{subsubsection.9.4.2}%
+\contentsline {subsubsection}{\numberline {9.4.3}Phương pháp ôn thi thông minh và kỹ năng phòng thi thực chiến (AWS Exam Strategy)}{44}{subsubsection.9.4.3}%
+\contentsline {subsection}{\numberline {9.5}5. Ứng Dụng Vào Thực Tế (Applying to Work)}{44}{subsection.9.5}%
+\contentsline {subsection}{\numberline {9.6}6. Trải Nghiệm Khóa Học (Event Experience)}{44}{subsection.9.6}%
+\contentsline {subsection}{\numberline {9.7}7. Tổng Kết (Lessons Learned)}{44}{subsection.9.7}%
+\contentsline {subsubsection}{\numberline {9.7.1}Báo cáo Thu hoạch Event 3: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon}{45}{subsubsection.9.7.1}%
+\contentsline {section}{\numberline {10}Báo cáo Thu hoạch: Ứng dụng Agentic AI và Trải nghiệm Thực chiến Hackathon}{45}{section.10}%
+\contentsline {subsection}{\numberline {10.1}1. Mục tiêu Sự kiện}{45}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}2. Diễn giả Khách mời (Các Đội thi)}{45}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}3. Những Điểm Nhấn Quan Trọng (Key Highlights)}{45}{subsection.10.3}%
+\contentsline {subsubsection}{\numberline {10.3.1}Sự bứt phá của Agentic AI: Khi AI biết tự lập kế hoạch và hành động}{45}{subsubsection.10.3.1}%
+\contentsline {subsubsection}{\numberline {10.3.2}Hành trình 24h Hackathon: Đầy hỗn loạn nhưng vô giá}{45}{subsubsection.10.3.2}%
+\contentsline {subsection}{\numberline {10.4}4. Bài Học Đúc Kết (Key Takeaways)}{45}{subsection.10.4}%
+\contentsline {subsubsection}{\numberline {10.4.1}Tư duy phát triển sản phẩm tinh gọn (Pragmatic MVP Mindset)}{45}{subsubsection.10.4.1}%
+\contentsline {subsubsection}{\numberline {10.4.2}Kiến trúc linh hoạt và tối ưu hóa chi phí vận hành (Flexible \& Cost-Efficient Architecture)}{46}{subsubsection.10.4.2}%
+\contentsline {subsubsection}{\numberline {10.4.3}Giá trị của cộng đồng và sự bổ khuyết đội nhóm (The Power of People \& Diversity)}{46}{subsubsection.10.4.3}%
+\contentsline {subsection}{\numberline {10.5}5. Ứng Dụng Vào Thực Tế (Applying to Work)}{46}{subsection.10.5}%
+\contentsline {subsection}{\numberline {10.6}6. Trải Nghiệm Khóa Học (Event Experience)}{46}{subsection.10.6}%
+\contentsline {subsection}{\numberline {10.7}7. Tổng Kết (Lessons Learned)}{46}{subsection.10.7}%
+\contentsline {subsection}{\numberline {10.8}Workshop}{48}{subsection.10.8}%
+\contentsline {subsubsection}{\numberline {10.8.1}Tổng quan Workshop}{48}{subsubsection.10.8.1}%
+\contentsline {section}{\numberline {11}News RAG Pipeline trên AWS --- Tổng quan Workshop}{48}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Kiến trúc Workshop}{48}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Mục tiêu học tập}{48}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Các Module Workshop}{48}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.4}Điều kiện tiên quyết}{49}{subsection.11.4}%
+\contentsline {subsection}{\numberline {11.5}Ước lượng chi phí (Hàng tháng, ap-southeast-2)}{49}{subsection.11.5}%
+\contentsline {subsection}{\numberline {11.6}Cấu trúc dự án}{49}{subsection.11.6}%
+\contentsline {subsection}{\numberline {11.7}So sánh Kiến trúc: v1 vs v2}{49}{subsection.11.7}%
+\contentsline {subsubsection}{\numberline {11.7.1}Điều kiện tiên quyết}{50}{subsubsection.11.7.1}%
+\contentsline {section}{\numberline {12}Điều kiện tiên quyết}{50}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Tài khoản \& Quyền cần thiết}{50}{subsection.12.1}%
+\contentsline {subsubsection}{\numberline {12.1.1}Tài khoản AWS}{50}{subsubsection.12.1.1}%
+\contentsline {subsubsection}{\numberline {12.1.2}API Keys bên ngoài (cho RAG)}{50}{subsubsection.12.1.2}%
+\contentsline {subsection}{\numberline {12.2}Công cụ bắt buộc}{51}{subsection.12.2}%
+\contentsline {subsubsection}{\numberline {12.2.1}1. AWS CLI v2}{51}{subsubsection.12.2.1}%
+\contentsline {subsubsection}{\numberline {12.2.2}2. Terraform \textgreater = 1.5.0}{51}{subsubsection.12.2.2}%
+\contentsline {subsubsection}{\numberline {12.2.3}3. Docker \& Docker Compose}{51}{subsubsection.12.2.3}%
+\contentsline {subsubsection}{\numberline {12.2.4}4. Python 3.10+}{51}{subsubsection.12.2.4}%
+\contentsline {subsubsection}{\numberline {12.2.5}5. Git}{51}{subsubsection.12.2.5}%
+\contentsline {subsubsection}{\numberline {12.2.6}6. Trình soạn thảo mã (Khuyến nghị: VS Code)}{51}{subsubsection.12.2.6}%
+\contentsline {subsection}{\numberline {12.3}Thiết lập dự án}{51}{subsection.12.3}%
+\contentsline {subsubsection}{\numberline {12.3.1}Clone Repository}{51}{subsubsection.12.3.1}%
+\contentsline {subsubsection}{\numberline {12.3.2}Môi trường ảo Python}{51}{subsubsection.12.3.2}%
+\contentsline {subsubsection}{\numberline {12.3.3}Biến môi trường}{51}{subsubsection.12.3.3}%
+\contentsline {subsubsection}{\numberline {12.3.4}Biến Terraform}{51}{subsubsection.12.3.4}%
+\contentsline {subsection}{\numberline {12.4}Xác minh thiết lập}{52}{subsection.12.4}%
+\contentsline {subsection}{\numberline {12.5}Khu vực AWS (Region)}{52}{subsection.12.5}%
+\contentsline {subsection}{\numberline {12.6}Truy cập Model Bedrock}{52}{subsection.12.6}%
+\contentsline {subsubsection}{\numberline {12.6.1}Hạ tầng dưới dạng Code (Terraform)}{52}{subsubsection.12.6.1}%
+\contentsline {section}{\numberline {13}Hạ tầng dưới dạng Code (Terraform)}{52}{section.13}%
+\contentsline {subsection}{\numberline {13.1}Kiến trúc Terraform}{52}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}1. VPC \& Network (\texttt {main.tf:40-80})}{52}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}2. Security Groups (\texttt {main.tf:82-114})}{53}{subsection.13.3}%
+\contentsline {subsection}{\numberline {13.4}3. Aurora PostgreSQL Serverless v2 (\texttt {main.tf:116-144})}{53}{subsection.13.4}%
+\contentsline {subsection}{\numberline {13.5}4. ECR Repository (\texttt {main.tf:147})}{53}{subsection.13.5}%
+\contentsline {subsection}{\numberline {13.6}5. ECS Cluster (\texttt {main.tf:150})}{53}{subsection.13.6}%
+\contentsline {subsection}{\numberline {13.7}6. IAM Roles (\texttt {main.tf:152-180})}{53}{subsection.13.7}%
+\contentsline {subsection}{\numberline {13.8}7. CloudWatch Log Group (\texttt {main.tf:183-186})}{53}{subsection.13.8}%
+\contentsline {subsection}{\numberline {13.9}8. Biến môi trường chung (\texttt {main.tf:189-218})}{53}{subsection.13.9}%
+\contentsline {subsection}{\numberline {13.10}9. ECS Task Definitions (\texttt {main.tf:222-292})}{53}{subsection.13.10}%
+\contentsline {subsection}{\numberline {13.11}10. EventBridge Scheduler (\texttt {main.tf:294-357})}{54}{subsection.13.11}%
+\contentsline {subsection}{\numberline {13.12}11. Variables (\texttt {main.tf:5-38})}{54}{subsection.13.12}%
+\contentsline {subsection}{\numberline {13.13}12. Outputs (\texttt {main.tf:360-370})}{54}{subsection.13.13}%
+\contentsline {subsection}{\numberline {13.14}Triển khai}{54}{subsection.13.14}%
+\contentsline {subsection}{\numberline {13.15}Khởi tạo Database Schema}{54}{subsection.13.15}%
+\contentsline {subsection}{\numberline {13.16}Xác minh triển khai}{54}{subsection.13.16}%
+\contentsline {subsection}{\numberline {13.17}Ước lượng chi phí (Hàng tháng, ap-southeast-2)}{55}{subsection.13.17}%
+\contentsline {subsection}{\numberline {13.18}Dọn dẹp}{55}{subsection.13.18}%
+\contentsline {subsubsection}{\numberline {13.18.1}Thiết lập phát triển cục bộ}{55}{subsubsection.13.18.1}%
+\contentsline {section}{\numberline {14}Thiết lập phát triển cục bộ}{55}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Tổng quan kiến trúc (Local)}{55}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}Các dịch vụ Docker Compose}{55}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Khởi động môi trường}{55}{subsection.14.3}%
+\contentsline {subsection}{\numberline {14.4}Xác minh các dịch vụ}{56}{subsection.14.4}%
+\contentsline {subsubsection}{\numberline {14.4.1}PostgreSQL}{56}{subsubsection.14.4.1}%
+\contentsline {subsubsection}{\numberline {14.4.2}Qdrant}{56}{subsubsection.14.4.2}%
+\contentsline {subsubsection}{\numberline {14.4.3}Kafka}{56}{subsubsection.14.4.3}%
+\contentsline {subsubsection}{\numberline {14.4.4}Kafka UI}{56}{subsubsection.14.4.4}%
+\contentsline {subsection}{\numberline {14.5}Thiết lập môi trường Python}{56}{subsection.14.5}%
+\contentsline {subsubsection}{\numberline {14.5.1}requirements.txt}{57}{subsubsection.14.5.1}%
+\contentsline {subsection}{\numberline {14.6}Cấu hình biến môi trường}{57}{subsection.14.6}%
+\contentsline {subsection}{\numberline {14.7}Chạy Pipeline cục bộ}{57}{subsection.14.7}%
+\contentsline {subsubsection}{\numberline {14.7.1}1. Crawl tin tức (Scrapy \(\rightarrow \) Kafka)}{57}{subsubsection.14.7.1}%
+\contentsline {subsubsection}{\numberline {14.7.2}2. Chạy ETL (PostgreSQL \(\rightarrow \) Star Schema)}{57}{subsubsection.14.7.2}%
+\contentsline {subsubsection}{\numberline {14.7.3}3. Vectorize (Star Schema \(\rightarrow \) Qdrant)}{57}{subsubsection.14.7.3}%
+\contentsline {subsubsection}{\numberline {14.7.4}4. Chạy Full Pipeline (Tự động)}{57}{subsubsection.14.7.4}%
+\contentsline {subsubsection}{\numberline {14.7.5}5. Test RAG API (Interactive)}{57}{subsubsection.14.7.5}%
+\contentsline {subsection}{\numberline {14.8}Makefile Commands}{58}{subsection.14.8}%
+\contentsline {subsection}{\numberline {14.9}Xử lý sự cố}{58}{subsection.14.9}%
+\contentsline {subsection}{\numberline {14.10}Quy trình phát triển}{58}{subsection.14.10}%
+\contentsline {subsection}{\numberline {14.11}Bước tiếp theo}{58}{subsection.14.11}%
+\contentsline {subsubsection}{\numberline {14.11.1}Phát triển Crawler}{58}{subsubsection.14.11.1}%
+\contentsline {section}{\numberline {15}Phát triển Crawler}{58}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Tại sao dùng SitemapSpider?}{58}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Cấu trúc dự án}{59}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Cấu hình (config/config\_site.json)}{59}{subsection.15.3}%
+\contentsline {subsection}{\numberline {15.4}Cài đặt Scrapy (crawler/settings.py)}{59}{subsection.15.4}%
+\contentsline {subsection}{\numberline {15.5}Items (crawler/items.py)}{59}{subsection.15.5}%
+\contentsline {subsection}{\numberline {15.6}SitemapSpider Implementation (crawler/spiders/spider.py)}{59}{subsection.15.6}%
+\contentsline {subsection}{\numberline {15.7}Kafka Pipeline (crawler/pipelines.py)}{59}{subsection.15.7}%
+\contentsline {subsection}{\numberline {15.8}Chạy Crawler}{59}{subsection.15.8}%
+\contentsline {subsubsection}{\numberline {15.8.1}Local Development (với Docker Compose)}{59}{subsubsection.15.8.1}%
+\contentsline {subsubsection}{\numberline {15.8.2}Output mong đợi}{59}{subsubsection.15.8.2}%
+\contentsline {subsubsection}{\numberline {15.8.3}Xác minh Kafka Messages}{59}{subsubsection.15.8.3}%
+\contentsline {subsection}{\numberline {15.9}Dockerfile cho Fargate (Multi-stage)}{60}{subsection.15.9}%
+\contentsline {subsection}{\numberline {15.10}Build \& Test cục bộ}{60}{subsection.15.10}%
+\contentsline {subsection}{\numberline {15.11}Thêm trang tin tức mới}{60}{subsection.15.11}%
+\contentsline {subsection}{\numberline {15.12}Vấn đề thường gặp \& Khắc phục}{60}{subsection.15.12}%
+\contentsline {subsection}{\numberline {15.13}Bước tiếp theo}{60}{subsection.15.13}%
+\contentsline {subsubsection}{\numberline {15.13.1}Nhập dữ liệu (Kafka Consumer → PostgreSQL)}{60}{subsubsection.15.13.1}%
+\contentsline {section}{\numberline {16}Nhập dữ liệu: Kafka Consumer \(\rightarrow \) PostgreSQL}{60}{section.16}%
+\contentsline {subsection}{\numberline {16.1}Kiến trúc}{61}{subsection.16.1}%
+\contentsline {subsection}{\numberline {16.2}Database Schema (Raw Table)}{61}{subsection.16.2}%
+\contentsline {subsection}{\numberline {16.3}Consumer Implementation (consumer/consumer.py)}{61}{subsection.16.3}%
+\contentsline {subsection}{\numberline {16.4}Chạy cục bộ}{61}{subsection.16.4}%
+\contentsline {subsection}{\numberline {16.5}Xác minh dữ liệu trong PostgreSQL}{61}{subsection.16.5}%
+\contentsline {subsection}{\numberline {16.6}AWS Lambda Version (Production)}{61}{subsection.16.6}%
+\contentsline {subsection}{\numberline {16.7}Xử lý sự cố}{61}{subsection.16.7}%
+\contentsline {subsection}{\numberline {16.8}Bước tiếp theo}{61}{subsection.16.8}%
+\contentsline {subsubsection}{\numberline {16.8.1}ETL \& Star Schema}{62}{subsubsection.16.8.1}%
+\contentsline {section}{\numberline {17}ETL \& Star Schema Transformation}{62}{section.17}%
+\contentsline {subsection}{\numberline {17.1}Star Schema Design}{62}{subsection.17.1}%
+\contentsline {subsection}{\numberline {17.2}Dimension Tables}{62}{subsection.17.2}%
+\contentsline {subsubsection}{\numberline {17.2.1}dim\_source --- Nguồn tin}{62}{subsubsection.17.2.1}%
+\contentsline {subsubsection}{\numberline {17.2.2}dim\_time --- Time Dimension}{62}{subsubsection.17.2.2}%
+\contentsline {subsubsection}{\numberline {17.2.3}dim\_content --- Nội dung bài viết}{62}{subsubsection.17.2.3}%
+\contentsline {subsubsection}{\numberline {17.2.4}dim\_author --- Tác giả}{62}{subsubsection.17.2.4}%
+\contentsline {subsection}{\numberline {17.3}Fact Tables}{62}{subsection.17.3}%
+\contentsline {subsubsection}{\numberline {17.3.1}fact\_articles --- Core Fact Table}{62}{subsubsection.17.3.1}%
+\contentsline {subsubsection}{\numberline {17.3.2}fact\_article\_authors --- Many-to-Many Bridge}{63}{subsubsection.17.3.2}%
+\contentsline {subsubsection}{\numberline {17.3.3}fact\_chunks --- RAG Vector Chunks (with pgvector)}{63}{subsubsection.17.3.3}%
+\contentsline {subsection}{\numberline {17.4}ETL Process (etl/etl\_warehouse.py)}{63}{subsection.17.4}%
+\contentsline {subsection}{\numberline {17.5}Chạy ETL cục bộ}{63}{subsection.17.5}%
+\contentsline {subsection}{\numberline {17.6}Xác minh Star Schema}{63}{subsection.17.6}%
+\contentsline {subsection}{\numberline {17.7}AWS Lambda Version (Production)}{63}{subsection.17.7}%
+\contentsline {subsubsection}{\numberline {17.7.1}Vector hóa (Local Dev - SentenceTransformer → Qdrant)}{63}{subsubsection.17.7.1}%
+\contentsline {section}{\numberline {18}Vector hóa: Tạo Embeddings \& Lưu vào Vector DB}{63}{section.18}%
+\contentsline {subsection}{\numberline {18.1}Kiến trúc}{63}{subsection.18.1}%
+\contentsline {subsubsection}{\numberline {18.1.1}Phát triển cục bộ (Qdrant)}{63}{subsubsection.18.1.1}%
+\contentsline {subsubsection}{\numberline {18.1.2}AWS Production (Aurora pgvector)}{64}{subsubsection.18.1.2}%
+\contentsline {subsection}{\numberline {18.2}Vectorization Implementation (vectorize/vectorize.py)}{64}{subsection.18.2}%
+\contentsline {subsection}{\numberline {18.3}Chạy Vector hóa cục bộ}{64}{subsection.18.3}%
+\contentsline {subsection}{\numberline {18.4}Qdrant Collection Schema}{64}{subsection.18.4}%
+\contentsline {subsection}{\numberline {18.5}Chạy Vector hóa trong Main Pipeline}{64}{subsection.18.5}%
+\contentsline {subsection}{\numberline {18.6}AWS Production: Bedrock + pgvector}{64}{subsection.18.6}%
+\contentsline {subsection}{\numberline {18.7}HNSW Index on pgvector (Aurora)}{64}{subsection.18.7}%
+\contentsline {subsection}{\numberline {18.8}Xử lý sự cố}{65}{subsection.18.8}%
+\contentsline {subsection}{\numberline {18.9}Bước tiếp theo}{65}{subsection.18.9}%
+\contentsline {subsubsection}{\numberline {18.9.1}Chuẩn bị triển khai AWS}{65}{subsubsection.18.9.1}%
+\contentsline {section}{\numberline {19}Chuẩn bị triển khai AWS}{65}{section.19}%
+\contentsline {subsection}{\numberline {19.1}Điều kiện tiên quyết}{65}{subsection.19.1}%
+\contentsline {subsection}{\numberline {19.2}Lấy Terraform Outputs}{65}{subsection.19.2}%
+\contentsline {subsection}{\numberline {19.3}Build Docker Image (Multi-stage)}{65}{subsection.19.3}%
+\contentsline {subsection}{\numberline {19.4}Build và Push lên ECR}{66}{subsection.19.4}%
+\contentsline {subsection}{\numberline {19.5}Alternative: Buildx cho Multi-platform (ARM64 cho Fargate Graviton)}{66}{subsection.19.5}%
+\contentsline {subsection}{\numberline {19.6}Lambda Deployment Package}{66}{subsection.19.6}%
+\contentsline {subsubsection}{\numberline {19.6.1}Cấu trúc thư mục cho Lambda}{66}{subsubsection.19.6.1}%
+\contentsline {subsubsection}{\numberline {19.6.2}Build Lambda Layer (Shared Dependencies)}{66}{subsubsection.19.6.2}%
+\contentsline {subsubsection}{\numberline {19.6.3}Package Individual Lambda Functions}{66}{subsubsection.19.6.3}%
+\contentsline {subsection}{\numberline {19.7}Deploy Lambda Functions (deploy.sh)}{66}{subsection.19.7}%
+\contentsline {subsection}{\numberline {19.8}IAM Role cho Lambda}{66}{subsection.19.8}%
+\contentsline {subsection}{\numberline {19.9}Secrets Manager cho Credentials}{66}{subsection.19.9}%
+\contentsline {subsection}{\numberline {19.10}Xác minh Deployment}{66}{subsection.19.10}%
+\contentsline {subsection}{\numberline {19.11}CI/CD với GitHub Actions (Optional)}{66}{subsection.19.11}%
+\contentsline {subsection}{\numberline {19.12}Bước tiếp theo}{67}{subsection.19.12}%
+\contentsline {subsubsection}{\numberline {19.12.1}Fargate Crawler (ECS + EventBridge)}{67}{subsubsection.19.12.1}%
+\contentsline {section}{\numberline {20}Fargate Crawler: ECS Fargate + EventBridge Scheduler}{67}{section.20}%
+\contentsline {subsection}{\numberline {20.1}Kiến trúc}{67}{subsection.20.1}%
+\contentsline {subsection}{\numberline {20.2}Task Definition (Terraform)}{67}{subsection.20.2}%
+\contentsline {subsection}{\numberline {20.3}EventBridge Scheduler (Terraform)}{67}{subsection.20.3}%
+\contentsline {subsection}{\numberline {20.4}IAM Permissions cho Task Role}{67}{subsection.20.4}%
+\contentsline {subsection}{\numberline {20.5}SQS Queue (Terraform)}{67}{subsection.20.5}%
+\contentsline {subsection}{\numberline {20.6}Build \& Push Docker Image}{67}{subsection.20.6}%
+\contentsline {subsection}{\numberline {20.7}Alternative: Buildx cho Multi-platform (ARM64 cho Graviton)}{67}{subsection.20.7}%
+\contentsline {subsection}{\numberline {20.8}Manual Testing}{68}{subsection.20.8}%
+\contentsline {subsubsection}{\numberline {20.8.1}Chạy Task Thủ Công}{68}{subsubsection.20.8.1}%
+\contentsline {subsubsection}{\numberline {20.8.2}Kiểm Tra Trạng Thái Task}{68}{subsubsection.20.8.2}%
+\contentsline {subsection}{\numberline {20.9}Monitoring \& Debugging}{68}{subsection.20.9}%
+\contentsline {subsubsection}{\numberline {20.9.1}CloudWatch Logs}{68}{subsubsection.20.9.1}%
+\contentsline {subsubsection}{\numberline {20.9.2}CloudWatch Metrics}{68}{subsubsection.20.9.2}%
+\contentsline {subsubsection}{\numberline {20.9.3}Vấn đề thường gặp}{68}{subsubsection.20.9.3}%
+\contentsline {subsection}{\numberline {20.10}Scaling Considerations}{68}{subsection.20.10}%
+\contentsline {subsection}{\numberline {20.11}Cập nhật Crawler}{69}{subsection.20.11}%
+\contentsline {subsection}{\numberline {20.12}Bước tiếp theo}{69}{subsection.20.12}%
+\contentsline {subsubsection}{\numberline {20.12.1}Lambda Consumer (SQS → Aurora)}{69}{subsubsection.20.12.1}%
+\contentsline {section}{\numberline {21}Lambda Consumer: SQS Trigger \(\rightarrow \) Aurora PostgreSQL}{69}{section.21}%
+\contentsline {subsection}{\numberline {21.1}Kiến trúc}{69}{subsection.21.1}%
+\contentsline {subsection}{\numberline {21.2}Lambda Function Code}{69}{subsection.21.2}%
+\contentsline {subsubsection}{\numberline {21.2.1}Cấu trúc file}{69}{subsubsection.21.2.1}%
+\contentsline {subsubsection}{\numberline {21.2.2}lambda\_function.py}{69}{subsubsection.21.2.2}%
+\contentsline {subsubsection}{\numberline {21.2.3}requirements.txt}{69}{subsubsection.21.2.3}%
+\contentsline {subsection}{\numberline {21.3}Terraform Deployment}{69}{subsection.21.3}%
+\contentsline {subsubsection}{\numberline {21.3.1}Lambda Function Resource}{69}{subsubsection.21.3.1}%
+\contentsline {subsubsection}{\numberline {21.3.2}SQS Trigger (Event Source Mapping)}{69}{subsubsection.21.3.2}%
+\contentsline {subsubsection}{\numberline {21.3.3}IAM Permissions}{70}{subsubsection.21.3.3}%
+\contentsline {subsubsection}{\numberline {21.3.4}Security Group cho Lambda}{70}{subsubsection.21.3.4}%
+\contentsline {subsection}{\numberline {21.4}Building Deployment Package}{70}{subsection.21.4}%
+\contentsline {subsection}{\numberline {21.5}deploy.sh Script}{70}{subsection.21.5}%
+\contentsline {subsection}{\numberline {21.6}Testing the Consumer}{70}{subsection.21.6}%
+\contentsline {subsubsection}{\numberline {21.6.1}1. Send Test Message to SQS}{70}{subsubsection.21.6.1}%
+\contentsline {subsubsection}{\numberline {21.6.2}2. Check Lambda Logs}{70}{subsubsection.21.6.2}%
+\contentsline {subsubsection}{\numberline {21.6.3}3. Verify in Database}{70}{subsubsection.21.6.3}%
+\contentsline {subsection}{\numberline {21.7}Monitoring}{70}{subsection.21.7}%
+\contentsline {subsubsection}{\numberline {21.7.1}CloudWatch Metrics to Watch}{70}{subsubsection.21.7.1}%
+\contentsline {subsubsection}{\numberline {21.7.2}Alarms}{71}{subsubsection.21.7.2}%
+\contentsline {subsection}{\numberline {21.8}Troubleshooting}{71}{subsection.21.8}%
+\contentsline {subsection}{\numberline {21.9}Production Hardening}{71}{subsection.21.9}%
+\contentsline {subsubsection}{\numberline {21.9.1}Lambda ETL + Bedrock Embedding}{71}{subsubsection.21.9.1}%
+\contentsline {section}{\numberline {22}Lambda ETL + Bedrock Titan Embedding}{71}{section.22}%
+\contentsline {subsection}{\numberline {22.1}Kiến trúc}{71}{subsection.22.1}%
+\contentsline {subsection}{\numberline {22.2}Quyết định thiết kế chính}{71}{subsection.22.2}%
+\contentsline {subsection}{\numberline {22.3}Lambda Function Code}{72}{subsection.22.3}%
+\contentsline {subsubsection}{\numberline {22.3.1}Cấu trúc file}{72}{subsubsection.22.3.1}%
+\contentsline {subsubsection}{\numberline {22.3.2}bedrock\_utils.py}{72}{subsubsection.22.3.2}%
+\contentsline {subsubsection}{\numberline {22.3.3}lambda\_function.py}{72}{subsubsection.22.3.3}%
+\contentsline {subsubsection}{\numberline {22.3.4}requirements.txt}{72}{subsubsection.22.3.4}%
+\contentsline {subsection}{\numberline {22.4}Terraform Deployment}{72}{subsection.22.4}%
+\contentsline {subsection}{\numberline {22.5}Testing the ETL Lambda}{72}{subsection.22.5}%
+\contentsline {subsubsection}{\numberline {22.5.1}1. Invoke Manually}{72}{subsubsection.22.5.1}%
+\contentsline {subsubsection}{\numberline {22.5.2}2. Check Logs}{72}{subsubsection.22.5.2}%
+\contentsline {subsubsection}{\numberline {22.5.3}3. Verify in Database}{72}{subsubsection.22.5.3}%
+\contentsline {subsection}{\numberline {22.6}Monitoring \& Optimization}{72}{subsection.22.6}%
+\contentsline {subsubsection}{\numberline {22.6.1}CloudWatch Metrics}{72}{subsubsection.22.6.1}%
+\contentsline {subsubsection}{\numberline {22.6.2}Cost Optimization}{73}{subsubsection.22.6.2}%
+\contentsline {subsubsection}{\numberline {22.6.3}Performance Tips}{73}{subsubsection.22.6.3}%
+\contentsline {subsection}{\numberline {22.7}Next Steps}{73}{subsection.22.7}%
+\contentsline {subsubsection}{\numberline {22.7.1}RAG API (Lambda + API Gateway)}{73}{subsubsection.22.7.1}%
+\contentsline {section}{\numberline {23}RAG API: Lambda + API Gateway}{73}{section.23}%
+\contentsline {subsection}{\numberline {23.1}Kiến trúc}{73}{subsection.23.1}%
+\contentsline {subsection}{\numberline {23.2}Request/Response Format}{73}{subsection.23.2}%
+\contentsline {subsubsection}{\numberline {23.2.1}Request}{73}{subsubsection.23.2.1}%
+\contentsline {subsubsection}{\numberline {23.2.2}Response}{73}{subsubsection.23.2.2}%
+\contentsline {subsection}{\numberline {23.3}Lambda Function Code}{74}{subsection.23.3}%
+\contentsline {subsubsection}{\numberline {23.3.1}Cấu trúc file}{74}{subsubsection.23.3.1}%
+\contentsline {subsubsection}{\numberline {23.3.2}schemas.py}{74}{subsubsection.23.3.2}%
+\contentsline {subsubsection}{\numberline {23.3.3}retriever.py}{74}{subsubsection.23.3.3}%
+\contentsline {subsubsection}{\numberline {23.3.4}generator.py}{74}{subsubsection.23.3.4}%
+\contentsline {subsubsection}{\numberline {23.3.5}lambda\_function.py}{74}{subsubsection.23.3.5}%
+\contentsline {subsubsection}{\numberline {23.3.6}requirements.txt}{74}{subsubsection.23.3.6}%
+\contentsline {subsection}{\numberline {23.4}Terraform Deployment}{74}{subsection.23.4}%
+\contentsline {subsubsection}{\numberline {23.4.1}API Gateway + Lambda}{74}{subsubsection.23.4.1}%
+\contentsline {subsection}{\numberline {23.5}Testing the API}{74}{subsection.23.5}%
+\contentsline {subsubsection}{\numberline {23.5.1}1. Get API URL}{74}{subsubsection.23.5.1}%
+\contentsline {subsubsection}{\numberline {23.5.2}2. Test with curl}{74}{subsubsection.23.5.2}%
+\contentsline {subsubsection}{\numberline {23.5.3}3. Test vanilla (no RAG)}{75}{subsubsection.23.5.3}%
+\contentsline {subsubsection}{\numberline {23.5.4}4. Test from Next.js Frontend}{75}{subsubsection.23.5.4}%
+\contentsline {subsection}{\numberline {23.6}Monitoring}{75}{subsection.23.6}%
+\contentsline {subsubsection}{\numberline {23.6.1}CloudWatch Logs}{75}{subsubsection.23.6.1}%
+\contentsline {subsubsection}{\numberline {23.6.2}Key Metrics to Alert}{75}{subsubsection.23.6.2}%
+\contentsline {subsection}{\numberline {23.7}Cost Estimation}{75}{subsection.23.7}%
+\contentsline {subsection}{\numberline {23.8}Next Steps}{75}{subsection.23.8}%
+\contentsline {subsubsection}{\numberline {23.8.1}Tích hợp Frontend (Next.js + FastAPI)}{75}{subsubsection.23.8.1}%
+\contentsline {section}{\numberline {24}Tích hợp Frontend: Next.js Dashboard + FastAPI Backend}{75}{section.24}%
+\contentsline {subsection}{\numberline {24.1}Kiến trúc}{76}{subsection.24.1}%
+\contentsline {subsection}{\numberline {24.2}Cấu trúc dự án}{76}{subsection.24.2}%
+\contentsline {subsection}{\numberline {24.3}Next.js Dashboard Setup}{76}{subsection.24.3}%
+\contentsline {subsubsection}{\numberline {24.3.1}package.json}{76}{subsubsection.24.3.1}%
+\contentsline {subsubsection}{\numberline {24.3.2}tailwind.config.ts}{76}{subsubsection.24.3.2}%
+\contentsline {subsubsection}{\numberline {24.3.3}API Client (lib/api.ts)}{76}{subsubsection.24.3.3}%
+\contentsline {subsection}{\numberline {24.4}Dashboard Page (app/page.tsx)}{76}{subsection.24.4}%
+\contentsline {subsection}{\numberline {24.5}AI Chat Page (app/chat/page.tsx)}{76}{subsection.24.5}%
+\contentsline {subsection}{\numberline {24.6}FastAPI Backend (Optional - cho direct DB queries)}{76}{subsection.24.6}%
+\contentsline {subsection}{\numberline {24.7}Deployment}{76}{subsection.24.7}%
+\contentsline {subsubsection}{\numberline {24.7.1}Next.js on Vercel}{76}{subsubsection.24.7.1}%
+\contentsline {subsubsection}{\numberline {24.7.2}FastAPI on Cloud Run / ECS Fargate}{76}{subsubsection.24.7.2}%
+\contentsline {subsection}{\numberline {24.8}Environment Variables}{77}{subsection.24.8}%
+\contentsline {subsection}{\numberline {24.9}Bước tiếp theo}{77}{subsection.24.9}%
+\contentsline {subsubsection}{\numberline {24.9.1}Kiểm thử \& Giám sát}{77}{subsubsection.24.9.1}%
+\contentsline {section}{\numberline {25}Kiểm thử \& Giám sát}{77}{section.25}%
+\contentsline {subsection}{\numberline {25.1}Tổng quan Test Suite}{77}{subsection.25.1}%
+\contentsline {subsection}{\numberline {25.2}1. Unit \& Integration Tests (Cục bộ)}{77}{subsection.25.2}%
+\contentsline {subsubsection}{\numberline {25.2.1}pytest Configuration}{77}{subsubsection.25.2.1}%
+\contentsline {subsubsection}{\numberline {25.2.2}Test Database Fixture}{77}{subsubsection.25.2.2}%
+\contentsline {subsubsection}{\numberline {25.2.3}Sample Unit Tests}{78}{subsubsection.25.2.3}%
+\contentsline {subsubsection}{\numberline {25.2.4}Run Tests}{78}{subsubsection.25.2.4}%
+\contentsline {subsection}{\numberline {25.3}2. RAG Evaluation with RAGAS}{78}{subsection.25.3}%
+\contentsline {subsubsection}{\numberline {25.3.1}Tại sao RAGAS?}{78}{subsubsection.25.3.1}%
+\contentsline {subsubsection}{\numberline {25.3.2}Installation}{78}{subsubsection.25.3.2}%
+\contentsline {subsubsection}{\numberline {25.3.3}Evaluation Script}{78}{subsubsection.25.3.3}%
+\contentsline {subsubsection}{\numberline {25.3.4}Expected Output}{78}{subsubsection.25.3.4}%
+\contentsline {subsubsection}{\numberline {25.3.5}Cải thiện Scores}{78}{subsubsection.25.3.5}%
+\contentsline {subsection}{\numberline {25.4}3. Load Testing with Locust}{79}{subsection.25.4}%
+\contentsline {subsubsection}{\numberline {25.4.1}locustfile.py}{79}{subsubsection.25.4.1}%
+\contentsline {subsubsection}{\numberline {25.4.2}Run Load Test}{79}{subsubsection.25.4.2}%
+\contentsline {subsubsection}{\numberline {25.4.3}Target Metrics}{79}{subsubsection.25.4.3}%
+\contentsline {subsection}{\numberline {25.5}4. Production Monitoring}{79}{subsection.25.5}%
+\contentsline {subsubsection}{\numberline {25.5.1}CloudWatch Dashboards}{79}{subsubsection.25.5.1}%
+\contentsline {subsubsection}{\numberline {25.5.2}CloudWatch Alarms}{79}{subsubsection.25.5.2}%
+\contentsline {subsubsection}{\numberline {25.5.3}Structured Logging}{79}{subsubsection.25.5.3}%
+\contentsline {subsubsection}{\numberline {25.5.4}Log Insights Queries}{79}{subsubsection.25.5.4}%
+\contentsline {subsection}{\numberline {25.6}5. End-to-End Test (Playwright)}{79}{subsection.25.6}%
+\contentsline {subsection}{\numberline {25.7}CI/CD Pipeline (GitHub Actions)}{80}{subsection.25.7}%
+\contentsline {subsubsection}{\numberline {25.7.1}Tối ưu chi phí}{80}{subsubsection.25.7.1}%
+\contentsline {section}{\numberline {26}Tối ưu chi phí}{80}{section.26}%
+\contentsline {subsection}{\numberline {26.1}Phân tích chi phí (Hàng tháng, ap-southeast-2)}{80}{subsection.26.1}%
+\contentsline {subsection}{\numberline {26.2}Chiến lược tối ưu}{80}{subsection.26.2}%
+\contentsline {subsubsection}{\numberline {26.2.1}1. Aurora Serverless v2}{80}{subsubsection.26.2.1}%
+\contentsline {subsubsection}{\numberline {26.2.2}2. Lambda Right-Sizing}{80}{subsubsection.26.2.2}%
+\contentsline {subsubsection}{\numberline {26.2.3}3. Fargate Spot cho Crawler}{81}{subsubsection.26.2.3}%
+\contentsline {subsubsection}{\numberline {26.2.4}4. Bedrock Embedding Optimization}{81}{subsubsection.26.2.4}%
+\contentsline {subsubsection}{\numberline {26.2.5}5. CloudWatch Logs Retention}{81}{subsubsection.26.2.5}%
+\contentsline {subsubsection}{\numberline {26.2.6}6. S3 cho Cold Data (Optional)}{81}{subsubsection.26.2.6}%
+\contentsline {subsubsection}{\numberline {26.2.7}7. RDS Proxy (For High Concurrency)}{81}{subsubsection.26.2.7}%
+\contentsline {subsection}{\numberline {26.3}Cost Monitoring}{81}{subsection.26.3}%
+\contentsline {subsubsection}{\numberline {26.3.1}Budget Alert}{81}{subsubsection.26.3.1}%
+\contentsline {subsubsection}{\numberline {26.3.2}Cost Explorer Queries}{81}{subsubsection.26.3.2}%
+\contentsline {subsection}{\numberline {26.4}Cost Optimization Checklist}{81}{subsection.26.4}%
+\contentsline {subsection}{\numberline {26.5}Production vs Development Costs}{82}{subsection.26.5}%
+\contentsline {subsubsection}{\numberline {26.5.1}Dọn dẹp tài nguyên}{82}{subsubsection.26.5.1}%
+\contentsline {section}{\numberline {27}Dọn dẹp tài nguyên}{82}{section.27}%
+\contentsline {subsection}{\numberline {27.1}! Trước khi bắt đầu}{82}{subsection.27.1}%
+\contentsline {subsection}{\numberline {27.2}Cách 1: Terraform Destroy (Khuyến nghị)}{82}{subsection.27.2}%
+\contentsline {subsection}{\numberline {27.3}Cách 2: Dọn dẹp thủ công (Nếu mất Terraform State)}{82}{subsection.27.3}%
+\contentsline {subsubsection}{\numberline {27.3.1}1. Xóa Lambda Functions}{82}{subsubsection.27.3.1}%
+\contentsline {subsubsection}{\numberline {27.3.2}2. Xóa EventBridge Rules \& Targets}{83}{subsubsection.27.3.2}%
+\contentsline {subsubsection}{\numberline {27.3.3}3. Xóa ECS Resources}{83}{subsubsection.27.3.3}%
+\contentsline {subsubsection}{\numberline {27.3.4}4. Xóa ECR Repository}{83}{subsubsection.27.3.4}%
+\contentsline {subsubsection}{\numberline {27.3.5}5. Xóa RDS Aurora Cluster}{83}{subsubsection.27.3.5}%
+\contentsline {subsubsection}{\numberline {27.3.6}6. Xóa VPC Resources}{83}{subsubsection.27.3.6}%
+\contentsline {subsubsection}{\numberline {27.3.7}7. Xóa IAM Roles \& Policies}{83}{subsubsection.27.3.7}%
+\contentsline {subsubsection}{\numberline {27.3.8}8. Xóa CloudWatch Log Groups}{83}{subsubsection.27.3.8}%
+\contentsline {subsubsection}{\numberline {27.3.9}9. Xóa SQS Queues}{83}{subsubsection.27.3.9}%
+\contentsline {subsubsection}{\numberline {27.3.10}10. Xóa API Gateway}{84}{subsubsection.27.3.10}%
+\contentsline {subsubsection}{\numberline {27.3.11}11. Xóa Secrets Manager Secrets}{84}{subsubsection.27.3.11}%
+\contentsline {subsubsection}{\numberline {27.3.12}12. Xóa SNS Topic (Alarms)}{84}{subsubsection.27.3.12}%
+\contentsline {subsection}{\numberline {27.4}Xác minh dọn dẹp hoàn toàn}{84}{subsection.27.4}%
+\contentsline {subsection}{\numberline {27.5}Dọn dẹp file cục bộ}{84}{subsection.27.5}%
+\contentsline {subsection}{\numberline {27.6}Xác minh chi phí}{84}{subsection.27.6}%
+\contentsline {subsection}{\numberline {27.7}Vấn đề thường gặp}{84}{subsection.27.7}%
+\contentsline {subsection}{\numberline {27.8}Workshop Hoàn Tất!}{84}{subsection.27.8}%
+\contentsline {subsubsection}{\numberline {27.8.1}Next Steps cho Production}{85}{subsubsection.27.8.1}%
+\contentsline {subsection}{\numberline {27.9}Tự đánh giá}{86}{subsection.27.9}%
+\contentsline {subsubsection}{\numberline {27.9.1}Cần cải thiện}{86}{subsubsection.27.9.1}%
+\contentsline {subsection}{\numberline {27.10}Chia sẻ, đóng góp ý kiến}{87}{subsection.27.10}%
+\contentsline {subsubsection}{\numberline {27.10.1}Đánh giá chung}{87}{subsubsection.27.10.1}%
+\contentsline {subsubsection}{\numberline {27.10.2}Một số câu hỏi khác}{87}{subsubsection.27.10.2}%
+\contentsline {subsubsection}{\numberline {27.10.3}Đề xuất \& mong muốn}{87}{subsubsection.27.10.3}%
+\contentsline {section}{\numberline {28}Tổng kết}{88}{section.28}%

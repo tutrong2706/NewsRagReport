@@ -1,0 +1,163 @@
+\hypertarget{week-8-objectives}{%
+\subsubsection{Week 8 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Finalize code, clean up and optimize.
+\item
+  Detailed comparison of architecture v1 vs v2 (cost reduction
+  \textasciitilde30\%).
+\item
+  Write technical documentation \texttt{Pipeline\_v3.md}.
+\item
+  Complete the internship report.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0120}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7149}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0482}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0602}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1647}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Code review and clean up: \qquad  + Remove dead code,
+unnecessary comments \qquad  + Standardize coding style (PEP 8)
+\qquad  + Verify \texttt{.env.example} has all variables & 21/07/2026 &
+21/07/2026 & \\
+Tue & - Detailed v1 vs v2 comparison: \qquad  + Crawler: Lambda (15 min
+timeout) \(\rightarrow\) Fargate (unlimited) \qquad  + Stream: Kafka
+\(\rightarrow\) SQS (\textasciitilde\$0) \qquad  + Embedding: bge-m3
+local \(\rightarrow\) Bedrock API \qquad  + Vector DB: Qdrant Cloud
+\(\rightarrow\) Aurora pgvector \qquad  + Cost:
+\textasciitilde\$35/month \(\rightarrow\) \textasciitilde\$21-26/month
+(reduced \textasciitilde30\%) & 22/07/2026 & 22/07/2026 &
+Pipeline\_v3.md \\
+Wed & - Write technical documentation \texttt{Pipeline\_v3.md}:
+\qquad  + Overall architecture (text diagram) \qquad  + v1 vs v2
+comparison table \qquad  + Component map \qquad  + Technical details for
+each module \qquad  + Operational costs \qquad  + Ragas evaluation
+results & 23/07/2026 & 23/07/2026 & \\
+Thu & - Write team task distribution \& timeline in Pipeline\_v3.md -
+Write future development directions - Write deployment and local
+development guide & 24/07/2026 & 24/07/2026 & \\
+Fri & - Complete internship report (Hugo report) - Review all 8 weeks of
+worklog content - Prepare presentation slides (if needed) - Submit
+report & 25/07/2026 & 25/07/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-8-results}{%
+\subsubsection{Week 8 Results:}}
+
+\begin{itemize}
+\item
+  Finalized production-quality code:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    All modules have error handling, logging
+  \item
+    \texttt{.env.example} with all 50 environment variables
+  \item
+    \texttt{Makefile} with 12 convenient commands (setup, up, down,
+    full, auto, crawl, etl,\ldots)
+  \item
+    \texttt{deploy.sh} for automated deployment
+  \end{itemize}
+\item
+  Architecture v1 vs v2 comparison:
+
+  \begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1301}}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2764}}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2764}}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3171}}@{}}
+  \toprule\noalign{}
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Component
+  \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+  v1 (Thesis)
+  \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+  v2 (Improved)
+  \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+  Reason
+  \end{minipage} \\
+  \midrule\noalign{}
+  \endhead
+  \bottomrule\noalign{}
+  \endlastfoot
+  Crawler & Lambda + CrawlSpider (15 min) & \textbf{Fargate +
+  SitemapSpider} & No timeout, crawls old articles \\
+  Stream & Kafka on Docker & \textbf{SQS Standard (\textasciitilde\$0)}
+  & Overkill for batch pipeline \\
+  Embedding & BAAI/bge-m3 (1024d, local) & \textbf{Bedrock Titan Embed
+  v2} & Serverless, no model loading \\
+  Vector DB & Qdrant Cloud (3rd party) & \textbf{Aurora pgvector} &
+  Leverage RDS, no external dependency \\
+  \textbf{Total Cost} & \textbf{\textasciitilde\$35/month} &
+  \textbf{\textasciitilde\$21-26/month} & \textbf{Reduced
+  \textasciitilde30\%} \\
+  \end{longtable}
+\endgroup
+\item
+  Completed \texttt{Pipeline\_v3.md} documentation (460 lines)
+  including:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Overall architecture with text diagram
+  \item
+    5 technical module details with code samples
+  \item
+    SQL Schema (Star Schema + pgvector)
+  \item
+    Detailed operational costs
+  \item
+    Ragas evaluation results and FlashRAG comparison
+  \item
+    Future development directions
+  \end{itemize}
+\item
+  Completed internship report:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    8 weeks of detailed worklog
+  \item
+    NewsRAG project proposal
+  \item
+    Hands-on workshop
+  \item
+    Self-evaluation and feedback
+  \end{itemize}
+\end{itemize}

@@ -1,0 +1,132 @@
+\hypertarget{week-6-objectives}{%
+\subsubsection{Week 6 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Write Terraform \texttt{main.tf} to provision all AWS infrastructure.
+\item
+  Configure EventBridge Scheduler for automated pipeline execution.
+\item
+  Set up IAM Roles, Security Groups, VPC for ECS + RDS.
+\item
+  Test terraform apply and verify resources on AWS Console.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0120}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7149}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0482}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0602}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1647}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Write Terraform --- VPC \& Networking: \qquad  + VPC
+\texttt{newsrag-vpc} (CIDR 10.0.0.0/16) \qquad  + 2 Public Subnets
+(ap-southeast-2a, 2b) \qquad  + Internet Gateway + Route Table \qquad  +
+Security Groups: \texttt{ecs\_sg} (egress all), \texttt{rds\_sg}
+(ingress 5432 from ECS) & 07/07/2026 & 07/07/2026 & main.tf \\
+Tue & - Write Terraform --- RDS Aurora PostgreSQL: \qquad  + Cluster:
+\texttt{newsrag-postgres}, engine aurora-postgresql 15.4 \qquad  +
+Instance: \texttt{db.t4g.medium} (2 vCPU, 4GB RAM) \qquad  + DB Subnet
+Group for multi-AZ & 08/07/2026 & 08/07/2026 & main.tf \\
+Wed & - Write Terraform --- ECS + ECR: \qquad  + ECR Repository:
+\texttt{newsrag-api} \qquad  + ECS Cluster: \texttt{newsrag-cluster}
+\qquad  + 3 Task Definitions: crawler (256 CPU/512 MB), etl (512/1024),
+vectorize (512/1024) \qquad  + IAM Roles: execution role + task role
+\qquad  + CloudWatch Log Group: \texttt{/ecs/newsrag-project} &
+09/07/2026 & 09/07/2026 & main.tf \\
+Thu & - Write Terraform --- EventBridge Scheduler: \qquad  + Crawler:
+\texttt{cron(0\ 1\ *\ *\ ?\ *)} --- daily at 01:00 UTC \qquad  + ETL:
+\texttt{cron(0\ 2\ *\ *\ ?\ *)} --- 02:00 UTC \qquad  + Vectorize:
+\texttt{cron(0\ 3\ *\ *\ ?\ *)} --- 03:00 UTC \qquad  + Each rule
+targets the corresponding ECS Fargate Task & 10/07/2026 & 10/07/2026 &
+main.tf \\
+Fri & - \texttt{terraform\ init} \& \texttt{terraform\ plan} --- review
+changes - \texttt{terraform\ apply} --- deploy infrastructure - Verify
+resources on AWS Console - Test manual EventBridge trigger & 11/07/2026
+& 11/07/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-6-results}{%
+\subsubsection{Week 6 Results:}}
+
+\begin{itemize}
+\item
+  Completed \texttt{main.tf} (371 lines) managing all infrastructure:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{VPC}: 1 VPC, 2 public subnets, Internet Gateway, Route Table
+  \item
+    \textbf{Security Groups}: ECS (egress all), RDS (ingress 5432 only
+    from ECS SG)
+  \item
+    \textbf{RDS}: Aurora PostgreSQL 15.4, instance
+    \texttt{db.t4g.medium}, skip final snapshot
+  \item
+    \textbf{ECR}: Repository \texttt{newsrag-api}
+  \item
+    \textbf{ECS}: Cluster + 3 Task Definitions (crawler, etl, vectorize)
+  \item
+    \textbf{IAM}: Execution role (ECS Task Execution Policy) + Task role
+  \item
+    \textbf{CloudWatch}: Log group \texttt{/ecs/newsrag-project},
+    retention 7 days
+  \item
+    \textbf{EventBridge}: 3 scheduled rules
+  \end{itemize}
+\item
+  EventBridge Scheduler configuration: \textbar{} Rule Name \textbar{}
+  Cron Expression \textbar{} Time (UTC) \textbar{} Target Task
+  \textbar{}
+  \textbar--------------------------\textbar----------------------\textbar------------\textbar-------------------\textbar{}
+  \textbar{} \texttt{newsrag-crawler-rule} \textbar{}
+  \texttt{cron(0\ 1\ *\ *\ ?\ *)} \textbar{} 01:00 \textbar{}
+  newsrag-crawler \textbar{} \textbar{} \texttt{newsrag-etl-rule}
+  \textbar{} \texttt{cron(0\ 2\ *\ *\ ?\ *)} \textbar{} 02:00 \textbar{}
+  newsrag-etl \textbar{} \textbar{} \texttt{newsrag-vectorize-rule}
+  \textbar{} \texttt{cron(0\ 3\ *\ *\ ?\ *)} \textbar{} 03:00 \textbar{}
+  newsrag-vectorize \textbar{}
+\item
+  Environment variables managed via \texttt{locals.common\_env}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    DB credentials \(\rightarrow\) automatically uses RDS endpoint
+  \item
+    Qdrant, Kafka, Embedding, LLM configs
+  \item
+    Sensitive values (passwords, API keys) \(\rightarrow\) Terraform
+    variables (type=string, sensitive=true)
+  \end{itemize}
+\item
+  Outputs: \texttt{rds\_endpoint}, \texttt{ecr\_repository\_url},
+  \texttt{ecs\_cluster\_name}
+\item
+  \texttt{terraform\ apply} succeeded, all resources created on AWS
+\end{itemize}

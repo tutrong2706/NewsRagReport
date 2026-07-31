@@ -1,0 +1,102 @@
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Mở
+  \href{https://us-east-1.console.aws.amazon.com/vpc/home?region=us-east-1\#Home:}{Amazon
+  VPC console}
+\item
+  Trong thanh điều hướng, chọn \textbf{Endpoints}, click \textbf{Create
+  Endpoint}:
+\end{enumerate}
+
+Bạn sẽ thấy 6 điểm cuối VPC hiện có hỗ trợ AWS Systems Manager (SSM).
+Các điểm cuối này được Mẫu CloudFormation triển khai tự động cho
+workshop này.
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/endpoints.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Trong Create endpoint console:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Đặt tên cho endpoint: s3-gwe
+\item
+  Trong service category, chọn \textbf{aws services}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/create-s3-gwe1.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Trong \textbf{Services}, gõ ``s3'' trong hộp tìm kiếm và chọn dịch vụ
+  với loại \textbf{gateway}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/services.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Đối với VPC, chọn \textbf{VPC Cloud} từ drop-down menu.
+\item
+  Đối với Route tables, chọn bảng định tuyến mà đã liên kết với 2
+  subnets (lưu ý: đây không phải là bảng định tuyến chính cho VPC mà là
+  bảng định tuyến thứ hai do CloudFormation tạo).
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/vpc.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Đối với Policy, để tùy chọn mặc định là Full access để cho phép toàn
+  quyền truy cập vào dịch vụ. Bạn sẽ triển khai VPC endpoint policy
+  trong phần sau để chứng minh việc hạn chế quyền truy cập vào S3 bucket
+  dựa trên các policies.
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/policy.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Không thêm tag vào VPC endpoint.
+\item
+  Click Create endpoint, click x sau khi nhận được thông báo tạo thành
+  công.
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/complete.png}
+\caption{endpoint}
+\end{figure}

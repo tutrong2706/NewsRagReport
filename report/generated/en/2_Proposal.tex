@@ -1,0 +1,312 @@
+\hypertarget{news-rag-pipeline-on-aws}{%
+\section{News RAG Pipeline on AWS}}
+
+\hypertarget{a-serverless-retrieval-augmented-generation-pipeline-for-intelligent-news-qa}{%
+\subsection{A Serverless Retrieval-Augmented Generation Pipeline for
+Intelligent News
+Q\&A}}
+
+\hypertarget{executive-summary}{%
+\subsubsection{1. Executive Summary}}
+
+The News RAG Pipeline is designed to build an intelligent news Q\&A
+system that automatically crawls news articles from Vietnamese news
+sites (VnExpress, Thanh Nien, VietnamNet), processes them through a Data
+Warehouse (Star Schema), generates vector embeddings using Amazon
+Bedrock Titan Embed v2, and enables natural language querying through
+Retrieval-Augmented Generation (RAG) --- entirely serverless on AWS. The
+system serves as a practical demonstration of integrating AWS serverless
+services with LLM APIs (Groq, Gemini) to create an AI-powered
+information retrieval platform.
+
+\hypertarget{problem-statement}{%
+\subsubsection{2. Problem Statement}}
+
+\hypertarget{whats-the-problem}{%
+\paragraph{What's the Problem?}}
+
+Keeping up with news from multiple sources requires manually reading and
+searching through countless articles. There is no centralized system
+that allows users to ask questions about recent news and get
+AI-generated answers with proper citations. Existing solutions like
+ChatGPT lack up-to-date news context without manual prompting.
+
+\hypertarget{the-solution}{%
+\paragraph{The Solution}}
+
+The News RAG Pipeline automates the entire workflow: (1) Scrapy crawlers
+on ECS Fargate collect articles from Vietnamese news sitemaps, (2)
+articles are ingested via SQS into Aurora PostgreSQL, (3) Lambda ETL
+processes raw HTML into a Star Schema and generates vector embeddings
+via Amazon Bedrock Titan Embed v2, (4) a Lambda RAG API accepts natural
+language queries, performs vector similarity search on pgvector (HNSW
+index), and generates answers using Groq (Qwen3-8B, Llama 3.1) or Gemini
+2.0 Flash LLMs --- all orchestrated by EventBridge Scheduler.
+
+\hypertarget{benefits-and-return-on-investment}{%
+\paragraph{Benefits and Return on
+Investment}}
+
+The solution provides a foundational platform for learning modern AWS
+serverless architecture, RAG systems, and MLOps practices. Key benefits
+include: automated news aggregation eliminates manual searching,
+AI-powered Q\&A with source citations saves research time, hands-on
+experience with 10+ AWS services, and cost-effective serverless
+infrastructure. Monthly costs are approximately \$21-26 USD. The
+break-even period is achieved through significant time savings from
+automated information retrieval versus manual news monitoring.
+
+\hypertarget{solution-architecture}{%
+\subsubsection{3. Solution Architecture}}
+
+The platform employs a serverless AWS architecture based on two pipeline
+stages: (1) Data Pipeline --- EventBridge Scheduler triggers ECS Fargate
+crawler daily at 01:00 UTC, pushing articles to SQS; Lambda Consumer
+processes messages and inserts raw articles into Aurora PostgreSQL with
+SHA256 deduplication. (2) ETL + RAG Pipeline --- second EventBridge
+trigger at 02:00 UTC runs Lambda ETL that cleans HTML, chunks text at
+500 tokens, generates 1024-dimensional embeddings via Bedrock Titan
+Embed v2, and stores vectors in Aurora pgvector with HNSW index. The RAG
+API Lambda, fronted by API Gateway, embeds user queries with Bedrock,
+performs similarity search on pgvector, then generates answers using
+Groq/Gemini LLMs. The architecture is detailed below:
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.1-Workshop-overview/architecture.png}
+\caption{News RAG Pipeline Architecture}
+\end{figure}
+
+\hypertarget{aws-services-used}{%
+\subsubsection{AWS Services Used}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Amazon ECS Fargate}: Runs Scrapy SitemapSpider crawler (0.25
+  vCPU, 0.5 GB)
+\item
+  \textbf{Amazon SQS Standard}: Message queue replacing Kafka
+  (\textasciitilde\$0/month)
+\item
+  \textbf{AWS Lambda} (3 functions): Consumer (SQS \(\rightarrow\)
+  Aurora), ETL + Bedrock Embed, RAG API
+\item
+  \textbf{Amazon Aurora Serverless v2}: PostgreSQL 15.4 with pgvector
+  extension
+\item
+  \textbf{Amazon Bedrock}: Titan Embed Text v2 (1024d) for vector
+  embeddings
+\item
+  \textbf{Amazon API Gateway}: REST API frontend for RAG queries
+\item
+  \textbf{Amazon EventBridge Scheduler}: Daily cron triggers (01:00,
+  02:00 UTC)
+\item
+  \textbf{Amazon ECR}: Docker image registry for Fargate tasks
+\item
+  \textbf{AWS IAM}: Task execution and Lambda roles with least-privilege
+  policies
+\item
+  \textbf{Amazon CloudWatch}: Centralized logging and monitoring (7-day
+  retention)
+\end{itemize}
+
+\hypertarget{component-design}{%
+\subsubsection{Component Design}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Crawler (Fargate)}: Scrapy SitemapSpider reads
+  sitemap\_news.xml from 3 news sources, parses articles, pushes to SQS.
+  Runs daily \textasciitilde30 min.
+\item
+  \textbf{Queue (SQS)}: Standard queue with DLQ, 14-day retention, 3
+  retry limit.
+\item
+  \textbf{Consumer (Lambda)}: Triggered by SQS, computes SHA256 URL hash
+  for dedup, inserts raw articles into Aurora.
+\item
+  \textbf{ETL + Embed (Lambda)}: Clean HTML, chunk text (500 tokens, 50
+  overlap), call Bedrock Titan Embed v2, store 1024d vectors in pgvector
+  with HNSW index.
+\item
+  \textbf{RAG API (Lambda + API Gateway)}: Embed user query via Bedrock,
+  cosine similarity search on pgvector, generate answer via Groq/Gemini
+  with source citations.
+\item
+  \textbf{Frontend (Next.js + FastAPI)}: Dashboard with KPI cards,
+  charts (Recharts), AI Chat with model selector, Article Explorer,
+  Pipeline Monitor.
+\end{itemize}
+
+\hypertarget{technical-implementation}{%
+\subsubsection{4. Technical
+Implementation}}
+
+\hypertarget{implementation-phases}{%
+\paragraph{Implementation Phases}}
+
+This project follows 4 phases: - \textbf{Phase 1 - Infrastructure (Weeks
+1-2)}: Terraform configuration for VPC, Aurora pgvector, ECS Cluster,
+ECR, Lambda, EventBridge, IAM, CloudWatch. Build multi-stage Docker
+image for Fargate. - \textbf{Phase 2 - Local Development (Weeks 3-4)}:
+Docker Compose environment with PostgreSQL, Qdrant, Kafka. Develop
+Scrapy SitemapSpider, Kafka Consumer, ETL pipeline with Star Schema,
+SentenceTransformer vectorization. - \textbf{Phase 3 - AWS Production
+(Weeks 5-6)}: Deploy Fargate crawler with EventBridge scheduler, Lambda
+Consumer with SQS trigger, Lambda ETL with Bedrock Titan Embed v2,
+Lambda RAG API with API Gateway, Next.js frontend. - \textbf{Phase 4 -
+Testing \& Polish (Weeks 7-8)}: RAGAS evaluation (Faithfulness,
+Relevancy, Precision, Recall), CloudWatch dashboards and alerts, Locust
+load testing, cost optimization.
+
+\hypertarget{technical-requirements}{%
+\paragraph{Technical Requirements}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Data Pipeline}: Scrapy with SitemapSpider for news crawling,
+  Kafka (local) / SQS (AWS) for message queue, PostgreSQL with pgvector
+  for storage and vector search.
+\item
+  \textbf{ETL Pipeline}: HTML cleaning via regex, text chunking at 500
+  tokens with 50 overlap, embedding generation via SentenceTransformer
+  (local) / Bedrock Titan v2 (AWS).
+\item
+  \textbf{RAG System}: pgvector HNSW similarity search (cosine
+  distance), Groq API (Qwen3-8B, Llama 3.1), Gemini 2.0 Flash fallback,
+  structured prompts with source citation.
+\item
+  \textbf{Infrastructure}: Terraform for all AWS resources, Docker
+  multi-stage builds, Lambda deployment packages, EventBridge cron
+  scheduling.
+\end{itemize}
+
+\hypertarget{timeline-milestones}{%
+\subsubsection{5. Timeline \& Milestones}}
+
+\textbf{Project Timeline} - Pre-Internship (Month 0): Planning and AWS
+fundamentals study. - Internship (Months 1-3): - Month 1: Infrastructure
+setup, local development environment, crawler development. - Month 2:
+ETL pipeline, Star Schema, vectorization, RAG API development. - Month
+3: AWS production deployment, testing (RAGAS), monitoring, cost
+optimization. - Post-Launch: Maintain and extend with additional
+features (semantic chunking, hybrid search, topic alerts).
+
+\hypertarget{budget-estimation}{%
+\subsubsection{6. Budget Estimation}}
+
+You can use \href{https://calculator.aws/\#/}{AWS Pricing Calculator}
+for estimation.
+
+\hypertarget{infrastructure-costs-monthly}{%
+\paragraph{Infrastructure Costs
+(Monthly)}}
+
+\begin{itemize}
+\tightlist
+\item
+  Aurora Serverless v2 (2 ACU): \textasciitilde\$15-20
+\item
+  ECS Fargate Crawler (0.25 vCPU, 0.5 GB, 30 min/day):
+  \textasciitilde\$0.50
+\item
+  Lambda (3 functions): \textasciitilde\$2-3
+\item
+  SQS Standard: \textasciitilde\$0
+\item
+  API Gateway: \textasciitilde\$0.30
+\item
+  Bedrock Titan Embed: \textasciitilde\$0.50
+\item
+  CloudWatch Logs (7-day retention): \textasciitilde\$1-2
+\item
+  \textbf{Total: \textasciitilde\$21-26/month}
+\end{itemize}
+
+\hypertarget{risk-assessment}{%
+\subsubsection{7. Risk Assessment}}
+
+\hypertarget{risk-matrix}{%
+\paragraph{Risk Matrix}}
+
+\begin{itemize}
+\tightlist
+\item
+  Crawler Blocked by Websites: Medium impact, medium probability
+  (mitigate with proper headers, respect robots.txt, DOWNLOAD\_DELAY).
+\item
+  Bedrock Throttling: Medium impact, low probability (mitigate with
+  retry logic, adaptive backoff).
+\item
+  LLM API Outages (Groq/Gemini): High impact, low probability (mitigate
+  with multi-model fallback).
+\item
+  Cost Overruns: Medium impact, low probability (mitigate with budget
+  alerts, serverless right-sizing).
+\end{itemize}
+
+\hypertarget{mitigation-strategies}{%
+\paragraph{Mitigation Strategies}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Crawler}: Respect robots.txt, 1s DOWNLOAD\_DELAY, AutoThrottle
+  enabled.
+\item
+  \textbf{Throttling}: Exponential backoff on Bedrock calls,
+  max\_attempts=3.
+\item
+  \textbf{LLM Fallback}: Fallback chain: Groq Qwen3 \(\rightarrow\)
+  Llama 3.1 \(\rightarrow\) Gemini 2.0 Flash.
+\item
+  \textbf{Cost}: AWS Budget alerts at 80\%, Fargate Spot for crawler,
+  right-size Lambda memory.
+\end{itemize}
+
+\hypertarget{contingency-plans}{%
+\paragraph{Contingency Plans}}
+
+\begin{itemize}
+\tightlist
+\item
+  If specific news sites block crawler: Use alternative news sources or
+  manual data upload.
+\item
+  If Bedrock unavailable in region: Use local SentenceTransformer model
+  as fallback.
+\item
+  If costs exceed budget: Reduce Aurora to 1 ACU, increase Lambda
+  timeout instead of memory.
+\end{itemize}
+
+\hypertarget{expected-outcomes}{%
+\subsubsection{8. Expected Outcomes}}
+
+\hypertarget{technical-improvements}{%
+\paragraph{Technical Improvements:}}
+
+Automated news aggregation replaces manual searching. AI-powered Q\&A
+with source citations saves research time. Scalable serverless
+architecture handles increasing news volume.
+
+\hypertarget{long-term-value}{%
+\paragraph{Long-term Value}}
+
+\begin{itemize}
+\tightlist
+\item
+  Foundational RAG system for future NLP/AI projects.
+\item
+  Reusable pipeline components for other domains (tech blogs, research
+  papers).
+\item
+  Hands-on AWS serverless expertise.
+\item
+  Data foundation (\textasciitilde5000 articles accumulated over
+  internship) for future analysis.
+\end{itemize}

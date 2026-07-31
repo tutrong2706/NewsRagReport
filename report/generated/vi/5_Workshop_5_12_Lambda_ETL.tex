@@ -1,0 +1,195 @@
+\hypertarget{lambda-etl-bedrock-titan-embedding}{%
+\section{Lambda ETL + Bedrock Titan
+Embedding}}
+
+Phần này bao gồm Lambda function chuyển đổi bài viết thô thành Star
+Schema, tạo embeddings dùng Amazon Bedrock Titan Embed v2, và lưu
+vectors vào Aurora pgvector.
+
+\hypertarget{kiux1ebfn-truxfac}{%
+\subsection{Kiến trúc}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{quyux1ebft-ux111ux1ecbnh-thiux1ebft-kux1ebf-chuxednh}{%
+\subsection{Quyết định thiết kế
+chính}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2800}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Aspect
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lựa chọn
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lý do
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Embedding Model} & \texttt{amazon.titan-embed-text-v2:0} & 1024
+dims, AWS native, serverless, consistent với RAG query \\
+\textbf{Chunk Size} & \textasciitilde500 tokens, 50 overlap & Cân bằng
+context vs.~precision \\
+\textbf{Vector Index} & HNSW (m=16, ef\_construction=64) & Fast
+approximate nearest neighbor \\
+\textbf{Batch Size} & 50 articles per invocation & Giữ trong 15-min
+timeout \\
+\textbf{Trigger} & EventBridge cron(0 2 * * ? *) & Hàng ngày sau crawler
+(01:00 UTC) \\
+\end{longtable}
+\endgroup
+
+\hypertarget{lambda-function-code}{%
+\subsection{Lambda Function Code}}
+
+\hypertarget{cux1ea5u-truxfac-file}{%
+\subsubsection{Cấu trúc file}}
+
+\begin{verbatim}
+deploy/
+|--- etl/
+|   |--- lambda_function.py
+|   |--- requirements.txt
+|   `--- bedrock_utils.py
+\end{verbatim}
+
+\hypertarget{bedrock_utils.py}{%
+\subsubsection{bedrock\_utils.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{lambda_function.py}{%
+\subsubsection{lambda\_function.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{requirements.txt}{%
+\subsubsection{requirements.txt}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psycopg2{-}binary==2.9.9}
+\NormalTok{boto3==1.34.0}
+\NormalTok{botocore==1.34.0}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{terraform-deployment}{%
+\subsection{Terraform Deployment}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{testing-the-etl-lambda}{%
+\subsection{Testing the ETL Lambda}}
+
+\hypertarget{invoke-manually}{%
+\subsubsection{1. Invoke Manually}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ lambda invoke }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}function{-}name}\NormalTok{ newsrag{-}etl }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}payload} \StringTok{\textquotesingle{}\{\}\textquotesingle{}} \DataTypeTok{\textbackslash{}}
+\NormalTok{  response.json}
+
+\FunctionTok{cat}\NormalTok{ response.json}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{check-logs}{%
+\subsubsection{2. Check Logs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ logs tail /aws/lambda/newsrag{-}etl }\AttributeTok{{-}{-}follow}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{verify-in-database}{%
+\subsubsection{3. Verify in Database}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{monitoring-optimization}{%
+\subsection{Monitoring \& Optimization}}
+
+\hypertarget{cloudwatch-metrics}{%
+\subsubsection{CloudWatch Metrics}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Metric & Target & Alarm If \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Duration (p95) & \textless{} 600s & \textgreater{} 800s \\
+Errors & 0 & \textgreater{} 0 \\
+Invocations & 1/day & = 0 for 2 days \\
+Bedrock Invocations & \textasciitilde1500/day & Unexpected spike \\
+\end{longtable}
+\endgroup
+
+\hypertarget{cost-optimization}{%
+\subsubsection{Cost Optimization}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Bedrock Titan Embed v2}: \textasciitilde\$0.0001 per 1K tokens
+\item
+  50 articles × 10 chunks × 500 tokens = 250K tokens/day =
+  \textasciitilde\$0.025/day = \textasciitilde\$0.75/month
+\item
+  Lambda: 15 min × 1 GB × 1/day = negligible
+\item
+  \textbf{Total ETL cost}: \textasciitilde\$1-2/month
+\end{itemize}
+
+\hypertarget{performance-tips}{%
+\subsubsection{Performance Tips}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Connection pooling}: Use RDS Proxy for high-frequency
+  invocations
+\item
+  \textbf{Batch embeddings}: Process chunks in batches (though Bedrock
+  is sequential)
+\item
+  \textbf{Retry logic}: Exponential backoff for Bedrock throttling
+\item
+  \textbf{Monitor HNSW index}: \texttt{ef\_search} parameter at query
+  time
+\end{enumerate}
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After ETL + Embedding works: 1. \textbf{RAG API} - Lambda + API Gateway
+for querying: \href{5.13-RAG-API/}{RAG API} 2. \textbf{Frontend} -
+Next.js Dashboard: \href{5.14-Frontend/}{Frontend Integration}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.13-RAG-API/}{RAG API (Lambda + API Gateway)}

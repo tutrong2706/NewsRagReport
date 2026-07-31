@@ -1,0 +1,206 @@
+\hypertarget{lambda-consumer-sqs-trigger-rightarrow-aurora-postgresql}{%
+\section{\texorpdfstring{Lambda Consumer: SQS Trigger \(\rightarrow\)
+Aurora
+PostgreSQL}{Lambda Consumer: SQS Trigger \textbackslash rightarrow Aurora PostgreSQL}}}
+
+This section covers the Lambda function that consumes messages from SQS
+and inserts raw articles into Aurora PostgreSQL with SHA256
+deduplication.
+
+\hypertarget{architecture}{%
+\subsection{Architecture}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{lambda-function-code}{%
+\subsection{Lambda Function Code}}
+
+\hypertarget{file-structure}{%
+\subsubsection{File Structure}}
+
+\begin{verbatim}
+deploy/
+|--- consumer/
+|   |--- lambda_function.py
+|   `--- requirements.txt
+\end{verbatim}
+
+\hypertarget{lambda_function.py}{%
+\subsubsection{lambda\_function.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{requirements.txt}{%
+\subsubsection{requirements.txt}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psycopg2{-}binary==2.9.9}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{terraform-deployment}{%
+\subsection{Terraform Deployment}}
+
+\hypertarget{lambda-function}{%
+\subsubsection{Lambda Function}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sqs-trigger-event-source-mapping}{%
+\subsubsection{SQS Trigger (Event Source
+Mapping)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_lambda\_event\_source\_mapping" "consumer\_sqs" \{}
+\NormalTok{  event\_source\_arn = aws\_sqs\_queue.news\_raw.arn}
+\NormalTok{  function\_name    = aws\_lambda\_function.consumer.arn}
+\NormalTok{  batch\_size       = 10}
+\NormalTok{  maximum\_batching\_window\_in\_seconds = 30}
+\NormalTok{  enabled          = true}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{iam-permissions}{%
+\subsubsection{IAM Permissions}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sqs-queue-configuration}{%
+\subsection{SQS Queue Configuration}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{building-deployment-package}{%
+\subsection{Building Deployment
+Package}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create deployment package}
+\BuiltInTok{cd}\NormalTok{ deploy/consumer}
+\FunctionTok{zip} \AttributeTok{{-}r}\NormalTok{ ../consumer.zip lambda\_function.py requirements.txt}
+\CommentTok{\# If using layers for dependencies:}
+\CommentTok{\# pip install {-}r requirements.txt {-}t .}
+\CommentTok{\# zip {-}r ../consumer.zip .}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{testing-the-consumer}{%
+\subsection{Testing the Consumer}}
+
+\hypertarget{send-test-message-to-sqs}{%
+\subsubsection{1. Send Test Message to
+SQS}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{check-lambda-logs}{%
+\subsubsection{2. Check Lambda Logs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ logs tail /aws/lambda/newsrag{-}consumer }\AttributeTok{{-}{-}follow}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{verify-in-database}{%
+\subsubsection{3. Verify in Database}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\VariableTok{ENDPOINT}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ rds\_endpoint}\VariableTok{)}
+\ExtensionTok{psql} \StringTok{"postgresql://postgres:password@}\VariableTok{$\{ENDPOINT\}}\StringTok{:5432/newsrag"} \AttributeTok{{-}c} \StringTok{"}
+\StringTok{SELECT source\_name, title, embedded, created\_at}
+\StringTok{FROM article\_metadata}
+\StringTok{ORDER BY created\_at DESC}
+\StringTok{LIMIT 10;}
+\StringTok{"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{monitoring}{%
+\subsection{Monitoring}}
+
+\hypertarget{cloudwatch-metrics-to-watch}{%
+\subsubsection{CloudWatch Metrics to
+Watch}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Metric & Namespace & Target \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Invocations} & AWS/Lambda & \textgreater{} 0 daily \\
+\texttt{Errors} & AWS/Lambda & = 0 \\
+\texttt{Duration} (p95) & AWS/Lambda & \textless{} 300s \\
+\texttt{Throttles} & AWS/Lambda & = 0 \\
+\texttt{ApproximateNumberOfMessagesVisible} & AWS/SQS & \textless{}
+1000 \\
+\texttt{ApproximateAgeOfOldestMessage} & AWS/SQS & \textless{} 300s \\
+\end{longtable}
+\endgroup
+
+\hypertarget{alarms}{%
+\subsubsection{Alarms}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{troubleshooting}{%
+\subsection{Troubleshooting}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Connection\ timeout} & Check Lambda SG allows outbound, RDS SG
+allows inbound from Lambda SG on 5432 \\
+\texttt{Access\ denied\ SecretsManager} & Add
+\texttt{secretsmanager:GetSecretValue} to Lambda role \\
+\texttt{Duplicate\ inserts} & Verify \texttt{url\_hash} UNIQUE
+constraint and \texttt{ON\ CONFLICT\ DO\ NOTHING} \\
+\texttt{Lambda\ timeout} & Increase timeout to 900s; reduce batch size;
+optimize DB inserts \\
+\texttt{SQS\ messages\ not\ processed} & Check Event Source Mapping is
+enabled; check Lambda errors \\
+\end{longtable}
+\endgroup
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After consumer works: 1. \textbf{Lambda ETL + Bedrock Embedding} ---
+\href{5.12-Lambda-ETL/}{Lambda ETL} 2. \textbf{RAG API} ---
+\href{5.13-RAG-API/}{RAG API}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.12-Lambda-ETL/}{Lambda ETL + Bedrock Embedding}

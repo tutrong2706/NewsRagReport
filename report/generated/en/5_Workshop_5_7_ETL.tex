@@ -1,0 +1,156 @@
+\hypertarget{etl-star-schema-transformation}{%
+\section{ETL \& Star Schema
+Transformation}}
+
+This section covers the ETL process that transforms raw articles from
+\texttt{article\_metadata} into a Star Schema optimized for analytics
+and RAG retrieval.
+
+\hypertarget{star-schema-design}{%
+\subsection{Star Schema Design}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{dimension-tables}{%
+\subsection{Dimension Tables}}
+
+\hypertarget{dim_source-news-sources}{%
+\subsubsection{dim\_source --- News
+Sources}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ dim\_source (}
+\NormalTok{    source\_id       SERIAL }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{,}
+\NormalTok{    source\_name     }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{100}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{UNIQUE}\NormalTok{,}
+\NormalTok{    source\_domain   }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{100}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{UNIQUE}\NormalTok{,}
+\NormalTok{    source\_url      }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{500}\NormalTok{),}
+\NormalTok{    language        }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{10}\NormalTok{) }\KeywordTok{DEFAULT} \StringTok{\textquotesingle{}vi\textquotesingle{}}\NormalTok{,}
+\NormalTok{    country         }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{10}\NormalTok{) }\KeywordTok{DEFAULT} \StringTok{\textquotesingle{}VN\textquotesingle{}}\NormalTok{,}
+\NormalTok{    is\_active       }\DataTypeTok{BOOLEAN} \KeywordTok{DEFAULT} \KeywordTok{TRUE}\NormalTok{,}
+\NormalTok{    created\_at      TIMESTAMPTZ }\KeywordTok{DEFAULT}\NormalTok{ NOW()}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{dim_time-time-dimension}{%
+\subsubsection{dim\_time --- Time
+Dimension}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{dim_content-article-content}{%
+\subsubsection{dim\_content --- Article
+Content}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ dim\_content (}
+\NormalTok{    content\_id      BIGSERIAL }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{,}
+\NormalTok{    title           TEXT }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{    content\_hash    }\DataTypeTok{CHAR}\NormalTok{(}\DecValTok{64}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{UNIQUE}\NormalTok{,  }\CommentTok{{-}{-} SHA256 for dedup}
+\NormalTok{    word\_count      }\DataTypeTok{INTEGER}\NormalTok{,}
+\NormalTok{    char\_count      }\DataTypeTok{INTEGER}\NormalTok{,}
+\NormalTok{    language        }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{10}\NormalTok{) }\KeywordTok{DEFAULT} \StringTok{\textquotesingle{}vi\textquotesingle{}}\NormalTok{,}
+\NormalTok{    created\_at      TIMESTAMPTZ }\KeywordTok{DEFAULT}\NormalTok{ NOW()}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{dim_author-authors}{%
+\subsubsection{dim\_author --- Authors}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ dim\_author (}
+\NormalTok{    author\_id       SERIAL }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{,}
+\NormalTok{    author\_name     }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{200}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{    author\_slug     }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{200}\NormalTok{),              }\CommentTok{{-}{-} URL{-}friendly}
+\NormalTok{    email           }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{200}\NormalTok{),}
+\NormalTok{    affiliation     }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{200}\NormalTok{),}
+\NormalTok{    created\_at      TIMESTAMPTZ }\KeywordTok{DEFAULT}\NormalTok{ NOW(),}
+    \KeywordTok{UNIQUE}\NormalTok{ (author\_name, affiliation)}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fact-tables}{%
+\subsection{Fact Tables}}
+
+\hypertarget{fact_articles-core-fact-table}{%
+\subsubsection{fact\_articles --- Core Fact
+Table}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{fact_article_authors-many-to-many-bridge}{%
+\subsubsection{fact\_article\_authors --- Many-to-Many
+Bridge}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ fact\_article\_authors (}
+\NormalTok{    article\_id      BIGINT }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{REFERENCES}\NormalTok{ fact\_articles(article\_id),}
+\NormalTok{    author\_id       }\DataTypeTok{INTEGER} \KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{REFERENCES}\NormalTok{ dim\_author(author\_id),}
+\NormalTok{    author\_order    }\DataTypeTok{SMALLINT} \KeywordTok{DEFAULT} \DecValTok{1}\NormalTok{,           }\CommentTok{{-}{-} 1=primary, 2=secondary...}
+    \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{ (article\_id, author\_id)}
+\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fact_chunks-rag-vector-chunks-with-pgvector}{%
+\subsubsection{fact\_chunks --- RAG Vector Chunks (with
+pgvector)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{etl-process-etletl_warehouse.py}{%
+\subsection{ETL Process
+(etl/etl\_warehouse.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{running-etl-locally}{%
+\subsection{Running ETL Locally}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# After crawler + consumer have populated article\_metadata}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ etl}
+
+\CommentTok{\# Or with limit}
+\ExtensionTok{python} \AttributeTok{{-}c} \StringTok{"from etl.etl\_warehouse import run\_etl\_warehouse; run\_etl\_warehouse(limit=100)"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{verifying-star-schema}{%
+\subsection{Verifying Star Schema}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{aws-lambda-version-production}{%
+\subsection{AWS Lambda Version
+(Production)}}
+
+For AWS, the ETL runs as a \textbf{Lambda function} triggered by
+EventBridge (02:00 UTC), using \textbf{Bedrock Titan Embed v2} for
+embeddings directly in the same function. See
+\href{5.12-Lambda-ETL/}{Lambda ETL + Embedding}.
+
+Key differences: - \textbf{Embedding}: Calls
+\texttt{bedrock-runtime.invoke\_model} instead of local
+SentenceTransformer - \textbf{Vector DB}: Writes to Aurora
+\texttt{fact\_chunks.embedding} (pgvector) instead of Qdrant -
+\textbf{Secrets}: Reads DB credentials from AWS Secrets Manager -
+\textbf{Timeout}: 15 minutes (processes \textasciitilde50 articles per
+invocation)
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.8-Vectorize/}{Vectorization}

@@ -1,0 +1,139 @@
+\hypertarget{week-5-objectives}{%
+\subsubsection{Week 5 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Configure Amazon SQS Standard Queue to replace Kafka (cost reduction,
+  simplification).
+\item
+  Set up Dead Letter Queue (DLQ) for error handling.
+\item
+  Integrate the Crawler \(\rightarrow\) SQS \(\rightarrow\) Lambda
+  Consumer \(\rightarrow\) PostgreSQL flow.
+\item
+  End-to-end testing of crawl + consumer flow.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0120}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7149}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0482}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0602}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1647}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Create SQS Standard Queue: \texttt{newsrag-articles} - Configure
+message retention: 4 days - Create Dead Letter Queue:
+\texttt{newsrag-articles-dlq} - Configure redrive policy:
+maxReceiveCount=3 & 30/06/2026 & 30/06/2026 &
+\url{https://docs.aws.amazon.com/sqs/} \\
+Tue & - Convert \texttt{KafkaPipeline} to \texttt{SQSPipeline} (v2):
+\qquad  + Use
+\texttt{boto3.client(\textquotesingle{}sqs\textquotesingle{})} \qquad  +
+\texttt{send\_message()} instead of Kafka produce - Compare SQS vs Kafka
+for this use case & 01/07/2026 & 01/07/2026 & \\
+Wed & - Study Lambda Consumer (team member B's module): \qquad  +
+Trigger from SQS event \qquad  + SHA256 hash URL for deduplication
+\qquad  + Insert into \texttt{article\_metadata} table \qquad  + ON
+CONFLICT DO NOTHING & 02/07/2026 & 02/07/2026 & consumer.py \\
+Thu & - End-to-end integration: Crawler \(\rightarrow\) SQS
+\(\rightarrow\) Consumer \(\rightarrow\) PostgreSQL - Test flow: crawl
+100 articles \(\rightarrow\) check SQS messages \(\rightarrow\) verify
+database - Debug: message format, encoding, date parsing & 03/07/2026 &
+03/07/2026 & \\
+Fri & - Study ETL pipeline (team member C's module): \qquad  +
+\texttt{clean\_text()}: remove HTML tags, junk patterns \qquad  +
+\texttt{RecursiveCharacterTextSplitter}: chunk 800 chars, overlap 150
+\qquad  + Star Schema: \texttt{dim\_source}, \texttt{dim\_time},
+\texttt{dim\_author}, \texttt{dim\_content}, \texttt{fact\_articles},
+\texttt{fact\_chunks} & 04/07/2026 & 04/07/2026 & etl\_warehouse.py,
+warehouse.sql \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-5-results}{%
+\subsubsection{Week 5 Results:}}
+
+\begin{itemize}
+\item
+  Successfully configured SQS:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{SQS Standard Queue}: \texttt{newsrag-articles} --- cost
+    \textasciitilde\$0/month (vs Kafka requiring management overhead)
+  \item
+    \textbf{Dead Letter Queue}: \texttt{newsrag-articles-dlq} ---
+    catches failed messages after 3 retries
+  \item
+    Message retention: 4 days, visibility timeout: 30 seconds
+  \end{itemize}
+\item
+  Clear understanding of Kafka \(\rightarrow\) SQS migration rationale:
+  \textbar{} Criteria \textbar{} Kafka (v1) \textbar{} SQS (v2)
+  \textbar{}
+  \textbar-----------------\textbar----------------------\textbar------------------------\textbar{}
+  \textbar{} Cost \textbar{} Container overhead \textbar{}
+  \textasciitilde\$0/month \textbar{} \textbar{} Management \textbar{}
+  Maintain broker \textbar{} Fully managed \textbar{} \textbar{} Use
+  case \textbar{} Real-time streaming \textbar{} Daily batch crawl
+  \textbar{} \textbar{} Conclusion \textbar{} Overkill \textbar{}
+  \textbf{Best fit} \textbar{}
+\item
+  Successfully integrated end-to-end flow:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Crawler crawls articles \(\rightarrow\) serializes JSON
+    \(\rightarrow\) pushes to SQS
+  \item
+    Lambda Consumer triggered by SQS \(\rightarrow\) parses JSON
+    \(\rightarrow\) SHA256 hashes URL \(\rightarrow\) INSERTs
+    article\_metadata
+  \item
+    Deduplication works: \texttt{ON\ CONFLICT\ (url\_hash)\ DO\ NOTHING}
+  \item
+    Test with 100 articles: 95 successfully inserted, 5 duplicates
+    skipped
+  \end{itemize}
+\item
+  Understood Star Schema warehouse design:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Dimension tables}: \texttt{dim\_source} (news source),
+    \texttt{dim\_time} (date), \texttt{dim\_author} (author),
+    \texttt{dim\_content} (raw content)
+  \item
+    \textbf{Fact tables}: \texttt{fact\_articles} (articles),
+    \texttt{fact\_chunks} (chunks after splitting),
+    \texttt{fact\_article\_authors} (M:N)
+  \item
+    Indexes: HNSW for vector search, B-tree for url\_hash, domain, date
+  \end{itemize}
+\end{itemize}

@@ -1,0 +1,149 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-3}{%
+\subsubsection{Mục tiêu tuần 3:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Phát triển hoàn chỉnh \texttt{NewsRAGSpider} --- spider chính để crawl
+  tin tức.
+\item
+  Xử lý logic extract thông tin bài viết: title, content, author,
+  publish\_date.
+\item
+  Viết \texttt{KafkaPipeline} để đẩy dữ liệu crawl được vào Kafka topic.
+\item
+  Test crawl thử trên local.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1621}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Viết class \texttt{NewsRAGSpider} kế thừa \texttt{scrapy.Spider} -
+Implement \texttt{parse()} method: lọc URL nội bộ, phân loại link bài
+viết (.html, .htm) và link danh mục - Cấu hình
+\texttt{custom\_settings}: CONCURRENT\_REQUESTS, DOWNLOAD\_DELAY,
+DEPTH\_LIMIT & 16/06/2026 & 16/06/2026 & spider.py \\
+3 & - Implement \texttt{parse\_article()}: sử dụng \texttt{newspaper3k}
+để parse HTML - Lọc bài viết có nội dung \textless{} 100 ký tự - Extract
+author từ \texttt{article.authors} & 17/06/2026 & 17/06/2026 & \\
+4 & - Xử lý author extraction nâng cao: \qquad  + Fallback qua nhiều CSS
+selectors (\texttt{.author-name}, \texttt{.tac-gia},
+\texttt{a{[}rel="author"{]}},\ldots) \qquad  + Validate author: loại bỏ
+fake authors (URLs, ngày tháng, tên báo) \qquad  + Hàm
+\texttt{is\_valid\_author()}: kiểm tra độ dài, ký tự đặc biệt, bad words
+& 18/06/2026 & 18/06/2026 & \\
+5 & - Xử lý publish\_date parsing: \qquad  + Parse ISO format:
+\texttt{2026-07-01T14:30} \qquad  + Parse VN format:
+\texttt{17/06/2026\ 14:30} \qquad  + Fallback qua nhiều CSS selectors +
+\texttt{article.publish\_date} - Viết \texttt{KafkaPipeline}: serialize
+item thành JSON \(\rightarrow\) push vào Kafka topic \texttt{news\_raw}
+& 19/06/2026 & 19/06/2026 & pipelines.py \\
+6 & - Test crawl local: \texttt{scrapy\ crawl\ news\_rag\_spider} - Kiểm
+tra output: đúng format JSON, author hợp lệ, date đúng - Debug và sửa
+lỗi CSS selectors cho từng báo & 20/06/2026 & 20/06/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-3}{%
+\subsubsection{Kết quả đạt được tuần
+3:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Hoàn thành \texttt{NewsRAGSpider} (\texttt{crawler/spiders/spider.py})
+  với các tính năng:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{parse()}: Duyệt tất cả link trên trang, lọc URL cùng domain,
+    phân loại bài viết và trang danh mục
+  \item
+    \textbf{parse\_article()}: Sử dụng \texttt{newspaper3k} kết hợp CSS
+    Selectors
+  \item
+    \textbf{Custom settings}: CONCURRENT\_REQUESTS=16 (Windows) / 32
+    (Linux), DOWNLOAD\_DELAY=1.0/0.5, DEPTH\_LIMIT=5
+  \end{itemize}
+\item
+  Xây dựng hệ thống extract author phức tạp với multi-level fallback:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    Lấy từ \texttt{newspaper3k} \(\rightarrow\) validate
+  \item
+    Fallback qua 12+ CSS selectors: \texttt{.author-name},
+    \texttt{.tac-gia}, \texttt{a{[}href*="tac-gia"{]}},\ldots{}
+  \item
+    Scan bottom paragraphs của bài viết tìm pattern ``Theo: \ldots{}'' /
+    ``Nguon: \ldots{}''
+  \item
+    Cuối cùng fallback về \texttt{meta{[}name="author"{]}}
+  \end{enumerate}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Hàm \texttt{is\_valid\_author()} kiểm tra: độ dài 2-100 ký tự, không
+    chứa URL/email, không chứa ngày tháng, không phải bad words (tên
+    báo, nhãn chung chung)
+  \end{itemize}
+\item
+  Xử lý date parsing đa dạng:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ISO format: \texttt{2026-07-01T14:30:00}
+  \item
+    VN format: \texttt{17/06/2026\ 14:30} hoặc \texttt{01-07-2026}
+  \item
+    Fallback qua 10 CSS selectors + \texttt{article.publish\_date}
+  \item
+    Output chuẩn: \texttt{YYYY-MM-DD\ HH:MM:SS}
+  \end{itemize}
+\item
+  Hoàn thành \texttt{KafkaPipeline} (\texttt{crawler/pipelines.py}):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Serialize item thành JSON (ensure\_ascii=False cho tiếng Việt)
+  \item
+    Push vào Kafka topic \texttt{news\_raw}
+  \item
+    Producer flush sau mỗi item
+  \end{itemize}
+\item
+  Test crawl thành công trên local, output format hợp lệ
+\end{itemize}

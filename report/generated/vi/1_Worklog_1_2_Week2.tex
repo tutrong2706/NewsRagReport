@@ -1,0 +1,140 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-2}{%
+\subsubsection{Mục tiêu tuần 2:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Nghiên cứu sâu về Scrapy framework --- công cụ chính để crawl tin tức.
+\item
+  Tìm hiểu sự khác biệt giữa CrawlSpider (v1) và SitemapSpider (v2).
+\item
+  Nắm vững Docker, Dockerfile, docker-compose để chuẩn bị containerize.
+\item
+  Phân tích cấu trúc sitemap XML của 3 báo điện tử Việt Nam.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0121}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7126}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0486}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0607}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1660}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Tìm hiểu Scrapy framework: \qquad  + Cấu trúc project Scrapy
+\qquad  + Spider, Pipeline, Settings \qquad  + Middleware và Item
+Pipeline & 09/06/2026 & 09/06/2026 & \url{https://docs.scrapy.org/} \\
+3 & - So sánh CrawlSpider vs SitemapSpider: \qquad  + CrawlSpider: dựa
+vào DEPTH\_LIMIT, bỏ sót bài cũ \qquad  + SitemapSpider: đọc toàn bộ URL
+từ sitemap, không phụ thuộc navigation & 10/06/2026 & 10/06/2026 &
+\url{https://docs.scrapy.org/} \\
+4 & - Phân tích cấu trúc sitemap XML của 3 báo: \qquad  + VnExpress:
+\texttt{sitemap\_news.xml} \qquad  + Thanh Niên: \texttt{sitemap.xml}
+\qquad  + VietnamNet: \texttt{sitemap\_news.xml} & 11/06/2026 &
+11/06/2026 & \\
+5 & - Tìm hiểu Docker cơ bản: \qquad  + Dockerfile: FROM, WORKDIR, COPY,
+RUN, CMD \qquad  + docker-compose.yml: services, volumes, environment
+\qquad  + Multi-stage build & 12/06/2026 & 12/06/2026 &
+\url{https://docs.docker.com/} \\
+6 & - Tìm hiểu thư viện \texttt{newspaper3k} để extract article content
+- Nghiên cứu Kafka Producer/Consumer pattern - Tìm hiểu
+\texttt{confluent\_kafka} Python client & 13/06/2026 & 13/06/2026 &
+\url{https://newspaper.readthedocs.io/} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-2}{%
+\subsubsection{Kết quả đạt được tuần
+2:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Nắm vững cấu trúc project Scrapy:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{spiders/}: chứa các spider class
+  \item
+    \texttt{pipelines.py}: xử lý item sau khi spider yield
+  \item
+    \texttt{settings.py}: cấu hình CONCURRENT\_REQUESTS,
+    DOWNLOAD\_DELAY, DEPTH\_LIMIT,\ldots{}
+  \end{itemize}
+\item
+  Hiểu rõ sự khác biệt giữa 2 loại Spider:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{CrawlSpider (v1)}: Dùng \texttt{DEPTH\_LIMIT=5}, chỉ crawl
+    được trang trong phạm vi liên kết \(\rightarrow\) bỏ sót bài cũ
+    không được link từ trang chủ
+  \item
+    \textbf{SitemapSpider (v2)}: Đọc trực tiếp từ file sitemap XML
+    \(\rightarrow\) crawl toàn bộ bài viết bao gồm cả bài cũ, không bị
+    timeout 15 phút như Lambda
+  \end{itemize}
+\item
+  Đã phân tích sitemap XML của 3 báo:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    VnExpress: \texttt{https://vnexpress.net/sitemap\_news.xml}
+  \item
+    Thanh Niên: \texttt{https://thanhnien.vn/sitemap.xml}
+  \item
+    VietnamNet: \texttt{https://vietnamnet.vn/sitemap\_news.xml}
+  \end{itemize}
+\item
+  Nắm được kiến thức Docker cần thiết:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Cách viết Dockerfile tối ưu (base image \texttt{python:3.10-slim},
+    multi-layer caching)
+  \item
+    Docker Compose để chạy PostgreSQL + Kafka local
+  \item
+    Hiểu biến môi trường \texttt{.env} và cách inject vào container
+  \end{itemize}
+\item
+  Tìm hiểu \texttt{newspaper3k}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Thư viện Python hỗ trợ extract title, content, author, publish\_date
+    từ HTML
+  \item
+    Dùng \texttt{article.set\_html()} + \texttt{article.parse()} thay vì
+    download trực tiếp
+  \item
+    Phối hợp với CSS Selectors của Scrapy để tăng độ chính xác
+  \end{itemize}
+\end{itemize}

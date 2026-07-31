@@ -1,0 +1,109 @@
+\hypertarget{nhux1eadp-dux1eef-liux1ec7u-kafka-consumer-rightarrow-postgresql}{%
+\section{\texorpdfstring{Nhập dữ liệu: Kafka Consumer \(\rightarrow\)
+PostgreSQL}{Nhập dữ liệu: Kafka Consumer \textbackslash rightarrow PostgreSQL}}}
+
+Phần này bao gồm consumer service đọc bài viết thô từ Kafka và lưu vào
+PostgreSQL.
+
+\hypertarget{kiux1ebfn-truxfac}{%
+\subsection{Kiến trúc}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{database-schema-raw-table}{%
+\subsection{Database Schema (Raw
+Table)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{consumer-implementation-consumerconsumer.py}{%
+\subsection{Consumer Implementation
+(consumer/consumer.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{chux1ea1y-cux1ee5c-bux1ed9}{%
+\subsection{Chạy cục bộ}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Terminal 1: Khởi động services}
+\ExtensionTok{docker}\NormalTok{ compose up }\AttributeTok{{-}d}
+
+\CommentTok{\# Terminal 2: Chạy consumer (chạy liên tục)}
+\ExtensionTok{python}\NormalTok{ consumer/consumer.py}
+
+\CommentTok{\# Terminal 3: Chạy crawler để produce messages}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{xuxe1c-minh-dux1eef-liux1ec7u-trong-postgresql}{%
+\subsection{Xác minh dữ liệu trong
+PostgreSQL}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{aws-lambda-version-production}{%
+\subsection{AWS Lambda Version
+(Production)}}
+
+Cho AWS deployment, consumer chạy as Lambda function triggered by SQS
+(không phải Kafka trực tiếp). Xem \href{5.11-Lambda-Consumer/}{Lambda
+Consumer} cho implementation SQS \(\rightarrow\) Lambda \(\rightarrow\)
+Aurora.
+
+Khác biệt chính: - \textbf{Trigger}: SQS queue (không phải Kafka) -
+\textbf{Runtime}: Python 3.11 Lambda (15 min timeout) -
+\textbf{Database}: Aurora PostgreSQL (không phải local) -
+\textbf{Secrets}: Lấy từ AWS Secrets Manager - \textbf{Batching}: Xử lý
+up to 10 messages per invocation
+
+\hypertarget{xux1eed-luxfd-sux1ef1-cux1ed1}{%
+\subsection{Xử lý sự cố}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4211}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5789}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Vấn đề
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Giải pháp
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Connection\ refused} to Kafka & Đảm bảo Kafka healthy:
+\texttt{docker\ compose\ ps\ kafka} \\
+\texttt{Duplicate\ key\ value\ violates\ unique\ constraint} & Behavior
+mong đợi --- \texttt{ON\ CONFLICT\ DO\ NOTHING} xử lý nó \\
+\texttt{SSL\ SYSCALL\ error:\ EOF\ detected} & DB connection dropped;
+consumer tự reconnect ở poll tiếp theo \\
+Consumer lag tăng & Tăng \texttt{max\_poll\_records}, thêm consumer
+instances (cùng group\_id) \\
+\texttt{Message\ size\ too\ large} & Tăng \texttt{message.max.bytes}
+trong Kafka, hoặc truncate \texttt{raw\_html} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+Sau khi consumer hoạt động cục bộ: 1. \textbf{Chạy ETL} để transform raw
+data \(\rightarrow\) Star Schema: \href{5.7-ETL/}{ETL \& Star Schema} 2.
+\textbf{Deploy lên AWS} as Lambda + SQS:
+\href{5.11-Lambda-Consumer/}{Lambda Consumer}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.7-ETL/}{ETL \& Star Schema}

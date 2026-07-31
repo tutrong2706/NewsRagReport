@@ -1,0 +1,143 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-7}{%
+\subsubsection{Mục tiêu tuần 7:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Integration test toàn bộ pipeline: Crawl \(\rightarrow\) ETL
+  \(\rightarrow\) Vectorize \(\rightarrow\) RAG API.
+\item
+  Debug và xử lý edge cases trong quá trình crawl (author, date,
+  encoding).
+\item
+  Tìm hiểu hệ thống đánh giá Ragas và so sánh NewsRAG với FlashRAG.
+\item
+  Tối ưu hiệu suất crawl và xử lý lỗi.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1621}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Integration test: chạy full pipeline
+\texttt{python\ main.py\ -\/-mode\ full} - Kiểm tra luồng: Spider
+\(\rightarrow\) Kafka \(\rightarrow\) Consumer \(\rightarrow\)
+PostgreSQL \(\rightarrow\) ETL \(\rightarrow\) Vectorize - Monitor logs
+từ CloudWatch & 14/07/2026 & 14/07/2026 & \\
+3 & - Debug edge cases trong spider: \qquad  + Author chứa URL, ngày
+tháng, ký tự đặc biệt \qquad  + Bài viết không có title hoặc content
+\textless{} 100 chars \qquad  + Date format không chuẩn từ các báo khác
+nhau \qquad  + Encoding issues với tiếng Việt (UTF-8) & 15/07/2026 &
+15/07/2026 & \\
+4 & - Cải thiện author validation trong spider: \qquad  + Thêm
+\texttt{fake\_authors} list (vietnamnet news, ban bien tap,\ldots)
+\qquad  + Kiểm tra \texttt{is\_valid\_author()}: loại bỏ tên chứa
+bad\_words (thứ hai, ngày, tháng,\ldots) \qquad  + Thêm bottom paragraph
+scanning cho pattern ``Theo: \ldots{}'' & 16/07/2026 & 16/07/2026 & \\
+5 & - Tìm hiểu Ragas evaluation framework: \qquad  + Faithfulness: mức
+trung thực so với ngữ cảnh \qquad  + Answer Relevancy: liên quan với câu
+hỏi \qquad  + Context Precision: xếp hạng tài liệu \qquad  + Context
+Recall: lấy đủ tài liệu - So sánh kết quả NewsRAG vs FlashRAG &
+17/07/2026 & 17/07/2026 & Pipeline\_v3.md \\
+6 & - Tối ưu Crawler: \qquad  + Điều chỉnh CONCURRENT\_REQUESTS,
+DOWNLOAD\_DELAY theo OS \qquad  + Cải thiện xử lý retry khi request fail
+\qquad  + Thêm ROBOTSTXT\_OBEY config - Test lại full pipeline sau tối
+ưu & 18/07/2026 & 18/07/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-7}{%
+\subsubsection{Kết quả đạt được tuần
+7:}}
+
+\begin{itemize}
+\item
+  Integration test thành công trên full pipeline:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Crawl \textasciitilde500 bài/lần chạy từ 3 báo
+  \item
+    ETL xử lý: clean HTML \(\rightarrow\) chunk 800 chars (overlap 150)
+    \(\rightarrow\) insert Star Schema
+  \item
+    Vectorize: embedding bằng \texttt{BAAI/bge-small-en-v1.5}
+    \(\rightarrow\) upsert vào Qdrant
+  \item
+    RAG API: query \(\rightarrow\) embed \(\rightarrow\) search top-k
+    \(\rightarrow\) LLM generate answer
+  \end{itemize}
+\item
+  Xử lý edge cases quan trọng:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Author invalid}: Phát hiện và loại bỏ 15+ loại fake author
+    (URL, ngày tháng, tên báo, ký tự đặc biệt)
+  \item
+    \textbf{Date parsing}: Hỗ trợ 3 format (ISO, VN dd/mm/yyyy,
+    date-only) + fallback qua 10 CSS selectors
+  \item
+    \textbf{Empty content}: Skip bài viết có content \textless{} 100 ký
+    tự
+  \item
+    \textbf{ETL author cleanup}: Loại bỏ author dài \textgreater{} 40
+    chars, chứa http/\textbar/@
+  \end{itemize}
+\item
+  Kết quả đánh giá Ragas: \textbar{} Chỉ số \textbar{} NewsRAG
+  \textbar{} FlashRAG \textbar{}
+  \textbar----------------------\textbar----------------\textbar----------------\textbar{}
+  \textbar{} \textbf{Context Precision} \textbar{} \textbf{Cao hơn}
+  \textbar{} Trung bình \textbar{} \textbar{} \textbf{Context Recall}
+  \textbar{} Trung bình \textbar{} \textbf{Cao hơn} \textbar{}
+  \textbar{} \textbf{Faithfulness} \textbar{} Trung bình \textbar{}
+  \textbf{Cao hơn} \textbar{} \textbar{} \textbf{Answer Relevancy}
+  \textbar{} Tương đương \textbar{} Tương đương \textbar{}
+
+  \begin{quote}
+  Tổng thể các chỉ số ở mức khiêm tốn (dưới 0.5) do prompt RAG được cấu
+  hình trả lời chi tiết, diễn giải đầy đủ \(\rightarrow\) làm giảm
+  cosine similarity khi Ragas dịch ngược thành câu hỏi.
+  \end{quote}
+\item
+  Tối ưu hiệu suất Crawler:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Windows: CONCURRENT\_REQUESTS=16, DOWNLOAD\_DELAY=1.0
+  \item
+    Linux (Fargate): CONCURRENT\_REQUESTS=32, DOWNLOAD\_DELAY=0.5
+  \item
+    User-Agent tùy chỉnh theo OS
+  \end{itemize}
+\end{itemize}

@@ -1,0 +1,103 @@
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Open the
+  \href{https://us-east-1.console.aws.amazon.com/vpc/home?region=us-east-1\#Home:}{Amazon
+  VPC console}
+\item
+  In the navigation pane, choose \textbf{Endpoints}, then click
+  \textbf{Create Endpoint}:
+\end{enumerate}
+
+You will see \textbf{6 existing VPC endpoints} that support \textbf{AWS
+Systems Manager (SSM)}. These endpoints were deployed automatically by
+the \textbf{CloudFormation Templates} for this workshop.
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/endpoints.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  In the Create endpoint console:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Specify name of the endpoint: \texttt{s3-gwe}
+\item
+  In service category, choose \textbf{AWS services}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/create-s3-gwe1.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  In \textbf{Services}, type \texttt{s3} in the search box and choose
+  the service with type \textbf{gateway}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/services.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  For VPC, select \textbf{VPC Cloud} from the drop-down.
+\item
+  For \textbf{Configure route tables}, select the route table that is
+  already associated with \textbf{two subnets} (note: this is not the
+  main route table for the VPC, but a second route table created by
+  CloudFormation).
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/vpc.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{For Policy}, leave the default option, \textbf{Full Access},
+  to allow full access to the service. You will deploy \textbf{a VPC
+  endpoint policy} in a later lab module to demonstrate restricting
+  access to \textbf{S3 buckets} based on policies.
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/policy.png}
+\caption{endpoint}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Do not add a tag to the VPC endpoint at this time.
+\item
+  Click \textbf{Create endpoint}, then click x after receiving a
+  successful creation message.
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/complete.png}
+\caption{endpoint}
+\end{figure}

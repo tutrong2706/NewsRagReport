@@ -1,0 +1,317 @@
+\hypertarget{local-development-setup}{%
+\section{Local Development Setup}}
+
+This section covers setting up the complete local development
+environment using Docker Compose to simulate the AWS services locally.
+
+\hypertarget{architecture-overview-local}{%
+\subsection{Architecture Overview
+(Local)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{docker-compose-services}{%
+\subsection{Docker Compose Services}}
+
+The \texttt{docker-compose.yml} defines all services needed for local
+development:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{starting-the-environment}{%
+\subsection{Starting the Environment}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Start all services in background}
+\ExtensionTok{docker}\NormalTok{ compose up }\AttributeTok{{-}d}
+
+\CommentTok{\# Check status}
+\ExtensionTok{docker}\NormalTok{ compose ps}
+
+\CommentTok{\# View logs}
+\ExtensionTok{docker}\NormalTok{ compose logs }\AttributeTok{{-}f}\NormalTok{ postgres}
+\ExtensionTok{docker}\NormalTok{ compose logs }\AttributeTok{{-}f}\NormalTok{ kafka}
+\end{Highlighting}
+\end{Shaded}
+
+Expected output:
+
+\begin{verbatim}
+NAME                 STATUS
+newsrag-postgres     Up (healthy)
+newsrag-qdrant       Up
+newsrag-zookeeper    Up
+newsrag-kafka        Up (healthy)
+newsrag-kafka-ui     Up
+\end{verbatim}
+
+\hypertarget{verifying-services}{%
+\subsection{Verifying Services}}
+
+\hypertarget{postgresql}{%
+\subsubsection{PostgreSQL}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Connect to database}
+\ExtensionTok{psql} \AttributeTok{{-}h}\NormalTok{ localhost }\AttributeTok{{-}U}\NormalTok{ postgres }\AttributeTok{{-}d}\NormalTok{ newsrag}
+
+\CommentTok{\# Or via Docker}
+\ExtensionTok{docker}\NormalTok{ exec }\AttributeTok{{-}it}\NormalTok{ newsrag{-}postgres psql }\AttributeTok{{-}U}\NormalTok{ postgres }\AttributeTok{{-}d}\NormalTok{ newsrag}
+
+\CommentTok{\# Verify tables created from warehouse.sql}
+\ExtensionTok{\textbackslash{}dt}
+\end{Highlighting}
+\end{Shaded}
+
+Expected tables:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{qdrant}{%
+\subsubsection{Qdrant}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Check collections}
+\ExtensionTok{curl}\NormalTok{ http://localhost:6333/collections}
+
+\CommentTok{\# Expected: \{"result":\{"collections":[]\},"status":"ok","time":0.0...\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{kafka}{%
+\subsubsection{Kafka}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# List topics}
+\ExtensionTok{docker}\NormalTok{ exec newsrag{-}kafka kafka{-}topics }\AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092 }\AttributeTok{{-}{-}list}
+
+\CommentTok{\# Create news\_raw topic (if not auto{-}created)}
+\ExtensionTok{docker}\NormalTok{ exec newsrag{-}kafka kafka{-}topics }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092 }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}create} \AttributeTok{{-}{-}topic}\NormalTok{ news\_raw }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}partitions}\NormalTok{ 3 }\AttributeTok{{-}{-}replication{-}factor}\NormalTok{ 1}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{kafka-ui}{%
+\subsubsection{Kafka UI}}
+
+Open http://localhost:8080 in browser to view topics, messages, consumer
+groups.
+
+\hypertarget{python-environment-setup}{%
+\subsection{Python Environment Setup}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{requirements.txt}{%
+\subsubsection{requirements.txt}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{environment-configuration}{%
+\subsection{Environment Configuration}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Copy example and edit}
+\FunctionTok{cp}\NormalTok{ .env.example .env}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{env.example}{%
+\subsubsection{.env.example}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{running-the-local-pipeline}{%
+\subsection{Running the Local
+Pipeline}}
+
+\hypertarget{crawl-news-scrapy-rightarrow-kafka}{%
+\subsubsection{\texorpdfstring{1. Crawl News (Scrapy \(\rightarrow\)
+Kafka)}{1. Crawl News (Scrapy \textbackslash rightarrow Kafka)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Terminal 1: Start Kafka consumer (writes to PostgreSQL)}
+\ExtensionTok{python}\NormalTok{ consumer/consumer.py}
+
+\CommentTok{\# Terminal 2: Run crawler}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\end{Highlighting}
+\end{Shaded}
+
+Expected output:
+
+\begin{verbatim}
+2024-01-15 10:30:45 [INFO] Spider opened: news_sitemap
+2024-01-15 10:30:46 [INFO] Crawling VnExpress sitemap: https://vnexpress.net/sitemap_news.xml
+2024-01-15 10:30:47 [INFO] Found 150 URLs in sitemap
+2024-01-15 10:30:48 [INFO] Parsing article: https://vnexpress.net/kinh-doanh/...
+2024-01-15 10:30:49 [INFO] Sent to news_raw[0]@123
+...
+2024-01-15 10:45:30 [INFO] Closing spider (finished)
+\end{verbatim}
+
+\hypertarget{run-etl-postgresql-rightarrow-star-schema}{%
+\subsubsection{\texorpdfstring{2. Run ETL (PostgreSQL \(\rightarrow\)
+Star
+Schema)}{2. Run ETL (PostgreSQL \textbackslash rightarrow Star Schema)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ etl}
+\end{Highlighting}
+\end{Shaded}
+
+Expected output:
+
+\begin{verbatim}
+2024-01-15 10:46:00 [INFO] ETL processing batch of 50 articles
+2024-01-15 10:46:05 [INFO] Upserted dim_source: VnExpress (vnexpress.net)
+2024-01-15 10:46:05 [INFO] Upserted dim_time: 2024-01-15 08:30:00+00:00
+2024-01-15 10:46:05 [INFO] Upserted dim_content: GDP quý 4 tăng 6.5%...
+2024-01-15 10:46:06 [INFO] Inserted fact_articles: 50 articles
+2024-01-15 10:46:06 [INFO] Created 327 chunks
+2024-01-15 10:46:06 [INFO] ETL batch complete: 50 articles processed
+\end{verbatim}
+
+\hypertarget{vectorize-star-schema-rightarrow-qdrant}{%
+\subsubsection{\texorpdfstring{3. Vectorize (Star Schema \(\rightarrow\)
+Qdrant)}{3. Vectorize (Star Schema \textbackslash rightarrow Qdrant)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ vectorize}
+\end{Highlighting}
+\end{Shaded}
+
+Expected output:
+
+\begin{verbatim}
+2024-01-15 10:46:30 [INFO] Loading embedding model: BAAI/bge-small-en-v1.5
+2024-01-15 10:46:35 [INFO] Model loaded. Embedding dimension: 384
+2024-01-15 10:46:35 [INFO] Creating Qdrant collection: news_chunks
+2024-01-15 10:46:35 [INFO] Vectorized batch: 256 chunks
+2024-01-15 10:46:38 [INFO] Vectorized batch: 71 chunks
+2024-01-15 10:46:38 [INFO] Vectorization complete. Total chunks: 327
+\end{verbatim}
+
+\hypertarget{run-full-pipeline-automated}{%
+\subsubsection{4. Run Full Pipeline
+(Automated)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ full}
+\end{Highlighting}
+\end{Shaded}
+
+This runs crawl \(\rightarrow\) etl \(\rightarrow\) vectorize in
+sequence.
+
+\hypertarget{test-rag-api-interactive}{%
+\subsubsection{5. Test RAG API
+(Interactive)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Start FastAPI server}
+\ExtensionTok{uvicorn}\NormalTok{ search.api:app }\AttributeTok{{-}{-}reload} \AttributeTok{{-}{-}port}\NormalTok{ 8000}
+
+\CommentTok{\# Test in browser}
+\ExtensionTok{open}\NormalTok{ http://localhost:8000/docs}
+\end{Highlighting}
+\end{Shaded}
+
+Or via CLI:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python} \AttributeTok{{-}c} \StringTok{"}
+\StringTok{from search.engine import Pipeline}
+\StringTok{p = Pipeline()}
+\StringTok{result = p.ask(\textquotesingle{}Tóm tắt tin tức về kinh tế Việt Nam hôm nay\textquotesingle{})}
+\StringTok{print(result.summary)}
+\StringTok{print(f\textquotesingle{}Sources: \{result.total\}, Time: \{result.duration\_ms\}ms\textquotesingle{})}
+\StringTok{"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{makefile-commands}{%
+\subsection{Makefile Commands}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{troubleshooting}{%
+\subsection{Troubleshooting}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{PostgreSQL\ connection\ refused} & Wait for healthcheck:
+\texttt{docker\ compose\ ps} should show \texttt{(healthy)} \\
+\texttt{Kafka\ not\ ready} & Wait 30-60s for Kafka to start; check
+\texttt{docker\ compose\ logs\ kafka} \\
+\texttt{Qdrant\ collection\ not\ found} & Run vectorize step first, or
+create manually via API \\
+\texttt{Model\ download\ fails} & Check internet; model caches at
+\texttt{\textasciitilde{}/.cache/huggingface/} \\
+\texttt{Port\ already\ in\ use} & Stop conflicting services; change
+ports in docker-compose.yml \\
+\texttt{CUDA\ out\ of\ memory} & Use CPU:
+\texttt{export\ CUDA\_VISIBLE\_DEVICES=""} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{development-workflow}{%
+\subsection{Development Workflow}}
+
+\begin{verbatim}
+1. Edit code (crawler/spiders/spider.py, etl/etl_warehouse.py, etc.)
+2. Test locally: make crawl / make etl / make vectorize
+3. Check logs: docker compose logs -f <service>
+4. Verify in DB: psql -h localhost -U postgres -d newsrag
+5. Commit changes
+6. Build Docker image for AWS deployment (see 5.9-AWS-Deploy)
+\end{verbatim}
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After local development works: 1. \textbf{Build \& Push Docker Image}
+--- See \href{5.9-AWS-Deploy/}{AWS Deployment Prep} 2. \textbf{Deploy to
+AWS} --- \href{5.10-Fargate-Crawler/}{Fargate Crawler},
+\href{5.11-Lambda-Consumer/}{Lambda Consumer},
+\href{5.12-Lambda-ETL/}{Lambda ETL} 3. \textbf{Test RAG API} ---
+\href{5.13-RAG-API/}{RAG API}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.5-Crawler/}{Crawler Development}

@@ -1,0 +1,109 @@
+\hypertarget{data-ingestion-kafka-consumer-rightarrow-postgresql}{%
+\section{\texorpdfstring{Data Ingestion: Kafka Consumer \(\rightarrow\)
+PostgreSQL}{Data Ingestion: Kafka Consumer \textbackslash rightarrow PostgreSQL}}}
+
+This section covers the consumer service that reads raw articles from
+Kafka and persists them to PostgreSQL.
+
+\hypertarget{architecture}{%
+\subsection{Architecture}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{database-schema-raw-table}{%
+\subsection{Database Schema (Raw
+Table)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{consumer-implementation-consumerconsumer.py}{%
+\subsection{Consumer Implementation
+(consumer/consumer.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{running-locally}{%
+\subsection{Running Locally}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Terminal 1: Start services}
+\ExtensionTok{docker}\NormalTok{ compose up }\AttributeTok{{-}d}
+
+\CommentTok{\# Terminal 2: Run consumer (keeps running)}
+\ExtensionTok{python}\NormalTok{ consumer/consumer.py}
+
+\CommentTok{\# Terminal 3: Run crawler to produce messages}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{verifying-data-in-postgresql}{%
+\subsection{Verifying Data in
+PostgreSQL}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{aws-lambda-version-production}{%
+\subsection{AWS Lambda Version
+(Production)}}
+
+For AWS deployment, the consumer runs as a Lambda function triggered by
+SQS (not Kafka directly). See \href{5.11-Lambda-Consumer/}{Lambda
+Consumer} for the SQS \(\rightarrow\) Lambda \(\rightarrow\) Aurora
+implementation.
+
+Key differences: - \textbf{Trigger}: SQS queue (not Kafka) -
+\textbf{Runtime}: Python 3.11 Lambda (15 min timeout) -
+\textbf{Database}: Aurora PostgreSQL (not local) - \textbf{Secrets}:
+Retrieved from AWS Secrets Manager - \textbf{Batching}: Processes up to
+10 messages per invocation
+
+\hypertarget{troubleshooting}{%
+\subsection{Troubleshooting}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Connection\ refused} to Kafka & Ensure Kafka is healthy:
+\texttt{docker\ compose\ ps\ kafka} \\
+\texttt{Duplicate\ key\ value\ violates\ unique\ constraint} & Expected
+behavior --- \texttt{ON\ CONFLICT\ DO\ NOTHING} handles it \\
+\texttt{SSL\ SYSCALL\ error:\ EOF\ detected} & DB connection dropped;
+consumer auto-reconnects on next poll \\
+Consumer lag growing & Increase \texttt{max\_poll\_records}, add
+consumer instances (same group\_id) \\
+\texttt{Message\ size\ too\ large} & Increase \texttt{message.max.bytes}
+in Kafka, or truncate \texttt{raw\_html} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After consumer works locally: 1. \textbf{Run ETL} to transform raw data
+\(\rightarrow\) Star Schema: \href{5.7-ETL/}{ETL \& Star Schema} 2.
+\textbf{Deploy to AWS} as Lambda + SQS:
+\href{5.11-Lambda-Consumer/}{Lambda Consumer}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.7-ETL/}{ETL \& Star Schema}

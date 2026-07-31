@@ -1,0 +1,202 @@
+\hypertarget{crawler-development}{%
+\section{Crawler Development}}
+
+This section covers building the Scrapy-based news crawler that extracts
+articles from Vietnamese news sites using SitemapSpider.
+
+\hypertarget{why-sitemapspider}{%
+\subsection{Why SitemapSpider?}}
+
+Unlike traditional \texttt{CrawlSpider} with \texttt{DEPTH\_LIMIT},
+\texttt{SitemapSpider} reads \texttt{sitemap\_news.xml} directly,
+ensuring: - \textbf{No missed articles} --- discovers all URLs in
+sitemap, not just linked pages - \textbf{Historical access} --- can
+crawl old articles via sitemap archives - \textbf{Faster discovery} ---
+no need to follow pagination links - \textbf{Respects robots.txt} ---
+built-in \texttt{ROBOTSTXT\_OBEY\ =\ True}
+
+\hypertarget{project-structure}{%
+\subsection{Project Structure}}
+
+\begin{verbatim}
+crawler/
+|--- __init__.py
+|--- settings.py           # Scrapy settings
+|--- pipelines.py          # Item pipelines (Kafka, PostgreSQL)
+|--- items.py              # Data models
+`--- spiders/
+    |--- __init__.py
+    `--- spider.py         # SitemapSpider implementation
+\end{verbatim}
+
+\hypertarget{configuration-configconfig_site.json}{%
+\subsection{Configuration
+(config/config\_site.json)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+Each site defines XPath selectors for extracting structured data.
+
+\hypertarget{scrapy-settings-crawlersettings.py}{%
+\subsection{Scrapy Settings
+(crawler/settings.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{items-crawleritems.py}{%
+\subsection{Items (crawler/items.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sitemapspider-implementation-crawlerspidersspider.py}{%
+\subsection{SitemapSpider Implementation
+(crawler/spiders/spider.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{kafka-pipeline-crawlerpipelines.py}{%
+\subsection{Kafka Pipeline
+(crawler/pipelines.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{running-the-crawler}{%
+\subsection{Running the Crawler}}
+
+\hypertarget{local-development-with-docker-compose}{%
+\subsubsection{Local Development (with Docker
+Compose)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{expected-output}{%
+\subsubsection{Expected Output}}
+
+\begin{verbatim}
+2024-01-15 10:30:45 [INFO] Spider opened: news_sitemap
+2024-01-15 10:30:46 [INFO] Crawling VnExpress sitemap: https://vnexpress.net/sitemap_news.xml
+2024-01-15 10:30:47 [INFO] Found 150 URLs in sitemap
+2024-01-15 10:30:48 [INFO] Parsing article: https://vnexpress.net/kinh-doanh/...
+2024-01-15 10:30:49 [INFO] Sent to news_raw[0]@123
+...
+2024-01-15 10:45:30 [INFO] Closing spider (finished)
+2024-01-15 10:45:30 [INFO] Spider closed: finished
+\end{verbatim}
+
+\hypertarget{verify-kafka-messages}{%
+\subsubsection{Verify Kafka Messages}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Consume messages}
+\ExtensionTok{docker}\NormalTok{ exec newsrag{-}kafka kafka{-}console{-}consumer }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092 }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}topic}\NormalTok{ news\_raw }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}from{-}beginning} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}max{-}messages}\NormalTok{ 5}
+\end{Highlighting}
+\end{Shaded}
+
+Sample message:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{dockerfile-for-fargate-multi-stage}{%
+\subsection{Dockerfile for Fargate
+(Multi-stage)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{building-testing-locally}{%
+\subsection{Building \& Testing
+Locally}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Build image}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ news{-}crawler:local .}
+
+\CommentTok{\# Run container (needs Kafka, PostgreSQL running)}
+\ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}{-}rm} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}network}\NormalTok{ host }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}e}\NormalTok{ KAFKA\_BOOTSTRAP\_SERVERS=localhost:9092 }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}e}\NormalTok{ DB\_HOST=localhost }\DataTypeTok{\textbackslash{}}
+\NormalTok{  news{-}crawler:local python main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{adding-new-news-sites}{%
+\subsection{Adding New News Sites}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Analyze the site} --- Find \texttt{sitemap\_news.xml} (usually
+  at \texttt{/sitemap\_news.xml} or \texttt{/sitemap.xml})
+\item
+  \textbf{Inspect article pages} --- Use browser DevTools to find XPath
+  selectors for title, content, author, date, category
+\item
+  \textbf{Add to config\_site.json} --- Copy an existing entry and
+  modify selectors
+\item
+  \textbf{Test locally} --- Run spider and verify extraction
+\item
+  \textbf{Deploy} --- Rebuild Docker image, push to ECR
+\end{enumerate}
+
+\hypertarget{common-issues-fixes}{%
+\subsection{Common Issues \& Fixes}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{403\ Forbidden} & Add proper headers, respect
+\texttt{ROBOTSTXT\_OBEY}, reduce \texttt{CONCURRENT\_REQUESTS} \\
+\texttt{XPath\ returns\ empty} & Check if site uses JavaScript rendering
+(need Splash/Playwright) \\
+\texttt{Kafka\ connection\ failed} & Ensure Kafka is healthy, check
+\texttt{bootstrap.servers} \\
+\texttt{Memory\ error} & Reduce \texttt{CLOSESPIDER\_ITEMCOUNT},
+increase container memory \\
+\texttt{Timeout} & Increase \texttt{DOWNLOAD\_TIMEOUT},
+\texttt{CLOSESPIDER\_TIMEOUT} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After crawler works locally: 1. \textbf{Build \& Push to ECR} --- See
+\href{5.9-AWS-Deploy/}{AWS Deployment Prep} 2. \textbf{Register Task
+Definition} --- See \href{5.10-Fargate-Crawler/}{Fargate Crawler} 3.
+\textbf{Configure SQS} --- Replace Kafka with SQS for AWS deployment
+(see \href{5.11-Lambda-Consumer/}{Lambda Consumer})
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.6-Ingestion/}{Data Ingestion (Kafka Consumer
+\(\rightarrow\) PostgreSQL)}

@@ -1,0 +1,162 @@
+\hypertarget{vectorization-generating-embeddings-storing-in-vector-db}{%
+\section{Vectorization: Generating Embeddings \& Storing in Vector
+DB}}
+
+This section covers the vectorization step that converts text chunks
+into vector embeddings and stores them for similarity search.
+
+\hypertarget{architecture}{%
+\subsection{Architecture}}
+
+\hypertarget{local-development-qdrant}{%
+\subsubsection{Local Development
+(Qdrant)}}
+
+\begin{verbatim}
+fact_chunks (PostgreSQL)
+       |
+       v
+SentenceTransformer (local model)
+       |
+       v
+Qdrant Vector DB (collection: news_chunks)
+\end{verbatim}
+
+\hypertarget{aws-production-aurora-pgvector}{%
+\subsubsection{AWS Production (Aurora
+pgvector)}}
+
+\begin{verbatim}
+fact_chunks (Aurora PostgreSQL)
+       |
+       v
+Lambda ETL + Bedrock Titan Embed v2
+       |
+       v
+fact_chunks.embedding (pgvector + HNSW)
+\end{verbatim}
+
+\begin{quote}
+\textbf{Note:} In AWS v2 architecture, vectorization is \textbf{merged
+into the ETL Lambda} --- no separate vectorize step. This section covers
+the local development approach using Qdrant.
+\end{quote}
+
+\hypertarget{vectorization-implementation-vectorizevectorize.py}{%
+\subsection{Vectorization Implementation
+(vectorize/vectorize.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{running-vectorization-locally}{%
+\subsection{Running Vectorization
+Locally}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{verifying-in-qdrant}{%
+\subsection{Verifying in Qdrant}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{qdrant-collection-configuration}{%
+\subsection{Qdrant Collection
+Configuration}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3750}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2917}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Setting
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reason
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Distance & \texttt{COSINE} & Normalized embeddings, cosine = dot
+product \\
+Vector Size & 384 (BGE-small) / 1024 (Titan v2) & Match embedding
+model \\
+HNSW \texttt{m} & 16 & Balance memory vs.~recall \\
+HNSW \texttt{ef\_construct} & 64 & Build-time recall/quality tradeoff \\
+\end{longtable}
+\endgroup
+
+\hypertarget{running-vectorization-in-main-pipeline}{%
+\subsection{Running Vectorization in Main
+Pipeline}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Full pipeline (crawl $\textbackslash{}rightarrow$ etl $\textbackslash{}rightarrow$ vectorize)}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ full}
+
+\CommentTok{\# Or individual steps}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ etl}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ vectorize}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{aws-production-etl-embedding-merged}{%
+\subsection{AWS Production: ETL + Embedding
+Merged}}
+
+In the AWS deployment, the vectorize step is \textbf{not separate}. The
+Lambda ETL function: 1. Fetches unprocessed articles 2. Cleans HTML,
+chunks text (\textasciitilde500 tokens) 3. Calls
+\texttt{bedrock.invoke\_model} for each chunk 4. Inserts directly into
+\texttt{fact\_chunks.embedding} (pgvector)
+
+See \href{5.12-Lambda-ETL/}{Lambda ETL + Embedding} for the production
+implementation.
+
+\hypertarget{troubleshooting}{%
+\subsection{Troubleshooting}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Qdrant\ connection\ refused} & Ensure Qdrant container is
+running: \texttt{docker\ compose\ ps\ qdrant} \\
+\texttt{Model\ download\ fails} & Check internet access; model caches at
+\texttt{\textasciitilde{}/.cache/huggingface/} \\
+\texttt{Dimension\ mismatch} & Verify \texttt{EMBEDDING\_SIZE} matches
+model output dimension \\
+\texttt{Out\ of\ memory} & Reduce \texttt{batch\_size} in
+\texttt{model.encode()}, or use smaller model \\
+\texttt{Slow\ embedding} & First run downloads model
+(\textasciitilde100MB); subsequent runs use cache \\
+\end{longtable}
+\endgroup
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.9-AWS-Deploy/}{AWS Deployment Prep}

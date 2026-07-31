@@ -1,0 +1,188 @@
+\hypertarget{fargate-crawler-ecs-fargate-eventbridge-scheduler}{%
+\section{Fargate Crawler: ECS Fargate + EventBridge
+Scheduler}}
+
+This section covers deploying the Scrapy crawler as an ECS Fargate task
+triggered by EventBridge Scheduler.
+
+\hypertarget{architecture}{%
+\subsection{Architecture}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{task-definition-terraform}{%
+\subsection{Task Definition
+(Terraform)}}
+
+From \texttt{main.tf}:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{eventbridge-scheduler-terraform}{%
+\subsection{EventBridge Scheduler
+(Terraform)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{iam-permissions-for-task-role}{%
+\subsection{IAM Permissions for Task
+Role}}
+
+The \texttt{ecs\_task\_role} needs permissions for: - \textbf{SQS}:
+SendMessage to \texttt{news\_raw} queue - \textbf{Secrets Manager}:
+GetSecretValue for DB credentials - \textbf{CloudWatch Logs}:
+CreateLogStream, PutLogEvents - \textbf{ECR}: BatchGetImage,
+GetDownloadUrlForLayer (via execution role)
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sqs-queue-terraform}{%
+\subsection{SQS Queue (Terraform)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{building-pushing-docker-image}{%
+\subsection{Building \& Pushing Docker
+Image}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{manual-testing}{%
+\subsection{Manual Testing}}
+
+\hypertarget{run-task-manually}{%
+\subsubsection{Run Task Manually}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{check-task-status}{%
+\subsubsection{Check Task Status}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# List recent tasks}
+\ExtensionTok{aws}\NormalTok{ ecs list{-}tasks }\AttributeTok{{-}{-}cluster} \VariableTok{$CLUSTER} \AttributeTok{{-}{-}family} \VariableTok{$TASK\_DEF} \AttributeTok{{-}{-}desired{-}status}\NormalTok{ STOPPED}
+
+\CommentTok{\# Get task details}
+\VariableTok{TASK\_ARN}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{aws}\NormalTok{ ecs list{-}tasks }\AttributeTok{{-}{-}cluster} \VariableTok{$CLUSTER} \AttributeTok{{-}{-}family} \VariableTok{$TASK\_DEF} \AttributeTok{{-}{-}desired{-}status}\NormalTok{ STOPPED }\AttributeTok{{-}{-}query} \StringTok{"taskArns[0]"} \AttributeTok{{-}{-}output}\NormalTok{ text}\VariableTok{)}
+\ExtensionTok{aws}\NormalTok{ ecs describe{-}tasks }\AttributeTok{{-}{-}cluster} \VariableTok{$CLUSTER} \AttributeTok{{-}{-}tasks} \VariableTok{$TASK\_ARN}
+
+\CommentTok{\# View logs}
+\ExtensionTok{aws}\NormalTok{ logs tail /ecs/newsrag{-}project }\AttributeTok{{-}{-}follow} \AttributeTok{{-}{-}filter{-}pattern} \StringTok{"crawler"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{monitoring-debugging}{%
+\subsection{Monitoring \& Debugging}}
+
+\hypertarget{cloudwatch-logs}{%
+\subsubsection{CloudWatch Logs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Tail crawler logs}
+\ExtensionTok{aws}\NormalTok{ logs tail /ecs/newsrag{-}project }\AttributeTok{{-}{-}follow} \AttributeTok{{-}{-}filter{-}pattern} \StringTok{"crawler"}
+
+\CommentTok{\# Search for errors}
+\ExtensionTok{aws}\NormalTok{ logs filter{-}log{-}events }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}log{-}group{-}name}\NormalTok{ /ecs/newsrag{-}project }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}filter{-}pattern} \StringTok{"ERROR"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}start{-}time} \VariableTok{$(}\FunctionTok{date} \AttributeTok{{-}d} \StringTok{\textquotesingle{}1 hour ago\textquotesingle{}}\NormalTok{ +\%s}\VariableTok{)}\NormalTok{000}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cloudwatch-metrics}{%
+\subsubsection{CloudWatch Metrics}}
+
+Create a dashboard with: - \texttt{ECS/TaskCount} (Running, Pending,
+Stopped) - \texttt{ECS/CPUUtilization} (per task) -
+\texttt{ECS/MemoryUtilization} (per task) -
+\texttt{SQS/NumberOfMessagesSent} (news\_raw queue) -
+\texttt{SQS/NumberOfMessagesReceived} (Lambda consumer)
+
+\hypertarget{common-issues}{%
+\subsubsection{Common Issues}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{CannotPullContainerError} & Check ECR permissions, image tag
+exists, VPC has Internet Gateway \\
+\texttt{Task\ failed\ to\ start} & Check CloudWatch Logs for container
+error; verify \texttt{command} in task definition \\
+\texttt{SQS\ AccessDenied} & Attach SQS policy to
+\texttt{ecs\_task\_role} \\
+\texttt{Database\ connection\ timeout} & Verify security group allows
+5432 from ECS SG; check Secrets Manager access \\
+\texttt{Crawler\ takes\ \textgreater{}\ 15\ min} & Increase task
+CPU/memory; optimize Scrapy settings (\texttt{CLOSESPIDER\_TIMEOUT}) \\
+\end{longtable}
+\endgroup
+
+\hypertarget{scaling-considerations}{%
+\subsection{Scaling Considerations}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Concurrency}: Run multiple crawler tasks in parallel
+  (different spiders)
+\item
+  \textbf{Queue depth}: Monitor SQS
+  \texttt{ApproximateNumberOfMessagesVisible}
+\item
+  \textbf{Cost}: Fargate Spot (up to 70\% savings) for fault-tolerant
+  crawling:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\# In task definition or capacity provider strategy}
+\NormalTok{capacity\_provider\_strategy \{}
+\NormalTok{  capacity\_provider = "FARGATE\_SPOT"}
+\NormalTok{  weight            = 1}
+\NormalTok{  base              = 0}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{updating-the-crawler}{%
+\subsection{Updating the Crawler}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After crawler pushes to SQS: 1. \textbf{Lambda Consumer} reads SQS
+\(\rightarrow\) inserts to Aurora: \href{5.11-Lambda-Consumer/}{Lambda
+Consumer} 2. \textbf{Lambda ETL} processes raw \(\rightarrow\) Star
+Schema + Bedrock Embed: \href{5.12-Lambda-ETL/}{Lambda ETL} 3.
+\textbf{RAG API} serves queries: \href{5.13-RAG-API/}{RAG API}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.11-Lambda-Consumer/}{Lambda Consumer (SQS
+\(\rightarrow\) Aurora)}

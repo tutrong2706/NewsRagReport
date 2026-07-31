@@ -1,0 +1,186 @@
+\hypertarget{vector-huxf3a-tux1ea1o-embeddings-lux1b0u-vuxe0o-vector-db}{%
+\section{Vector hóa: Tạo Embeddings \& Lưu vào Vector
+DB}}
+
+Phần này bao gồm bước vector hóa chuyển đổi text chunks thành vector
+embeddings và lưu trữ cho similarity search.
+
+\hypertarget{kiux1ebfn-truxfac}{%
+\subsection{Kiến trúc}}
+
+\hypertarget{phuxe1t-triux1ec3n-cux1ee5c-bux1ed9-qdrant}{%
+\subsubsection{Phát triển cục bộ
+(Qdrant)}}
+
+\begin{verbatim}
+fact_chunks (PostgreSQL)
+       |
+       v
+SentenceTransformer (local model)
+       |
+       v
+Qdrant Vector DB (collection: news_chunks)
+\end{verbatim}
+
+\hypertarget{aws-production-aurora-pgvector}{%
+\subsubsection{AWS Production (Aurora
+pgvector)}}
+
+\begin{verbatim}
+fact_chunks (Aurora PostgreSQL)
+       |
+       v
+Lambda ETL + Bedrock Titan Embed v2
+       |
+       v
+fact_chunks.embedding (pgvector + HNSW)
+\end{verbatim}
+
+\begin{quote}
+\textbf{Note:} Trong AWS v2 architecture, vector hóa \textbf{được gộp
+vào ETL Lambda} --- không có bước vectorize riêng biệt. Phần này chỉ bao
+gồm cách tiếp cận phát triển cục bộ dùng Qdrant.
+\end{quote}
+
+\hypertarget{vectorization-implementation-vectorizevectorize.py}{%
+\subsection{Vectorization Implementation
+(vectorize/vectorize.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{chux1ea1y-vector-huxf3a-cux1ee5c-bux1ed9}{%
+\subsection{Chạy Vector hóa cục
+bộ}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{qdrant-collection-schema}{%
+\subsection{Qdrant Collection Schema}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{chux1ea1y-vector-huxf3a-trong-main-pipeline}{%
+\subsection{Chạy Vector hóa trong Main
+Pipeline}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Full pipeline (crawl $\textbackslash{}rightarrow$ etl $\textbackslash{}rightarrow$ vectorize)}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ full}
+
+\CommentTok{\# Hoặc từng bước}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ etl}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ vectorize}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{aws-production-bedrock-pgvector}{%
+\subsection{AWS Production: Bedrock +
+pgvector}}
+
+Trong production (AWS v2), vector hóa xảy ra \textbf{bên trong ETL
+Lambda} dùng \textbf{Amazon Bedrock Titan Embed v2}:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Key Differences:}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2927}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5122}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Aspect
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Local (v1)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+AWS Production (v2)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Embedding Model} & BGE-small (384 dim) & Titan Embed v2 (1024
+dim) \\
+\textbf{Vector DB} & Qdrant (riêng) & Aurora pgvector (cùng DB) \\
+\textbf{Execution} & Process Python riêng & Gộp vào ETL Lambda \\
+\textbf{Index} & HNSW (Qdrant native) & HNSW (pgvector) \\
+\textbf{Consistency} & Manual sync & ACID transaction với ETL \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Critical:} ETL và RAG API \textbf{bắt buộc dùng cùng một
+embedding model} (\texttt{amazon.titan-embed-text-v2:0}). Khác model =
+khác vector space = tìm kiếm hỏng.
+\end{quote}
+
+\hypertarget{hnsw-index-on-pgvector-aurora}{%
+\subsection{HNSW Index on pgvector
+(Aurora)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{{-}{-} Sau khi embeddings được populate}
+\KeywordTok{CREATE} \KeywordTok{INDEX} \ControlFlowTok{IF} \KeywordTok{NOT} \KeywordTok{EXISTS}\NormalTok{ idx\_fact\_chunks\_embedding\_hnsw}
+\KeywordTok{ON}\NormalTok{ fact\_chunks }\KeywordTok{USING}\NormalTok{ hnsw (embedding vector\_cosine\_ops)}
+\KeywordTok{WITH}\NormalTok{ (m }\OperatorTok{=} \DecValTok{16}\NormalTok{, ef\_construction }\OperatorTok{=} \DecValTok{64}\NormalTok{);}
+
+\CommentTok{{-}{-} Tune search performance}
+\KeywordTok{SET}\NormalTok{ hnsw.ef\_search }\OperatorTok{=} \DecValTok{40}\NormalTok{;  }\CommentTok{{-}{-} Higher = more accurate, slower}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{xux1eed-luxfd-sux1ef1-cux1ed1}{%
+\subsection{Xử lý sự cố}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4211}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5789}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Vấn đề
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Giải pháp
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{CUDA\ out\ of\ memory} & Dùng CPU:
+\texttt{model\ =\ SentenceTransformer(model\_name,\ device=\textquotesingle{}cpu\textquotesingle{})} \\
+\texttt{Qdrant\ connection\ refused} & Check
+\texttt{docker\ compose\ ps\ qdrant}, verify port 6333 \\
+\texttt{Embedding\ dimension\ mismatch} & Đảm bảo
+\texttt{EMBEDDING\_SIZE} khớp model output (384 cho BGE-small) \\
+\texttt{Slow\ embedding} & Giảm \texttt{batch\_size}, dùng GPU nếu có \\
+\texttt{Collection\ not\ found} & Chạy \texttt{ensure\_collection()}
+trước khi upsert \\
+\end{longtable}
+\endgroup
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+Sau khi vector hóa hoạt động cục bộ: 1. \textbf{Build Docker image} cho
+AWS: \href{5.9-AWS-Deploy/}{AWS Deployment Prep} 2. \textbf{Deploy ETL
+Lambda} với Bedrock: \href{5.12-Lambda-ETL/}{Lambda ETL + Embedding} 3.
+\textbf{Build RAG API}: \href{5.13-RAG-API/}{RAG API}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.9-AWS-Deploy/}{AWS Deployment Prep}

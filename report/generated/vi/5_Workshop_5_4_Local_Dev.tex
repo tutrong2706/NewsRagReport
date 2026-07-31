@@ -1,0 +1,301 @@
+\hypertarget{thiux1ebft-lux1eadp-phuxe1t-triux1ec3n-cux1ee5c-bux1ed9}{%
+\section{Thiết lập phát triển cục
+bộ}}
+
+Phần này bao gồm việc thiết lập môi trường phát triển cục bộ hoàn chỉnh
+sử dụng Docker Compose để mô phỏng các dịch vụ AWS cục bộ.
+
+\hypertarget{tux1ed5ng-quan-kiux1ebfn-truxfac-local}{%
+\subsection{Tổng quan kiến trúc
+(Local)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cuxe1c-dux1ecbch-vux1ee5-docker-compose}{%
+\subsection{Các dịch vụ Docker
+Compose}}
+
+File \texttt{docker-compose.yml} định nghĩa tất cả các dịch vụ cần thiết
+cho phát triển cục bộ:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{khux1edfi-ux111ux1ed9ng-muxf4i-trux1b0ux1eddng}{%
+\subsection{Khởi động môi
+trường}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Khởi động tất cả dịch vụ nền}
+\ExtensionTok{docker}\NormalTok{ compose up }\AttributeTok{{-}d}
+
+\CommentTok{\# Kiểm tra trạng thái}
+\ExtensionTok{docker}\NormalTok{ compose ps}
+
+\CommentTok{\# Xem logs}
+\ExtensionTok{docker}\NormalTok{ compose logs }\AttributeTok{{-}f}\NormalTok{ postgres}
+\ExtensionTok{docker}\NormalTok{ compose logs }\AttributeTok{{-}f}\NormalTok{ kafka}
+\end{Highlighting}
+\end{Shaded}
+
+Kết quả mong đợi:
+
+\begin{verbatim}
+NAME                 STATUS
+newsrag-postgres     Up (healthy)
+newsrag-qdrant       Up
+newsrag-zookeeper    Up
+newsrag-kafka        Up (healthy)
+newsrag-kafka-ui     Up
+\end{verbatim}
+
+\hypertarget{xuxe1c-minh-cuxe1c-dux1ecbch-vux1ee5}{%
+\subsection{Xác minh các dịch
+vụ}}
+
+\hypertarget{postgresql}{%
+\subsubsection{PostgreSQL}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Kết nối database}
+\ExtensionTok{psql} \AttributeTok{{-}h}\NormalTok{ localhost }\AttributeTok{{-}U}\NormalTok{ postgres }\AttributeTok{{-}d}\NormalTok{ newsrag}
+
+\CommentTok{\# Hoặc qua Docker}
+\ExtensionTok{docker}\NormalTok{ exec }\AttributeTok{{-}it}\NormalTok{ newsrag{-}postgres psql }\AttributeTok{{-}U}\NormalTok{ postgres }\AttributeTok{{-}d}\NormalTok{ newsrag}
+
+\CommentTok{\# Xác minh tables được tạo từ warehouse.sql}
+\ExtensionTok{\textbackslash{}dt}
+\end{Highlighting}
+\end{Shaded}
+
+Tables mong đợi:
+
+\begin{verbatim}
+         List of relations
+ Schema |       Name       | Type  |  Owner
+--------+------------------+-------+----------
+ public | dim_author       | table | postgres
+ public | dim_content      | table | postgres
+ public | dim_source       | table | postgres
+ public | dim_time         | table | postgres
+ public | fact_article_authors | table | postgres
+ public | fact_articles    | table | postgres
+ public | fact_chunks      | table | postgres
+\end{verbatim}
+
+\hypertarget{qdrant}{%
+\subsubsection{Qdrant}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Kiểm tra collections}
+\ExtensionTok{curl}\NormalTok{ http://localhost:6333/collections}
+
+\CommentTok{\# Kết quả mong đợi: \{"result":\{"collections":[]\},"status":"ok","time":0.0...\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{kafka}{%
+\subsubsection{Kafka}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Liệt kê topics}
+\ExtensionTok{docker}\NormalTok{ exec newsrag{-}kafka kafka{-}topics }\AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092 }\AttributeTok{{-}{-}list}
+
+\CommentTok{\# Tạo news\_raw topic (nếu chưa auto{-}created)}
+\ExtensionTok{docker}\NormalTok{ exec newsrag{-}kafka kafka{-}topics }\AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092 }\AttributeTok{{-}{-}create} \AttributeTok{{-}{-}topic}\NormalTok{ news\_raw }\AttributeTok{{-}{-}partitions}\NormalTok{ 3 }\AttributeTok{{-}{-}replication{-}factor}\NormalTok{ 1}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{kafka-ui}{%
+\subsubsection{Kafka UI}}
+
+Mở http://localhost:8080 trong trình duyệt để xem topics, messages,
+consumer groups.
+
+\hypertarget{thiux1ebft-lux1eadp-muxf4i-trux1b0ux1eddng-python}{%
+\subsection{Thiết lập môi trường
+Python}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{requirements.txt}{%
+\subsubsection{requirements.txt}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cux1ea5u-huxecnh-biux1ebfn-muxf4i-trux1b0ux1eddng}{%
+\subsection{Cấu hình biến môi
+trường}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{chux1ea1y-pipeline-cux1ee5c-bux1ed9}{%
+\subsection{Chạy Pipeline cục
+bộ}}
+
+\hypertarget{crawl-tin-tux1ee9c-scrapy-rightarrow-kafka}{%
+\subsubsection{\texorpdfstring{1. Crawl tin tức (Scrapy \(\rightarrow\)
+Kafka)}{1. Crawl tin tức (Scrapy \textbackslash rightarrow Kafka)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Terminal 1: Khởi động Kafka Consumer (ghi vào PostgreSQL)}
+\ExtensionTok{python}\NormalTok{ consumer/consumer.py}
+
+\CommentTok{\# Terminal 2: Chạy Crawler}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\end{Highlighting}
+\end{Shaded}
+
+Crawler: - Đọc \texttt{config/config\_site.json} để lấy danh sách URL
+báo - Chạy Scrapy SitemapSpider cho mỗi trang - Đẩy dữ liệu bài viết vào
+Kafka topic \texttt{news\_raw}
+
+\hypertarget{chux1ea1y-etl-postgresql-rightarrow-star-schema}{%
+\subsubsection{\texorpdfstring{2. Chạy ETL (PostgreSQL \(\rightarrow\)
+Star
+Schema)}{2. Chạy ETL (PostgreSQL \textbackslash rightarrow Star Schema)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Sau khi crawler xong và consumer đã xử lý messages}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ etl}
+\end{Highlighting}
+\end{Shaded}
+
+ETL process: - Đọc bài thô từ bảng \texttt{article\_metadata} - Làm sạch
+HTML, trích xuất text - Chunk text thành các đoạn \textasciitilde500
+token - Điền Star Schema tables (\texttt{dim\_*}, \texttt{fact\_*}) -
+Cập nhật \texttt{embedded\ =\ true} trên bài đã xử lý
+
+\hypertarget{vectorize-star-schema-rightarrow-qdrant}{%
+\subsubsection{\texorpdfstring{3. Vectorize (Star Schema \(\rightarrow\)
+Qdrant)}{3. Vectorize (Star Schema \textbackslash rightarrow Qdrant)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ vectorize}
+\end{Highlighting}
+\end{Shaded}
+
+Vectorizer: - Đọc chunks từ bảng \texttt{fact\_chunks} - Tạo embeddings
+bằng SentenceTransformer (model local) - Upsert vectors vào Qdrant
+collection \texttt{news\_chunks}
+
+\hypertarget{chux1ea1y-full-pipeline-tux1ef1-ux111ux1ed9ng}{%
+\subsubsection{4. Chạy Full Pipeline (Tự
+động)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Chạy crawl $\textbackslash{}rightarrow$ ETL $\textbackslash{}rightarrow$ vectorize lần lượt}
+\ExtensionTok{python}\NormalTok{ main.py }\AttributeTok{{-}{-}mode}\NormalTok{ full}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{test-rag-api-interactive}{%
+\subsubsection{5. Test RAG API
+(Interactive)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Khởi động FastAPI server}
+\ExtensionTok{uvicorn}\NormalTok{ search.api:app }\AttributeTok{{-}{-}reload} \AttributeTok{{-}{-}port}\NormalTok{ 8000}
+
+\CommentTok{\# Hoặc dùng Makefile}
+\FunctionTok{make}\NormalTok{ test{-}interactive}
+\end{Highlighting}
+\end{Shaded}
+
+Test trên trình duyệt: http://localhost:8000/docs (Swagger UI)
+
+Hoặc CLI:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python} \AttributeTok{{-}c} \StringTok{"}
+\StringTok{from search.engine import Pipeline}
+\StringTok{p = Pipeline()}
+\StringTok{result = p.ask(\textquotesingle{}Tóm tắt tin tức về kinh tế Việt Nam hôm nay\textquotesingle{})}
+\StringTok{print(result.summary)}
+\StringTok{print(f\textquotesingle{}Sources: \{result.total\}, Time: \{result.duration\_ms\}ms\textquotesingle{})}
+\StringTok{"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{makefile-commands}{%
+\subsection{Makefile Commands}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{xux1eed-luxfd-sux1ef1-cux1ed1}{%
+\subsection{Xử lý sự cố}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4211}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5789}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Vấn đề
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Giải pháp
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{PostgreSQL\ connection\ refused} & Kiểm tra
+\texttt{docker\ compose\ ps\ postgres}, chờ healthy. Xem
+\texttt{docker\ compose\ logs\ postgres} \\
+\texttt{Kafka\ not\ ready} & Đợi Kafka healthy (30-60s). Kiểm tra
+\texttt{docker\ compose\ logs\ -f\ kafka} \\
+\texttt{Qdrant\ collection\ issues} & Xóa và tạo lại collection:
+\texttt{curl\ -X\ DELETE\ http://localhost:6333/collections/news\_chunks} \\
+\texttt{SentenceTransformer\ model\ download} & Lần đầu tải model
+(\textasciitilde100MB). Lần sau dùng cache tại
+\texttt{\textasciitilde{}/.cache/huggingface/} \\
+\texttt{Port\ conflicts} & Kiểm tra port 5432, 6333, 9092, 8080. Dừng
+dịch vụ xung đột hoặc đổi port trong docker-compose.yml \\
+\end{longtable}
+\endgroup
+
+\hypertarget{quy-truxecnh-phuxe1t-triux1ec3n}{%
+\subsection{Quy trình phát
+triển}}
+
+\begin{verbatim}
+1. Sửa code (crawler/spiders/spider.py, etl/etl_warehouse.py, etc.)
+2. Test cục bộ: make crawl / make etl / make vectorize
+3. Kiểm tra logs: docker compose logs -f <service>
+4. Xác minh DB: psql -h localhost -U postgres -d newsrag -c "SELECT * FROM fact_chunks LIMIT 5;"
+5. Test RAG: make test-interactive
+6. Commit changes
+7. Build Docker image cho AWS deployment (xem 5.9-AWS-Deploy)
+\end{verbatim}
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+Sau khi phát triển cục bộ hoạt động: 1. \textbf{Build Docker image} cho
+AWS: \href{5.9-AWS-Deploy/}{AWS Deployment Prep} 2. \textbf{Deploy lên
+AWS} --- \href{5.10-Fargate-Crawler/}{Fargate Crawler},
+\href{5.11-Lambda-Consumer/}{Lambda Consumer},
+\href{5.12-Lambda-ETL/}{Lambda ETL} 3. \textbf{Test RAG API} ---
+\href{5.13-RAG-API/}{RAG API}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.5-Crawler/}{Phát triển Crawler}

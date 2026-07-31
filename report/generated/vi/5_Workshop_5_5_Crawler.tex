@@ -1,0 +1,205 @@
+\hypertarget{phuxe1t-triux1ec3n-crawler}{%
+\section{Phát triển Crawler}}
+
+Phần này bao gồm việc xây dựng crawler Scrapy để thu thập bài báo từ các
+trang tin tức Việt Nam sử dụng SitemapSpider.
+
+\hypertarget{tux1ea1i-sao-duxf9ng-sitemapspider}{%
+\subsection{Tại sao dùng
+SitemapSpider?}}
+
+Khác với \texttt{CrawlSpider} truyền thống dùng \texttt{DEPTH\_LIMIT},
+\texttt{SitemapSpider} đọc trực tiếp \texttt{sitemap\_news.xml}, đảm
+bảo: - \textbf{Không bỏ sót bài} --- phát hiện tất cả URL trong sitemap,
+không chỉ các trang link - \textbf{Truy cập lịch sử} --- có thể crawl
+bài cũ qua sitemap archives - \textbf{Phát hiện nhanh hơn} --- không cần
+follow pagination links - \textbf{Tuân thủ robots.txt} --- built-in
+\texttt{ROBOTSTXT\_OBEY\ =\ True}
+
+\hypertarget{cux1ea5u-truxfac-dux1ef1-uxe1n}{%
+\subsection{Cấu trúc dự án}}
+
+\begin{verbatim}
+crawler/
+|--- __init__.py
+|--- settings.py           # Cài đặt Scrapy
+|--- pipelines.py          # Item pipelines (Kafka, PostgreSQL)
+|--- items.py              # Data models
+`--- spiders/
+    |--- __init__.py
+    `--- spider.py         # SitemapSpider implementation
+\end{verbatim}
+
+\hypertarget{cux1ea5u-huxecnh-configconfig_site.json}{%
+\subsection{Cấu hình
+(config/config\_site.json)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+Mỗi trang định nghĩa XPath selectors để trích xuất dữ liệu có cấu trúc.
+
+\hypertarget{cuxe0i-ux111ux1eb7t-scrapy-crawlersettings.py}{%
+\subsection{Cài đặt Scrapy
+(crawler/settings.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{items-crawleritems.py}{%
+\subsection{Items (crawler/items.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sitemapspider-implementation-crawlerspidersspider.py}{%
+\subsection{SitemapSpider Implementation
+(crawler/spiders/spider.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{kafka-pipeline-crawlerpipelines.py}{%
+\subsection{Kafka Pipeline
+(crawler/pipelines.py)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{chux1ea1y-crawler}{%
+\subsection{Chạy Crawler}}
+
+\hypertarget{local-development-vux1edbi-docker-compose}{%
+\subsubsection{Local Development (với Docker
+Compose)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{output-mong-ux111ux1ee3i}{%
+\subsubsection{Output mong đợi}}
+
+\begin{verbatim}
+2024-01-15 10:30:45 [INFO] Spider opened: news_sitemap
+2024-01-15 10:30:46 [INFO] Crawling VnExpress sitemap: https://vnexpress.net/sitemap_news.xml
+2024-01-15 10:30:47 [INFO] Found 150 URLs in sitemap
+2024-01-15 10:30:48 [INFO] Parsing article: https://vnexpress.net/kinh-doanh/...
+2024-01-15 10:30:49 [INFO] Sent to news_raw[0]@123
+...
+2024-01-15 10:45:30 [INFO] Closing spider (finished)
+2024-01-15 10:45:30 [INFO] Spider closed: finished
+\end{verbatim}
+
+\hypertarget{xuxe1c-minh-kafka-messages}{%
+\subsubsection{Xác minh Kafka
+Messages}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Consume messages}
+\ExtensionTok{docker}\NormalTok{ exec newsrag{-}kafka kafka{-}console{-}consumer }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092 }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}topic}\NormalTok{ news\_raw }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}from{-}beginning} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}max{-}messages}\NormalTok{ 5}
+\end{Highlighting}
+\end{Shaded}
+
+Sample message:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{dockerfile-cho-fargate-multi-stage}{%
+\subsection{Dockerfile cho Fargate
+(Multi-stage)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{build-test-cux1ee5c-bux1ed9}{%
+\subsection{Build \& Test cục bộ}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Build image}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ news{-}crawler:local .}
+
+\CommentTok{\# Chạy container (cần Kafka, PostgreSQL chạy)}
+\ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}{-}rm} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}network}\NormalTok{ host }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}e}\NormalTok{ KAFKA\_BOOTSTRAP\_SERVERS=localhost:9092 }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}e}\NormalTok{ DB\_HOST=localhost }\DataTypeTok{\textbackslash{}}
+\NormalTok{  news{-}crawler:local python main.py }\AttributeTok{{-}{-}mode}\NormalTok{ crawl}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{thuxeam-trang-tin-tux1ee9c-mux1edbi}{%
+\subsection{Thêm trang tin tức
+mới}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Phân tích trang} --- Tìm \texttt{sitemap\_news.xml} (thường ở
+  \texttt{/sitemap\_news.xml} hoặc \texttt{/sitemap.xml})
+\item
+  \textbf{Kiểm tra trang bài viết} --- Dùng browser DevTools tìm XPath
+  selectors cho title, content, author, date, category
+\item
+  \textbf{Thêm vào config\_site.json} --- Copy entry hiện có và sửa
+  selectors
+\item
+  \textbf{Test cục bộ} --- Chạy spider và xác minh trích xuất
+\item
+  \textbf{Deploy} --- Rebuild Docker image, push lên ECR
+\end{enumerate}
+
+\hypertarget{vux1ea5n-ux111ux1ec1-thux1b0ux1eddng-gux1eb7p-khux1eafc-phux1ee5c}{%
+\subsection{Vấn đề thường gặp \& Khắc
+phục}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4211}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5789}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Vấn đề
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Giải pháp
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{403\ Forbidden} & Thêm headers phù hợp, tuân thủ
+\texttt{ROBOTSTXT\_OBEY}, giảm \texttt{CONCURRENT\_REQUESTS} \\
+\texttt{XPath\ returns\ empty} & Kiểm tra site có dùng JavaScript
+rendering (cần Splash/Playwright) \\
+\texttt{Kafka\ connection\ failed} & Đảm bảo Kafka healthy, check
+\texttt{bootstrap.servers} \\
+\texttt{Memory\ error} & Giảm \texttt{CLOSESPIDER\_ITEMCOUNT}, tăng
+container memory \\
+\texttt{Timeout} & Tăng \texttt{DOWNLOAD\_TIMEOUT},
+\texttt{CLOSESPIDER\_TIMEOUT} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+Sau khi crawler hoạt động cục bộ: 1. \textbf{Build \& Push lên ECR} ---
+Xem \href{5.9-AWS-Deploy/}{AWS Deployment Prep} 2. \textbf{Đăng ký Task
+Definition} --- Xem \href{5.10-Fargate-Crawler/}{Fargate Crawler} 3.
+\textbf{Cấu hình SQS} --- Thay Kafka bằng SQS cho AWS deployment (xem
+\href{5.11-Lambda-Consumer/}{Lambda Consumer})
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.6-Ingestion/}{Nhập dữ liệu (Kafka Consumer
+\(\rightarrow\) PostgreSQL)}

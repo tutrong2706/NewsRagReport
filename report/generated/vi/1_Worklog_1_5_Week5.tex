@@ -1,0 +1,140 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-5}{%
+\subsubsection{Mục tiêu tuần 5:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Cấu hình Amazon SQS Standard Queue thay thế Kafka (giảm chi phí, đơn
+  giản hóa).
+\item
+  Thiết lập Dead Letter Queue (DLQ) cho xử lý lỗi.
+\item
+  Tích hợp luồng Crawler \(\rightarrow\) SQS \(\rightarrow\) Lambda
+  Consumer \(\rightarrow\) PostgreSQL.
+\item
+  Test end-to-end luồng crawl + consumer.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1621}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Tạo SQS Standard Queue: \texttt{newsrag-articles} - Cấu hình
+message retention: 4 ngày - Tạo Dead Letter Queue:
+\texttt{newsrag-articles-dlq} - Cấu hình redrive policy:
+maxReceiveCount=3 & 30/06/2026 & 30/06/2026 &
+\url{https://docs.aws.amazon.com/sqs/} \\
+3 & - Chuyển đổi \texttt{KafkaPipeline} sang \texttt{SQSPipeline} (v2):
+\qquad  + Sử dụng
+\texttt{boto3.client(\textquotesingle{}sqs\textquotesingle{})} \qquad  +
+\texttt{send\_message()} thay vì Kafka produce - So sánh SQS vs Kafka
+cho use case này & 01/07/2026 & 01/07/2026 & \\
+4 & - Tìm hiểu Lambda Consumer (module của thành viên B): \qquad  +
+Trigger từ SQS event \qquad  + SHA256 hash URL để deduplicate \qquad  +
+Insert vào \texttt{article\_metadata} table \qquad  + ON CONFLICT DO
+NOTHING & 02/07/2026 & 02/07/2026 & consumer.py \\
+5 & - Tích hợp end-to-end: Crawler \(\rightarrow\) SQS \(\rightarrow\)
+Consumer \(\rightarrow\) PostgreSQL - Test luồng: crawl 100 bài
+\(\rightarrow\) kiểm tra SQS messages \(\rightarrow\) verify database -
+Debug: message format, encoding, date parsing & 03/07/2026 & 03/07/2026
+& \\
+6 & - Tìm hiểu ETL pipeline (module của thành viên C): \qquad  +
+\texttt{clean\_text()}: loại bỏ HTML tags, junk patterns \qquad  +
+\texttt{RecursiveCharacterTextSplitter}: chunk 800 chars, overlap 150
+\qquad  + Star Schema: \texttt{dim\_source}, \texttt{dim\_time},
+\texttt{dim\_author}, \texttt{dim\_content}, \texttt{fact\_articles},
+\texttt{fact\_chunks} & 04/07/2026 & 04/07/2026 & etl\_warehouse.py,
+warehouse.sql \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-5}{%
+\subsubsection{Kết quả đạt được tuần
+5:}}
+
+\begin{itemize}
+\item
+  Cấu hình SQS thành công:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{SQS Standard Queue}: \texttt{newsrag-articles} --- chi phí
+    \textasciitilde\$0/tháng (so với Kafka tốn thêm quản lý)
+  \item
+    \textbf{Dead Letter Queue}: \texttt{newsrag-articles-dlq} --- bắt
+    messages bị lỗi sau 3 lần retry
+  \item
+    Message retention: 4 ngày, visibility timeout: 30 giây
+  \end{itemize}
+\item
+  Hiểu rõ lý do chuyển từ Kafka sang SQS: \textbar{} Tiêu chí \textbar{}
+  Kafka (v1) \textbar{} SQS (v2) \textbar{}
+  \textbar-----------------\textbar---------------------\textbar------------------------\textbar{}
+  \textbar{} Chi phí \textbar{} Tốn container Kafka \textbar{}
+  \textasciitilde\$0/tháng \textbar{} \textbar{} Quản lý \textbar{} Phải
+  maintain broker \textbar{} Fully managed \textbar{} \textbar{} Use
+  case \textbar{} Real-time streaming \textbar{} Batch crawl 1 lần/ngày
+  \textbar{} \textbar{} Kết luận \textbar{} Overkill \textbar{}
+  \textbf{Phù hợp} \textbar{}
+\item
+  Tích hợp thành công luồng end-to-end:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Crawler crawl bài \(\rightarrow\) serialize JSON \(\rightarrow\)
+    push SQS
+  \item
+    Lambda Consumer trigger từ SQS \(\rightarrow\) parse JSON
+    \(\rightarrow\) SHA256 hash URL \(\rightarrow\) INSERT
+    article\_metadata
+  \item
+    Deduplication hoạt động:
+    \texttt{ON\ CONFLICT\ (url\_hash)\ DO\ NOTHING}
+  \item
+    Test 100 bài: 95 bài insert thành công, 5 bài trùng lặp bị bỏ qua
+  \end{itemize}
+\item
+  Hiểu được Star Schema warehouse:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Dimension tables}: \texttt{dim\_source} (nguồn báo),
+    \texttt{dim\_time} (ngày tháng), \texttt{dim\_author} (tác giả),
+    \texttt{dim\_content} (nội dung gốc)
+  \item
+    \textbf{Fact tables}: \texttt{fact\_articles} (bài viết),
+    \texttt{fact\_chunks} (chunks sau khi cắt),
+    \texttt{fact\_article\_authors} (M:N)
+  \item
+    Indexes: HNSW cho vector search, B-tree cho url\_hash, domain, date
+  \end{itemize}
+\end{itemize}

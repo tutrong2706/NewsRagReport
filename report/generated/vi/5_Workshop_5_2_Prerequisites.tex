@@ -1,0 +1,234 @@
+\hypertarget{ux111iux1ec1u-kiux1ec7n-tiuxean-quyux1ebft}{%
+\section{Điều kiện tiên
+quyết}}
+
+Trước khi bắt đầu workshop này, hãy đảm bảo bạn đã cài đặt và cấu hình
+các công cụ sau.
+
+\hypertarget{tuxe0i-khoux1ea3n-quyux1ec1n-cux1ea7n-thiux1ebft}{%
+\subsection{Tài khoản \& Quyền cần
+thiết}}
+
+\hypertarget{tuxe0i-khoux1ea3n-aws}{%
+\subsubsection{Tài khoản AWS}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Tài khoản AWS} với quyền quản trị hoặc quyền cho các dịch vụ:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    VPC, EC2, Subnets, Route Tables, Internet Gateway
+  \item
+    RDS (Aurora PostgreSQL Serverless v2)
+  \item
+    ECS (Fargate, Clusters, Task Definitions, Services)
+  \item
+    ECR (Repositories)
+  \item
+    Lambda (Functions, Layers, Permissions)
+  \item
+    SQS (Queues)
+  \item
+    EventBridge (Rules, Schedules, Targets)
+  \item
+    API Gateway (REST APIs)
+  \item
+    Bedrock (Truy cập model: \texttt{amazon.titan-embed-text-v2:0})
+  \item
+    IAM (Roles, Policies)
+  \item
+    CloudWatch (Log Groups, Metrics)
+  \item
+    CloudFormation (Stacks)
+  \end{itemize}
+\end{itemize}
+
+\begin{quote}
+\textbf{Mẹo:} Sử dụng IAM user có \texttt{AdministratorAccess} cho
+workshop, hoặc đảm bảo role của bạn có các quyền trên.
+\end{quote}
+
+\hypertarget{api-keys-buxean-ngouxe0i-cho-rag}{%
+\subsubsection{API Keys bên ngoài (cho
+RAG)}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Groq API Key} --- Lấy từ
+  \href{https://console.groq.com/}{console.groq.com} (Có gói miễn phí)
+\item
+  \textbf{Google Gemini API Key} --- Lấy từ
+  \href{https://aistudio.google.com/}{aistudio.google.com} (Có gói miễn
+  phí)
+\end{itemize}
+
+\hypertarget{cuxf4ng-cux1ee5-bux1eaft-buux1ed9c}{%
+\subsection{Công cụ bắt buộc}}
+
+\hypertarget{aws-cli-v2}{%
+\subsubsection{1. AWS CLI v2}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Cấu hình AWS CLI:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ configure}
+\CommentTok{\# Nhập: AWS Access Key ID, Secret Access Key, Region (ví dụ: ap{-}southeast{-}2), Output format (json)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{terraform-1.5.0}{%
+\subsubsection{2. Terraform \textgreater= 1.5.0}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{docker-docker-compose}{%
+\subsubsection{3. Docker \& Docker
+Compose}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{python-3.10}{%
+\subsubsection{4. Python 3.10+}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{git}{%
+\subsubsection{5. Git}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{truxecnh-soux1ea1n-thux1ea3o-muxe3-khuyux1ebfn-nghux1ecb-vs-code}{%
+\subsubsection{6. Trình soạn thảo mã (Khuyến nghị: VS
+Code)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{thiux1ebft-lux1eadp-dux1ef1-uxe1n}{%
+\subsection{Thiết lập dự án}}
+
+\hypertarget{clone-repository}{%
+\subsubsection{Clone Repository}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{git}\NormalTok{ clone }\OperatorTok{\textless{}}\NormalTok{your{-}repo{-}url}\OperatorTok{\textgreater{}}\NormalTok{ AWS{-}Projects}
+\BuiltInTok{cd}\NormalTok{ AWS{-}Projects}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{muxf4i-trux1b0ux1eddng-ux1ea3o-python}{%
+\subsubsection{Môi trường ảo
+Python}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3} \AttributeTok{{-}m}\NormalTok{ venv venv}
+\BuiltInTok{source}\NormalTok{ venv/bin/activate  }\CommentTok{\# Linux/macOS}
+\CommentTok{\# venv\textbackslash{}Scripts\textbackslash{}activate   \# Windows}
+
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}upgrade}\NormalTok{ pip}
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{biux1ebfn-muxf4i-trux1b0ux1eddng}{%
+\subsubsection{Biến môi trường}}
+
+Sao chép file mẫu và điền giá trị của bạn:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cp}\NormalTok{ .env.example .env}
+\end{Highlighting}
+\end{Shaded}
+
+Chỉnh sửa \texttt{.env} với thông tin xác thực:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{biux1ebfn-terraform}{%
+\subsubsection{Biến Terraform}}
+
+Tạo \texttt{terraform.tfvars}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat} \OperatorTok{\textgreater{}}\NormalTok{ terraform.tfvars }\OperatorTok{\textless{}\textless{} EOF}
+\StringTok{db\_password     = "your\_secure\_password\_123!"}
+\StringTok{db\_user         = "postgres"}
+\StringTok{qdrant\_api\_key  = ""  \# Để trống cho triển khai AWS}
+\StringTok{qdrant\_host     = ""  \# Để trống cho triển khai AWS}
+\StringTok{model\_1\_api\_key = "gsk\_xxxxxxxxxxxxxxxxxxxx"  \# Groq}
+\StringTok{model\_2\_api\_key = "gsk\_xxxxxxxxxxxxxxxxxxxx"  \# Groq backup}
+\StringTok{model\_3\_api\_key = "AIza\_xxxxxxxxxxxxxxxxxxxx" \# Gemini}
+\OperatorTok{EOF}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{Bảo mật:} Không bao giờ commit \texttt{.env} hoặc
+\texttt{terraform.tfvars} lên git. Chúng đã có trong
+\texttt{.gitignore}.
+\end{quote}
+
+\hypertarget{xuxe1c-minh-thiux1ebft-lux1eadp}{%
+\subsection{Xác minh thiết lập}}
+
+Chạy script kiểm tra:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{make}\NormalTok{ verify}
+\end{Highlighting}
+\end{Shaded}
+
+Hoặc kiểm tra thủ công từng công cụ:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ sts get{-}caller{-}identity  }\CommentTok{\# Nên hiển thị AWS account của bạn}
+\ExtensionTok{terraform}\NormalTok{ version            }\CommentTok{\# Nên \textgreater{}= 1.5.0}
+\ExtensionTok{docker}\NormalTok{ run hello{-}world       }\CommentTok{\# Nên in "Hello from Docker!"}
+\ExtensionTok{python3} \AttributeTok{{-}c} \StringTok{"import scrapy; print(\textquotesingle{}Scrapy OK\textquotesingle{})"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{khu-vux1ef1c-aws-region}{%
+\subsection{Khu vực AWS (Region)}}
+
+Workshop này sử dụng \textbf{ap-southeast-2 (Sydney)} mặc định. Để thay
+đổi: 1. Cập nhật
+\texttt{provider\ "aws"\ \{\ region\ =\ "your-region"\ \}} trong
+\texttt{main.tf} 2. Cập nhật \texttt{AWS\_REGION} trong \texttt{.env} 3.
+Đảm bảo model Bedrock \texttt{amazon.titan-embed-text-v2:0} có sẵn trong
+region của bạn (kiểm tra
+\href{https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html}{Bedrock
+regions})
+
+\hypertarget{truy-cux1eadp-model-bedrock}{%
+\subsection{Truy cập Model Bedrock}}
+
+Bật quyền truy cập model trong AWS Console: 1. Vào \textbf{Amazon
+Bedrock} \(\rightarrow\) \textbf{Model access} 2. Nhấn \textbf{Manage
+model access} 3. Bật \textbf{Amazon Titan Embeddings G1 - Text v2}
+(\texttt{amazon.titan-embed-text-v2:0}) 4. Đợi trạng thái hiển thị
+``Access granted''
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.3-Infrastructure/}{Hạ tầng dưới dạng Code
+(Terraform)}

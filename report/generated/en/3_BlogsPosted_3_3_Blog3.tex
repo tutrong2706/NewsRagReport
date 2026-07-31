@@ -1,0 +1,73 @@
+\hypertarget{realizing-the-rag-system-with-amazon-bedrock-and-aurora-pgvector}{%
+\section{Realizing the RAG System with Amazon Bedrock and Aurora
+pgvector}}
+
+\textbf{Retrieval-Augmented Generation (RAG)} is a method that combines
+the power of Large Language Models (LLMs) with a business's proprietary
+data. For RAG to work effectively, the heart of the system is the
+\textbf{Embedding Model} (to convert text into vectors) and the
+\textbf{Vector Database} (to store and search vectors).
+
+Here is how we built this heart entirely using the AWS ecosystem.
+
+\hypertarget{amazon-bedrock-the-power-of-embedding}{%
+\subsubsection{1. Amazon Bedrock: The Power of
+Embedding}}
+
+Instead of self-hosting models like HuggingFace SentenceTransformer on
+EC2 (which is very expensive for GPUs) or Lambda (which runs slowly and
+suffers from cold starts), we used \textbf{Amazon Bedrock} with the
+\texttt{amazon.titan-embed-text-v2:0} model.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Performance and Cost}: The Bedrock API responds incredibly
+  fast, processing embeddings for text chunks in milliseconds. The cost
+  is calculated per token, which is extremely cheap for small to medium
+  projects.
+\item
+  \textbf{Absolute Consistency}: A vital rule of RAG is that the data in
+  the Database and the user's question (Query) must be converted into
+  vectors by the \textbf{same model}. By calling the Bedrock API during
+  both the ETL phase and the RAG API phase, we ensure the absolute
+  consistency of our vector space.
+\end{itemize}
+
+\hypertarget{amazon-aurora-serverless-v2-pgvector}{%
+\subsubsection{2. Amazon Aurora Serverless v2 +
+pgvector}}
+
+Instead of using third-party Vector Databases like Qdrant, Pinecone, or
+Milvus, we decided to use \textbf{Amazon Aurora PostgreSQL} combined
+with the \textbf{\texttt{pgvector}} extension.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{All-in-one}: PostgreSQL allows storing metadata (like author,
+  publish date, URL) in a relational structure (Star Schema) combined
+  with a \texttt{vector} column to store embeddings. This makes it easy
+  for us to perform hybrid queries: ``Find articles about the economy
+  (vector search) but only fetch those published this week (SQL
+  filter)''.
+\item
+  \textbf{HNSW Indexing}: To search quickly across hundreds of thousands
+  of data chunks, we configured the \textbf{HNSW (Hierarchical Navigable
+  Small World)} index on the vector column. Consequently, cosine
+  similarity search queries return results almost instantaneously.
+\item
+  \textbf{Serverless v2}: The Aurora Database automatically scales up
+  and down (from 0.5 to 2 ACUs) based on system load, optimizing costs
+  while ensuring high performance when users query the Q\&A system.
+\end{itemize}
+
+\hypertarget{conclusion}{%
+\subsubsection{Conclusion}}
+
+The architectural combination of Amazon Bedrock and Aurora pgvector
+provides a closed-loop (End-to-End) RAG solution entirely on AWS. The
+news data never has to leave the system's VPC to make external calls,
+ensuring maximum security and reducing network latency. This is the
+technical highlight we are most proud of in the entire application
+development process.

@@ -1,0 +1,221 @@
+\hypertarget{tux1ea1o-s3-bucket}{%
+\paragraph{Tạo S3 bucket}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Đi đến S3 management console
+\item
+  Trong Bucket console, chọn \textbf{Create bucket}
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/create-bucket.png}
+\caption{Create bucket}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Trong Create bucket console
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Đặt tên bucket: chọn 1 tên mà không bị trùng trong phạm vi toàn cầu
+  (gợi ý: lab\textless số-lab\textgreater\textless tên-bạn\textgreater)
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/bucket-name.png}
+\caption{Bucket name}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Giữ nguyên giá trị của các fields khác (default)
+\item
+  Kéo chuột xuống và chọn \textbf{Create bucket}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/create-button.png}
+\caption{Create}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Tạo thành công S3 bucket
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/bucket-success.png}
+\caption{Success}
+\end{figure}
+
+\hypertarget{kux1ebft-nux1ed1i-vux1edbi-ec2-bux1eb1ng-session-manager}{%
+\paragraph{Kết nối với EC2 bằng session
+manager}}
+
+\begin{itemize}
+\item
+  Trong workshop này, bạn sẽ dùng AWS Session Manager để kết nối đến các
+  EC2 instances. Session Manager là 1 tính năng trong dịch vụ Systems
+  Manager được quản lý hoàn toàn bởi AWS. System manager cho phép bạn
+  quản lý Amazon EC2 instances và các máy ảo on-premises (VMs)thông qua
+  1 browser-based shell. Session Manager cung cấp khả năng quản lý phiên
+  bản an toàn và có thể kiểm tra mà không cần mở cổng vào, duy trì máy
+  chủ bastion host hoặc quản lý khóa SSH.
+\item
+  First Cloud AI Journey
+  \href{https://000058.awsstudygroup.com/1-introduce/}{Lab} để hiểu sâu
+  hơn về Session manager.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Trong AWS Management Console, gõ Systems Manager trong ô tìm kiếm và
+  nhấn Enter:
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/sm.png}
+\caption{system manager}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Từ \textbf{Systems Manager} menu, tìm \textbf{Node Management} ở thanh
+  bên trái và chọn \textbf{Session Manager}:
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/sm1.png}
+\caption{system manager}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Click Start Session, và chọn EC2 instance tên
+  \textbf{Test-Gateway-Endpoint}.
+\end{enumerate}
+
+Phiên bản EC2 này đã chạy trong ``VPC cloud'' và sẽ được dùng để kiểm
+tra khả năng kết nối với Amazon S3 thông qua điểm cuối Cổng mà bạn vừa
+tạo (s3-gwe).
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/start-session.png}
+\caption{Start session}
+\end{figure}
+
+Session Manager sẽ mở browser tab mới với shell prompt: sh-4.2 \$
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/start-session-success.png}
+\caption{Success}
+\end{figure}
+
+Bạn đã bắt đầu phiên kết nối đến EC2 trong VPC Cloud thành công. Trong
+bước tiếp theo, chúng ta sẽ tạo một S3 bucket và một tệp trong đó.
+\#\#\#\# Create a file and upload to s3 bucket
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Đổi về ssm-user's thư mục bằng lệnh ``cd \textasciitilde{}''
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/cli1.png}
+\caption{Change user's dir}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Tạo 1 file để kiểm tra bằng lệnh ``fallocate -l 1G testfile.xyz'', 1
+  file tên ``testfile.xyz'' có kích thước 1GB sẽ được tạo.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/cli-file.png}
+\caption{Create file}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Tải file mình vừa tạo lên S3 với lệnh ``aws s3 cp testfile.xyz
+  s3://your-bucket-name''. Thay your-bucket-name bằng tên S3 bạn đã tạo.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/uploaded.png}
+\caption{Uploaded}
+\end{figure}
+
+Bạn đã tải thành công tệp lên bộ chứa S3 của mình. Bây giờ bạn có thể
+kết thúc session.
+
+\hypertarget{kiux1ec3m-tra-object-trong-s3-bucket}{%
+\paragraph{Kiểm tra object trong S3
+bucket}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Đi đến S3 console.\\
+\item
+  Click tên s3 bucket của bạn
+\item
+  Trong Bucket console, bạn sẽ thấy tệp bạn đã tải lên S3 bucket của
+  mình
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.3-S3-vpc/check-s3-bucket.png}
+\caption{Check S3}
+\end{figure}
+
+\hypertarget{tuxf3m-tux1eaft}{%
+\paragraph{Tóm tắt}}
+
+Chúc mừng bạn đã hoàn thành truy cập S3 từ VPC. Trong phần này, bạn đã
+tạo gateway endpoint cho Amazon S3 và sử dụng AWS CLI để tải file lên.
+Quá trình tải lên hoạt động vì gateway endpoint cho phép giao tiếp với
+S3 mà không cần Internet gateway gắn vào ``VPC Cloud''. Điều này thể
+hiện chức năng của gateway endpoint như một đường dẫn an toàn đến S3 mà
+không cần đi qua pub lic Internet.

@@ -1,0 +1,258 @@
+\hypertarget{cost-optimization}{%
+\section{Cost Optimization}}
+
+This section covers strategies to minimize AWS costs for the News RAG
+Pipeline while maintaining performance.
+
+\hypertarget{cost-breakdown-monthly-ap-southeast-2}{%
+\subsection{Cost Breakdown (Monthly,
+ap-southeast-2)}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1957}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3043}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2391}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2609}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Service
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Configuration
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est. Cost
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\% of Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Aurora Serverless v2} & 2 ACU baseline, auto-scale to 8 &
+\$15-20 & \textasciitilde50\% \\
+\textbf{ECS Fargate (Crawler)} & 0.25 vCPU, 0.5 GB, 30 min/day & \$0.50
+& \textasciitilde1\% \\
+\textbf{ECS Fargate (ETL)} & 0.5 vCPU, 1 GB, 30 min/day & \$1.00 &
+\textasciitilde3\% \\
+\textbf{Lambda (Consumer)} & 512 MB, 1M req, 5s avg & \$0.30 &
+\textasciitilde1\% \\
+\textbf{Lambda (ETL)} & 1 GB, 30/day, 300s avg & \$1.50 &
+\textasciitilde4\% \\
+\textbf{Lambda (RAG API)} & 1 GB, 10K req, 3s avg & \$0.50 &
+\textasciitilde1\% \\
+\textbf{API Gateway} & 10K req/month & \$0.35 & \textasciitilde1\% \\
+\textbf{SQS} & 30K messages/month & \$0.00 & \textasciitilde0\% \\
+\textbf{Bedrock Titan Embed} & 500K tokens/day & \$0.75 &
+\textasciitilde2\% \\
+\textbf{ECR} & 2 GB storage & \$0.20 & \textasciitilde0\% \\
+\textbf{CloudWatch Logs} & 1 GB ingest, 7-day retention & \$1.50 &
+\textasciitilde4\% \\
+\textbf{Data Transfer} & \textless{} 1 GB/month & \$0.09 &
+\textasciitilde0\% \\
+\textbf{SNS (Alarms)} & \textless{} 100 notifications & \$0.01 &
+\textasciitilde0\% \\
+\textbf{Total} & & \textbf{\textasciitilde\$21-26/month} &
+\textbf{100\%} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Comparison:} Previous v1 architecture (Kafka, Qdrant Cloud,
+local embeddings) cost \textasciitilde\$35/month. \textbf{Savings:
+\textasciitilde30-40\%}
+\end{quote}
+
+\hypertarget{optimization-strategies}{%
+\subsection{Optimization Strategies}}
+
+\hypertarget{aurora-serverless-v2}{%
+\subsubsection{1. Aurora Serverless v2}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Tips:} - Use \textbf{ACU = 0.5} minimum for dev (scales to 0
+when idle) - Production: \textbf{min=1, max=16} for HA - Monitor
+\texttt{ServerlessDatabaseCapacity} metric to tune - Consider
+\textbf{Provisioned} with \texttt{db.t4g.medium}
+(\textasciitilde\$45/mo) if steady high load
+
+\hypertarget{lambda-right-sizing}{%
+\subsubsection{2. Lambda Right-Sizing}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Use AWS Lambda Power Tuning to find optimal memory}
+\CommentTok{\# https://github.com/aws{-}lambda{-}power{-}tuning/aws{-}lambda{-}power{-}tuning}
+
+\CommentTok{\# Typical results:}
+\CommentTok{\# {-} Consumer: 512 MB (CPU scales with memory)}
+\CommentTok{\# {-} ETL: 1024 MB (needs memory for pgvector ops + Bedrock)}
+\CommentTok{\# {-} RAG API: 1024 MB (embedding + search + LLM)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Cost vs Performance:} \textbar{} Memory \textbar{} CPU
+\textbar{} ETL Duration \textbar{} Cost/Invocation \textbar{}
+\textbar--------\textbar-----\textbar--------------\textbar-----------------\textbar{}
+\textbar{} 512 MB \textbar{} 0.8 vCPU \textbar{} 180s \textbar{}
+\$0.0000018 \textbar{} \textbar{} 1024 MB \textbar{} 1.7 vCPU \textbar{}
+90s \textbar{} \$0.0000018 \textbar{} \textbar{} 2048 MB \textbar{} 3.5
+vCPU \textbar{} 50s \textbar{} \$0.0000020 \textbar{}
+
+\(\rightarrow\) \textbf{1024 MB is sweet spot} for ETL (2x faster, same
+cost)
+
+\hypertarget{fargate-spot-for-crawler}{%
+\subsubsection{3. Fargate Spot for
+Crawler}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Savings:} Up to 70\% on Fargate compute
+(\textasciitilde\$0.15/month for crawler)
+
+\hypertarget{bedrock-embedding-optimization}{%
+\subsubsection{4. Bedrock Embedding
+Optimization}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Savings:} \textasciitilde\$0.25/month (30\% fewer embeddings)
+
+\hypertarget{cloudwatch-logs-retention}{%
+\subsubsection{5. CloudWatch Logs
+Retention}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_cloudwatch\_log\_group" "logs" \{}
+\NormalTok{  name              = "/ecs/newsrag{-}project"}
+\NormalTok{  retention\_in\_days = 3  \# Reduced from 7 for dev; 14 for prod}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Savings:} 50\% log cost reduction (\$0.75 vs \$1.50/month)
+
+\hypertarget{s3-for-cold-data-optional}{%
+\subsubsection{6. S3 for Cold Data
+(Optional)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+Move \texttt{fact\_chunks} older than 30 days to S3, keep only recent in
+pgvector.
+
+\hypertarget{rds-proxy-for-high-concurrency}{%
+\subsubsection{7. RDS Proxy (For High
+Concurrency)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{When to use:} \textgreater{} 50 concurrent Lambda connections
+\textbf{Cost:} \textasciitilde\$0.015/hr per vCPU =
+\textasciitilde\$11/month for db.t4g.medium equivalent \textbf{Benefit:}
+Connection pooling, reduced cold start, better scalability
+
+\hypertarget{cost-monitoring}{%
+\subsection{Cost Monitoring}}
+
+\hypertarget{budget-alert}{%
+\subsubsection{Budget Alert}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cost-explorer-queries}{%
+\subsubsection{Cost Explorer Queries}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cost-optimization-checklist}{%
+\subsection{Cost Optimization
+Checklist}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+\checkmark & Optimization & Status & Savings \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Aurora min ACU = 0.5 (dev) & & \$10/mo \\
+2 & Lambda memory right-sized & & \$0.50/mo \\
+3 & Fargate Spot for crawler & & \$0.35/mo \\
+4 & Chunk size 300 tokens & & \$0.25/mo \\
+5 & CloudWatch logs 3-day retention (dev) & & \$0.75/mo \\
+6 & Budget alert at 80\% & & Prevention \\
+7 & RDS Proxy (if \textgreater50 concurrent) & & Scalability \\
+8 & S3 Glacier for old data & & Future \\
+\end{longtable}
+\endgroup
+
+\textbf{Total Potential Savings:} \textasciitilde\$12-15/month (50\%
+reduction) for dev environment
+
+\hypertarget{production-vs-development-costs}{%
+\subsection{Production vs Development
+Costs}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2549}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1569}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1569}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1176}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1373}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Environment
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Aurora
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lambda
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Fargate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Logs
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Dev} & \$5 (min 0.5 ACU, auto-pause) & \$2 & \$0.50 & \$0.50 &
+\textbf{\textasciitilde\$8} \\
+\textbf{Staging} & \$15 (min 1 ACU) & \$3 & \$1 & \$1.50 &
+\textbf{\textasciitilde\$21} \\
+\textbf{Production} & \$25 (min 2 ACU, HA) & \$5 & \$2 & \$3 &
+\textbf{\textasciitilde\$35} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+Use separate AWS accounts or resource tags for cost allocation per
+environment.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.17-Cleanup/}{Clean Up Resources}

@@ -1,0 +1,223 @@
+\hypertarget{rag-api-lambda-api-gateway}{%
+\section{RAG API: Lambda + API
+Gateway}}
+
+Phần này bao gồm REST API nhận natural language queries, retrieve
+relevant chunks qua pgvector similarity search, và generate answers dùng
+LLMs (Groq/Gemini).
+
+\hypertarget{kiux1ebfn-truxfac}{%
+\subsection{Kiến trúc}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{requestresponse-format}{%
+\subsection{Request/Response Format}}
+
+\hypertarget{request}{%
+\subsubsection{Request}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ErrorTok{POST} \ErrorTok{/ask}
+\ErrorTok{Content{-}Type:} \ErrorTok{application/json}
+
+\FunctionTok{\{}
+  \DataTypeTok{"query"}\FunctionTok{:} \StringTok{"Tóm tắt tin tức về kinh tế Việt Nam hôm nay"}\FunctionTok{,}
+  \DataTypeTok{"model"}\FunctionTok{:} \StringTok{"qwen3{-}8b{-}instant"}\FunctionTok{,}      \ErrorTok{//} \ErrorTok{optional}\FunctionTok{:} \ErrorTok{qwen3}\DecValTok{{-}8}\ErrorTok{b{-}instant}\FunctionTok{,} \ErrorTok{llama{-}3.1{-}8b{-}instant}\FunctionTok{,} \ErrorTok{gemini{-}2.0{-}flash}
+  \DataTypeTok{"top\_k"}\FunctionTok{:} \DecValTok{5}\FunctionTok{,}                        \ErrorTok{//} \ErrorTok{optional}\FunctionTok{:} \ErrorTok{default} \DecValTok{5}
+  \StringTok{"is\_vanilla"}\ErrorTok{:} \KeywordTok{false}                \ErrorTok{//} \ErrorTok{optional:} \KeywordTok{true} \ErrorTok{=} \ErrorTok{no} \ErrorTok{RAG} \ErrorTok{context}\FunctionTok{,} \ErrorTok{just} \ErrorTok{LLM}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{response}{%
+\subsubsection{Response}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{lambda-function-code}{%
+\subsection{Lambda Function Code}}
+
+\hypertarget{cux1ea5u-truxfac-file}{%
+\subsubsection{Cấu trúc file}}
+
+\begin{verbatim}
+deploy/
+|--- rag/
+|   |--- lambda_function.py
+|   |--- requirements.txt
+|   |--- retriever.py
+|   |--- generator.py
+|   `--- schemas.py
+\end{verbatim}
+
+\hypertarget{schemas.py}{%
+\subsubsection{schemas.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{retriever.py}{%
+\subsubsection{retriever.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{generator.py}{%
+\subsubsection{generator.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{lambda_function.py}{%
+\subsubsection{lambda\_function.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{requirements.txt}{%
+\subsubsection{requirements.txt}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{psycopg2{-}binary==2.9.9}
+\NormalTok{pydantic==2.5.3}
+\NormalTok{requests==2.31.0}
+\NormalTok{boto3==1.34.0}
+\NormalTok{botocore==1.34.0}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{terraform-deployment}{%
+\subsection{Terraform Deployment}}
+
+\hypertarget{api-gateway-lambda}{%
+\subsubsection{API Gateway + Lambda}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{testing-the-api}{%
+\subsection{Testing the API}}
+
+\hypertarget{get-api-url}{%
+\subsubsection{1. Get API URL}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\VariableTok{API\_URL}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ api\_url}\VariableTok{)}
+\BuiltInTok{echo} \VariableTok{$API\_URL}
+\CommentTok{\# https://xxxxx.execute{-}api.ap{-}southeast{-}2.amazonaws.com/prod/ask}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{test-with-curl}{%
+\subsubsection{2. Test with curl}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{curl} \AttributeTok{{-}X}\NormalTok{ POST }\StringTok{"}\VariableTok{$API\_URL}\StringTok{"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}H} \StringTok{"Content{-}Type: application/json"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}d} \StringTok{\textquotesingle{}\{}
+\StringTok{    "query": "Tóm tắt tin tức về kinh tế Việt Nam hôm nay",}
+\StringTok{    "model": "qwen3{-}8b{-}instant",}
+\StringTok{    "top\_k": 5}
+\StringTok{  \}\textquotesingle{}} \KeywordTok{|} \ExtensionTok{jq}\NormalTok{ .}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{test-vanilla-no-rag}{%
+\subsubsection{3. Test vanilla (no RAG)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{curl} \AttributeTok{{-}X}\NormalTok{ POST }\StringTok{"}\VariableTok{$API\_URL}\StringTok{"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}H} \StringTok{"Content{-}Type: application/json"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}d} \StringTok{\textquotesingle{}\{}
+\StringTok{    "query": "Việt Nam có bao nhiêu tỉnh thành?",}
+\StringTok{    "model": "gemini{-}2.0{-}flash",}
+\StringTok{    "is\_vanilla": true}
+\StringTok{  \}\textquotesingle{}} \KeywordTok{|} \ExtensionTok{jq}\NormalTok{ .}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{test-from-next.js-frontend}{%
+\subsubsection{4. Test from Next.js
+Frontend}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{monitoring}{%
+\subsection{Monitoring}}
+
+\hypertarget{cloudwatch-logs}{%
+\subsubsection{CloudWatch Logs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ logs tail /aws/lambda/newsrag{-}rag{-}api }\AttributeTok{{-}{-}follow}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{key-metrics-to-alert}{%
+\subsubsection{Key Metrics to Alert}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Metric & Threshold \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Duration} (p95) & \textgreater{} 20s \\
+\texttt{Errors} & \textgreater{} 0 in 5min \\
+\texttt{Throttles} & \textgreater{} 0 \\
+\texttt{Invocations} & = 0 for 1 hour (if expected traffic) \\
+\end{longtable}
+\endgroup
+
+\hypertarget{cost-estimation}{%
+\subsection{Cost Estimation}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Component & Usage & Monthly Cost \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Lambda (1M req, 1GB, 500ms avg) & 1M × 500ms × 1GB &
+\textasciitilde\$3.50 \\
+API Gateway (1M req) & 1M requests & \textasciitilde\$3.50 \\
+Bedrock Titan Embed (query) & 1M queries × 50 tokens &
+\textasciitilde\$0.50 \\
+Groq API (free tier) & 1M req & \$0 (free tier) \\
+Aurora (query only) & Included in DB cost & - \\
+\textbf{Total} & & \textbf{\textasciitilde\$7.50/month} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+After RAG API works: 1. \textbf{Frontend Integration} - Next.js
+Dashboard: \href{5.14-Frontend/}{Frontend} 2. \textbf{Testing \&
+Evaluation} - RAGAS metrics: \href{5.15-Testing/}{Testing} 3.
+\textbf{Cost Optimization} - Serverless tuning: \href{5.16-Cost/}{Cost}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.14-Frontend/}{Frontend Integration (Next.js
++ FastAPI)}

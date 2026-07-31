@@ -1,0 +1,136 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-4}{%
+\subsubsection{Mục tiêu tuần 4:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Đóng gói Crawler thành Docker container.
+\item
+  Build và push Docker image lên Amazon ECR.
+\item
+  Cấu hình ECS Task Definition cho Fargate Crawler.
+\item
+  Test chạy Crawler trên Fargate thay vì local.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1621}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Viết Dockerfile cho Crawler: \qquad  + Base image:
+\texttt{python:3.10-slim} \qquad  + Cài đặt system deps:
+\texttt{build-essential}, \texttt{libpq-dev} \qquad  + COPY
+requirements.txt \& pip install \qquad  + CMD:
+\texttt{python\ main.py\ -\/-mode\ crawl} & 23/06/2026 & 23/06/2026 &
+Dockerfile \\
+3 & - Build Docker image local:
+\texttt{docker\ build\ -t\ news-crawler\ .} - Test chạy container:
+\texttt{docker\ run\ news-crawler} - Debug issues: PYTHONPATH, encoding,
+env variables & 24/06/2026 & 24/06/2026 & \\
+4 & - Tạo ECR repository: \texttt{newsrag-api} - Push image lên ECR:
+\qquad  + \texttt{aws\ ecr\ get-login-password} \qquad  +
+\texttt{docker\ tag} \& \texttt{docker\ push} - Verify image trên AWS
+Console & 25/06/2026 & 25/06/2026 &
+\url{https://docs.aws.amazon.com/ecr/} \\
+5 & - Cấu hình ECS Task Definition cho Fargate: \qquad  + CPU: 256 (0.25
+vCPU), Memory: 512 MB \qquad  + Network mode: awsvpc \qquad  + Container
+command: \texttt{python\ main.py\ -\/-mode\ crawl} \qquad  + Environment
+variables từ \texttt{.env} \qquad  + Log driver: awslogs \(\rightarrow\)
+CloudWatch & 26/06/2026 & 26/06/2026 & main.tf \\
+6 & - Tạo ECS Cluster: \texttt{newsrag-cluster} - Test chạy Fargate Task
+manually - Kiểm tra logs trên CloudWatch - Debug networking issues
+(Security Groups, VPC, Public IP) & 27/06/2026 & 27/06/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-4}{%
+\subsubsection{Kết quả đạt được tuần
+4:}}
+
+\begin{itemize}
+\item
+  Hoàn thành Dockerfile tối ưu:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{FROM}\NormalTok{ python:3.10{-}slim}
+\KeywordTok{WORKDIR}\NormalTok{ /app}
+\KeywordTok{RUN} \ExtensionTok{apt{-}get}\NormalTok{ update }\KeywordTok{\&\&} \ExtensionTok{apt{-}get}\NormalTok{ install }\AttributeTok{{-}y}\NormalTok{ build{-}essential libpq{-}dev curl}
+\KeywordTok{COPY}\NormalTok{ requirements.txt .}
+\KeywordTok{RUN} \ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}no{-}cache{-}dir} \AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\KeywordTok{COPY}\NormalTok{ . .}
+\KeywordTok{ENV}\NormalTok{ PYTHONPATH=/app}
+\KeywordTok{CMD}\NormalTok{ [}\StringTok{"python"}\NormalTok{, }\StringTok{"main.py"}\NormalTok{, }\StringTok{"{-}{-}mode"}\NormalTok{, }\StringTok{"full"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+\item
+  Docker image build thành công, chạy ổn định trên local
+\item
+  Push image lên ECR thành công:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Repository: \texttt{newsrag-api}
+  \item
+    Tag: \texttt{latest}
+  \item
+    Size: \textasciitilde350 MB (sau tối ưu)
+  \end{itemize}
+\item
+  Cấu hình ECS Task Definition hoàn chỉnh:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Family: \texttt{newsrag-crawler}
+  \item
+    Fargate compatibility, CPU 256, Memory 512
+  \item
+    awsvpc network mode cho private networking
+  \item
+    CloudWatch Logs với prefix \texttt{crawler}
+  \item
+    Environment variables inject từ Terraform locals
+  \end{itemize}
+\item
+  ECS Cluster \texttt{newsrag-cluster} hoạt động, Fargate Task chạy
+  thành công:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Crawler chạy trong container trên Fargate
+  \item
+    Logs xuất hiện trên CloudWatch
+  \item
+    Cần cấu hình Security Group cho phép egress (download pages, gọi
+    Kafka)
+  \end{itemize}
+\end{itemize}

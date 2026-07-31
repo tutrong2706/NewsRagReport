@@ -1,0 +1,123 @@
+To prepare for this part of the workshop you will need to: + Deploying a
+CloudFormation stack + Modifying a VPC route table.
+
+These components work together to simulate on-premises DNS forwarding
+and name resolution.
+
+\hypertarget{deploy-the-cloudformation-stack}{%
+\paragraph{Deploy the CloudFormation
+stack}}
+
+The CloudFormation template will create additional services to support
+an on-premises simulation: + One Route 53 Private Hosted Zone that hosts
+Alias records for the PrivateLink S3 endpoint + One Route 53 Inbound
+Resolver endpoint that enables ``VPC Cloud'' to resolve inbound DNS
+resolution requests to the Private Hosted Zone + One Route 53 Outbound
+Resolver endpoint that enables ``VPC On-prem'' to forward DNS requests
+for S3 to ``VPC Cloud''
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/route53.png}
+\caption{route 53 diagram}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Click the following link to open the
+  \href{https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1\#/stacks/quickcreate?templateURL=https://s3.amazonaws.com/reinvent-endpoints-builders-session/R53CF.yaml\&stackName=PLOnpremSetup}{AWS
+  CloudFormation console}. The required template will be pre-loaded into
+  the menu. Accept all default and click Create stack.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/create-stack.png}
+\caption{Create stack}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/create-stack-button.png}
+\caption{Button}
+\end{figure}
+
+It may take a few minutes for stack deployment to complete. You can
+continue with the next step without waiting for the deployemnt to
+finish.
+
+\hypertarget{update-on-premise-private-route-table}{%
+\paragraph{Update on-premise private route
+table}}
+
+This workshop uses a strongSwan VPN running on an EC2 instance to
+simulate connectivty between an on-premises datacenter and the AWS
+cloud. Most of the required components are provisioned before your
+start. To finalize the VPN configuration, you will modify the ``VPC
+On-prem'' routing table to direct traffic destined for the cloud to the
+strongSwan VPN instance.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Open the Amazon EC2 console
+\item
+  Select the instance named infra-vpngw-test. From the Details tab, copy
+  the Instance ID and paste this into your text editor
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/ec2-onprem-id.png}
+\caption{ec2 id}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  Navigate to the VPC menu by using the Search box at the top of the
+  browser window.
+\item
+  Click on Route Tables, select the RT Private On-prem route table,
+  select the Routes tab, and click Edit Routes.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/rt.png}
+\caption{rt}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Click Add route.
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Destination: your Cloud VPC cidr range
+\item
+  Target: ID of your infra-vpngw-test instance (you saved in your editor
+  at step 1)
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/add-route.png}
+\caption{add route}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Click Save changes
+\end{enumerate}

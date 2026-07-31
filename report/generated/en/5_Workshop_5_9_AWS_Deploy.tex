@@ -1,0 +1,171 @@
+\hypertarget{aws-deployment-preparation}{%
+\section{AWS Deployment Preparation}}
+
+This section covers building Docker images, pushing to ECR, and
+preparing Lambda deployment packages for the AWS serverless
+architecture.
+
+\hypertarget{prerequisites}{%
+\subsection{Prerequisites}}
+
+\begin{itemize}
+\tightlist
+\item
+  Terraform infrastructure deployed (see
+  \href{5.3-Infrastructure/}{Infrastructure})
+\item
+  AWS CLI configured with appropriate permissions
+\item
+  Docker installed and running
+\end{itemize}
+
+\hypertarget{get-terraform-outputs}{%
+\subsection{Get Terraform Outputs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# After terraform apply}
+\VariableTok{ECR\_URL}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ ecr\_repository\_url}\VariableTok{)}
+\VariableTok{ECS\_CLUSTER}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ ecs\_cluster\_name}\VariableTok{)}
+\VariableTok{RDS\_ENDPOINT}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ rds\_endpoint}\VariableTok{)}
+
+\BuiltInTok{echo} \StringTok{"ECR: }\VariableTok{$ECR\_URL}\StringTok{"}
+\BuiltInTok{echo} \StringTok{"ECS Cluster: }\VariableTok{$ECS\_CLUSTER}\StringTok{"}
+\BuiltInTok{echo} \StringTok{"RDS: }\VariableTok{$RDS\_ENDPOINT}\StringTok{"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{docker-image-build-multi-stage}{%
+\subsection{Docker Image Build
+(Multi-stage)}}
+
+The \texttt{Dockerfile} builds a single image used by all ECS tasks
+(crawler, etl, vectorize):
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{build-and-push-to-ecr}{%
+\subsection{Build and Push to ECR}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{alternative-buildx-for-multi-platform-arm64-for-fargate-graviton}{%
+\subsection{Alternative: Buildx for Multi-platform (ARM64 for Fargate
+Graviton)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Cost Tip:} Graviton2 (ARM64) Fargate is \textasciitilde20\%
+cheaper than x86. Use \texttt{db.t4g.medium} for Aurora and
+\texttt{linux/arm64} for Fargate.
+\end{quote}
+
+\hypertarget{lambda-deployment-package}{%
+\subsection{Lambda Deployment Package}}
+
+For Lambda functions (Consumer, ETL, RAG API), create deployment
+packages:
+
+\hypertarget{directory-structure-for-lambda}{%
+\subsubsection{Directory Structure for
+Lambda}}
+
+\begin{verbatim}
+deploy/
+|--- consumer/
+|   |--- lambda_function.py
+|   `--- requirements.txt
+|--- etl/
+|   |--- lambda_function.py
+|   `--- requirements.txt
+`--- rag-api/
+    |--- lambda_function.py
+    `--- requirements.txt
+\end{verbatim}
+
+\hypertarget{build-lambda-layer-shared-dependencies}{%
+\subsubsection{Build Lambda Layer (Shared
+Dependencies)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{package-individual-lambda-functions}{%
+\subsubsection{Package Individual Lambda
+Functions}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{deploy-lambda-functions-deploy.sh}{%
+\subsection{Deploy Lambda Functions
+(deploy.sh)}}
+
+The \texttt{deploy.sh} script automates Lambda deployment:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{iam-role-for-lambda}{%
+\subsection{IAM Role for Lambda}}
+
+Create a role with necessary permissions:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{secrets-manager-for-credentials}{%
+\subsection{Secrets Manager for
+Credentials}}
+
+Store sensitive values in AWS Secrets Manager:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{verify-deployment}{%
+\subsection{Verify Deployment}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cicd-with-github-actions-optional}{%
+\subsection{CI/CD with GitHub Actions
+(Optional)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{next-steps}{%
+\subsection{Next Steps}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Deploy Infrastructure}: \texttt{terraform\ apply} (see
+  \href{5.3-Infrastructure/}{Infrastructure})
+\item
+  \textbf{Build \& Push Docker}: This section
+\item
+  \textbf{Deploy Lambdas}: Run \texttt{deploy.sh} or use CI/CD
+\item
+  \textbf{Test Fargate Crawler}: \href{5.10-Fargate-Crawler/}{Fargate
+  Crawler}
+\item
+  \textbf{Test Lambda Consumer}: \href{5.11-Lambda-Consumer/}{Lambda
+  Consumer}
+\item
+  \textbf{Test Lambda ETL + Embedding}: \href{5.12-Lambda-ETL/}{Lambda
+  ETL}
+\item
+  \textbf{Test RAG API}: \href{5.13-RAG-API/}{RAG API}
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.10-Fargate-Crawler/}{Fargate Crawler}

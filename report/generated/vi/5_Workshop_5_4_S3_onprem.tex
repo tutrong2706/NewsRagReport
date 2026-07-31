@@ -1,0 +1,80 @@
+\hypertarget{chuux1ea9n-huxf3a-dux1eef-liux1ec7u-vuxe0-vector-embedding}{%
+\paragraph{Chuẩn hóa Dữ liệu và Vector
+Embedding}}
+
+Dữ liệu thô từ Crawler cần được làm sạch, cắt nhỏ (chunking) và biến đổi
+thành vector để phục vụ cho tìm kiếm ngữ nghĩa (semantic search).
+
+\textbf{1. Data Cleaning \& Star Schema}
+
+Dữ liệu được làm sạch các thẻ HTML thừa, chuẩn hóa định dạng ngày tháng
+và lưu trữ vào RDS Aurora PostgreSQL theo mô hình Star Schema:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{dim\_source}: Chứa thông tin về báo điện tử
+\item
+  \texttt{dim\_time}: Phân tách chi tiết ngày/tháng/năm
+\item
+  \texttt{dim\_author}: Quản lý thông tin tác giả đã được chuẩn hóa
+\item
+  \texttt{fact\_articles}: Bảng trung tâm chứa bài viết
+\item
+  \texttt{fact\_chunks}: Chứa các đoạn văn bản (chunks) được cắt từ bài
+  viết
+\end{itemize}
+
+\textbf{2. Chunking với Langchain}
+
+Bài viết được cắt nhỏ thành các chunk có độ dài tối đa 800 ký tự với độ
+chênh lệch (overlap) là 150 ký tự để giữ trọn vẹn ngữ cảnh giữa các
+đoạn.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ langchain.text\_splitter }\ImportTok{import}\NormalTok{ RecursiveCharacterTextSplitter}
+
+\NormalTok{text\_splitter }\OperatorTok{=}\NormalTok{ RecursiveCharacterTextSplitter(}
+\NormalTok{    chunk\_size}\OperatorTok{=}\DecValTok{800}\NormalTok{,}
+\NormalTok{    chunk\_overlap}\OperatorTok{=}\DecValTok{150}\NormalTok{,}
+\NormalTok{    separators}\OperatorTok{=}\NormalTok{[}\StringTok{"}\CharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{"."}\NormalTok{, }\StringTok{" "}\NormalTok{, }\StringTok{""}\NormalTok{]}
+\NormalTok{)}
+
+\NormalTok{chunks }\OperatorTok{=}\NormalTok{ text\_splitter.split\_text(article\_content)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3. Vector Embedding với Amazon Bedrock}
+
+NewsRAG v2 sử dụng Amazon Bedrock với mô hình
+\texttt{amazon.titan-embed-text-v2:0} (1024 chiều) để tạo vector thay vì
+host mô hình local \texttt{BAAI/bge-m3} như ở v1, giúp giảm tải
+container và tiết kiệm tài nguyên.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ boto3}
+\ImportTok{import}\NormalTok{ json}
+
+\NormalTok{bedrock\_runtime }\OperatorTok{=}\NormalTok{ boto3.client(}\StringTok{\textquotesingle{}bedrock{-}runtime\textquotesingle{}}\NormalTok{, region\_name}\OperatorTok{=}\StringTok{\textquotesingle{}ap{-}southeast{-}2\textquotesingle{}}\NormalTok{)}
+
+\KeywordTok{def}\NormalTok{ get\_embedding(text):}
+\NormalTok{    body }\OperatorTok{=}\NormalTok{ json.dumps(\{}\StringTok{"inputText"}\NormalTok{: text\})}
+\NormalTok{    response }\OperatorTok{=}\NormalTok{ bedrock\_runtime.invoke\_model(}
+\NormalTok{        modelId}\OperatorTok{=}\StringTok{\textquotesingle{}amazon.titan{-}embed{-}text{-}v2:0\textquotesingle{}}\NormalTok{,}
+\NormalTok{        contentType}\OperatorTok{=}\StringTok{\textquotesingle{}application/json\textquotesingle{}}\NormalTok{,}
+\NormalTok{        accept}\OperatorTok{=}\StringTok{\textquotesingle{}application/json\textquotesingle{}}\NormalTok{,}
+\NormalTok{        body}\OperatorTok{=}\NormalTok{body}
+\NormalTok{    )}
+\NormalTok{    response\_body }\OperatorTok{=}\NormalTok{ json.loads(response.get(}\StringTok{\textquotesingle{}body\textquotesingle{}}\NormalTok{).read())}
+    \ControlFlowTok{return}\NormalTok{ response\_body.get(}\StringTok{\textquotesingle{}embedding\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{4. Vector Database (Qdrant \& pgvector)}
+
+Các vectors được upsert vào Qdrant Cloud hoặc lưu trữ trực tiếp trong
+Aurora thông qua extension \texttt{pgvector} với index HNSW
+(Hierarchical Navigable Small World) để đảm bảo tốc độ truy vấn
+\texttt{Top-K} luôn dưới 50ms ngay cả với hàng triệu vectors.

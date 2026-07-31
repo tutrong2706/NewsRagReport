@@ -1,0 +1,351 @@
+\hypertarget{news-rag-pipeline-on-aws-workshop}{%
+\section{News RAG Pipeline on AWS ---
+Workshop}}
+
+\hypertarget{project-introduction}{%
+\subsection{Project Introduction}}
+
+\textbf{News RAG Pipeline on AWS} is a complete end-to-end system that
+automatically collects news articles from Vietnamese news sites,
+processes them through a Data Warehouse (Star Schema), generates vector
+embeddings using Amazon Bedrock, and provides an intelligent Q\&A
+interface using Retrieval-Augmented Generation (RAG) architecture ---
+all running serverless on AWS.
+
+\hypertarget{architecture-overview}{%
+\subsection{Architecture Overview}}
+
+\hypertarget{local-development-v1---docker-compose}{%
+\subsubsection{Local Development (v1 - Docker
+Compose)}}
+
+\begin{verbatim}
+Scrapy Crawler $\rightarrow$ Kafka $\rightarrow$ PostgreSQL $\rightarrow$ ETL (Star Schema) $\rightarrow$ SentenceTransformer $\rightarrow$ Qdrant $\rightarrow$ RAG API
+\end{verbatim}
+
+\hypertarget{aws-serverless-production-v2---current}{%
+\subsubsection{AWS Serverless Production (v2 -
+Current)}}
+
+\begin{verbatim}
+EventBridge Scheduler (01:00, 02:00 UTC)
+       |
+       |---> Fargate Crawler (SitemapSpider) --> SQS --> Lambda Consumer --> Aurora PostgreSQL
+       |
+       `---> Lambda ETL + Embedding (Bedrock Titan) --> Aurora pgvector (HNSW Index)
+                           |
+                           v
+                    Lambda RAG API <-- API Gateway <-- Client
+                    (Bedrock embed query $\rightarrow$ pgvector search $\rightarrow$ Groq/Gemini LLM)
+\end{verbatim}
+
+\hypertarget{key-components}{%
+\subsection{Key Components}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3438}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3750}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2812}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Technology
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Scheduler} & EventBridge Scheduler & Daily cron jobs (01:00,
+02:00 UTC) \\
+\textbf{Crawler} & ECS Fargate + Scrapy SitemapSpider & Crawl news
+sitemaps, push to SQS \\
+\textbf{Queue} & Amazon SQS Standard & Replace Kafka,
+\textasciitilde\$0/month \\
+\textbf{Consumer} & AWS Lambda (SQS trigger) & SHA256 URL dedup, insert
+raw articles \\
+\textbf{ETL + Embed} & AWS Lambda (15 min timeout) & Clean HTML
+\(\rightarrow\) Chunk 500 tokens \(\rightarrow\) Bedrock Titan Embed v2
+\(\rightarrow\) pgvector \\
+\textbf{Warehouse} & Aurora Serverless v2 + pgvector & PostgreSQL + HNSW
+vector search, 2 ACU \\
+\textbf{RAG API} & Lambda + API Gateway & Embed query \(\rightarrow\)
+Vector search \(\rightarrow\) LLM generate \\
+\textbf{LLM} & Groq (Qwen3-8B) + Gemini 2.0 Flash & External API, no
+local hosting \\
+\textbf{Frontend} & Next.js + FastAPI & Dashboard, Search, Chat,
+Explorer, Monitor \\
+\end{longtable}
+\endgroup
+
+\hypertarget{learning-objectives}{%
+\subsection{Learning Objectives}}
+
+By the end of this workshop, you will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Infrastructure as Code}: Define AWS infrastructure using
+  Terraform (VPC, Aurora, ECS, Lambda, EventBridge)
+\item
+  \textbf{Serverless Containers}: Package and deploy Scrapy crawlers on
+  ECS Fargate with ECR
+\item
+  \textbf{Data Warehouse Design}: Implement Star Schema in Aurora
+  PostgreSQL with pgvector extension
+\item
+  \textbf{Workflow Automation}: Schedule daily pipelines using
+  EventBridge Scheduler
+\item
+  \textbf{RAG System}: Integrate vector database (pgvector) with LLM
+  APIs for intelligent Q\&A
+\item
+  \textbf{Cost Optimization}: Leverage serverless services to minimize
+  operational costs (\textasciitilde\$21-26/month)
+\end{enumerate}
+
+\hypertarget{workshop-sections}{%
+\subsection{Workshop Sections}}
+
+\hypertarget{phase-1-foundation-infrastructure}{%
+\subsubsection{Phase 1: Foundation \&
+Infrastructure}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \href{5.1-Workshop-overview/}{Workshop Overview} - Architecture,
+  objectives, prerequisites, cost estimation
+\item
+  \href{5.2-Prerequisites/}{Prerequisites} - AWS CLI, Terraform, Docker,
+  Python, Git setup
+\item
+  \href{5.3-Infrastructure/}{Infrastructure as Code (Terraform)} - VPC,
+  Aurora pgvector, ECS, ECR, IAM, EventBridge
+\end{enumerate}
+
+\hypertarget{phase-2-local-development}{%
+\subsubsection{Phase 2: Local
+Development}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  \href{5.4-Local-Dev/}{Local Development Setup} - Docker Compose
+  (PostgreSQL, Qdrant, Kafka)
+\item
+  \href{5.5-Crawler/}{Crawler Development} - Scrapy SitemapSpider for
+  Vietnamese news sites
+\item
+  \href{5.6-Ingestion/}{Data Ingestion} - Kafka Consumer \(\rightarrow\)
+  PostgreSQL raw storage
+\item
+  \href{5.7-ETL/}{ETL \& Star Schema} - Data cleaning, chunking, Star
+  Schema transformation
+\item
+  \href{5.8-Vectorize/}{Vectorization} - SentenceTransformer embeddings
+  \(\rightarrow\) Qdrant
+\end{enumerate}
+
+\hypertarget{phase-3-aws-deployment}{%
+\subsubsection{Phase 3: AWS Deployment}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{8}
+\tightlist
+\item
+  \href{5.9-AWS-Deploy/}{AWS Deployment Prep} - Docker build, ECR push,
+  ECS Task Definitions
+\item
+  \href{5.10-Fargate-Crawler/}{Fargate Crawler} - EventBridge
+  \(\rightarrow\) ECS RunTask \(\rightarrow\) SQS
+\item
+  \href{5.11-Lambda-Consumer/}{Lambda Consumer} - SQS Trigger
+  \(\rightarrow\) SHA256 Dedup \(\rightarrow\) Aurora Insert
+\item
+  \href{5.12-Lambda-ETL/}{Lambda ETL + Embedding} - Clean
+  \(\rightarrow\) Chunk \(\rightarrow\) Bedrock Titan Embed
+  \(\rightarrow\) pgvector
+\end{enumerate}
+
+\hypertarget{phase-4-rag-application}{%
+\subsubsection{Phase 4: RAG Application}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{12}
+\tightlist
+\item
+  \href{5.13-RAG-API/}{RAG API} - Lambda + API Gateway \(\rightarrow\)
+  Bedrock Embed Query \(\rightarrow\) pgvector Search \(\rightarrow\)
+  LLM
+\item
+  \href{5.14-Frontend/}{Frontend Integration} - Next.js Dashboard,
+  Search, Chat, Explorer, Monitor
+\end{enumerate}
+
+\hypertarget{phase-5-production-ready}{%
+\subsubsection{Phase 5: Production
+Ready}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{14}
+\tightlist
+\item
+  \href{5.15-Testing/}{Testing \& Monitoring} - RAGAS evaluation,
+  CloudWatch dashboards, alerts
+\item
+  \href{5.16-Cost/}{Cost Optimization} - Serverless tuning, Fargate
+  Spot, right-sizing
+\item
+  \href{5.17-Cleanup/}{Clean Up} - Terraform destroy, manual cleanup
+  verification
+\end{enumerate}
+
+\hypertarget{project-structure}{%
+\subsection{Project Structure}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{architecture-comparison-v1-vs-v2}{%
+\subsection{Architecture Comparison: v1 vs
+v2}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2340}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2766}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3191}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1702}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v1 (Thesis)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v2 (Workshop)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reason
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Crawler} & Lambda + Scrapy (15 min timeout) & \textbf{Fargate +
+SitemapSpider} & No timeout, crawl historical via sitemap \\
+\textbf{Stream} & Kafka on Docker & \textbf{SQS Standard
+(\textasciitilde\$0)} & Simpler, serverless, cost-effective \\
+\textbf{Embedding} & Local BGE models & \textbf{Bedrock Titan Embed v2}
+& AWS native, serverless, consistent vector space \\
+\textbf{Vector DB} & Qdrant Cloud & \textbf{Aurora + pgvector} & Unified
+DB, no external dependency \\
+\textbf{Vectorize} & Separate Fargate Task & \textbf{Merged into ETL
+Lambda} & Fewer services, simpler pipeline \\
+\textbf{RAG Query Embed} & Local Model (cold start 5-10s) &
+\textbf{Bedrock API} & Consistent embeddings, no cold start \\
+\textbf{Monthly Cost} & \textasciitilde\$35 &
+\textbf{\textasciitilde\$21-26} & \textasciitilde30\% reduction \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Key Principle:} ETL and RAG API \textbf{must use the same
+embedding model} (\texttt{amazon.titan-embed-text-v2:0}). Different
+models = different vector spaces = broken search.
+\end{quote}
+
+\hypertarget{cost-estimation-monthly-ap-southeast-2}{%
+\subsection{Cost Estimation (Monthly,
+ap-southeast-2)}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2571}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4286}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3143}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Service
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Configuration
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est. Cost
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Aurora Serverless v2 & 2 ACU (db.t4g.medium) & \textasciitilde\$15-20 \\
+ECS Fargate Crawler & 0.25 vCPU, 0.5 GB, 30 min/day &
+\textasciitilde\$0.50 \\
+Lambda (Consumer, ETL, RAG) & \textasciitilde1M invocations, 15 min
+timeout & \textasciitilde\$2-3 \\
+SQS Standard & \textasciitilde30K messages/month & \textasciitilde\$0 \\
+API Gateway & \textasciitilde10K requests/month &
+\textasciitilde\$0.30 \\
+Bedrock Titan Embed & \textasciitilde500K tokens/month &
+\textasciitilde\$0.50 \\
+CloudWatch Logs & 7-day retention & \textasciitilde\$1-2 \\
+\textbf{Total} & & \textbf{\textasciitilde\$21-26/month} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+Costs vary by region and usage. Check \href{https://calculator.aws/}{AWS
+Pricing Calculator} for current rates.
+\end{quote}
+
+\hypertarget{prerequisites}{%
+\subsection{Prerequisites}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AWS Account} with permissions for: VPC, EC2, RDS, ECS, ECR,
+  Lambda, SQS, EventBridge, API Gateway, Bedrock, CloudWatch, IAM
+\item
+  \textbf{AWS CLI} configured (\texttt{aws\ configure})
+\item
+  \textbf{Terraform} \textgreater= 1.5.0
+\item
+  \textbf{Docker} \& \textbf{Docker Compose}
+\item
+  \textbf{Python} 3.10+
+\item
+  \textbf{Git}
+\item
+  \textbf{External APIs}: Groq API Key, Google Gemini API Key
+\item
+  \textbf{Bedrock Model Access}: Enable
+  \texttt{amazon.titan-embed-text-v2:0} in AWS Console
+\end{itemize}
+
+\hypertarget{quick-start}{%
+\subsection{Quick Start}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.1-Workshop-overview/}{Workshop Overview}

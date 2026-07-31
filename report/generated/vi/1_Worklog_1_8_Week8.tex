@@ -1,0 +1,162 @@
+\hypertarget{mux1ee5c-tiuxeau-tuux1ea7n-8}{%
+\subsubsection{Mục tiêu tuần 8:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Hoàn thiện code, clean up và tối ưu.
+\item
+  So sánh chi tiết kiến trúc v1 vs v2 (chi phí giảm
+  \textasciitilde30\%).
+\item
+  Viết tài liệu kỹ thuật \texttt{Pipeline\_v3.md}.
+\item
+  Hoàn thiện báo cáo thực tập.
+\end{itemize}
+
+\hypertarget{cuxe1c-cuxf4ng-viux1ec7c-cux1ea7n-triux1ec3n-khai-trong-tuux1ea7n-nuxe0y}{%
+\subsubsection{Các công việc cần triển khai trong tuần
+này:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0119}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0474}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1621}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thứ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Công việc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày bắt đầu
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Ngày hoàn thành
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Nguồn tài liệu
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & - Code review và clean up: \qquad  + Xóa code thừa, comments không
+cần thiết \qquad  + Thống nhất coding style (PEP 8) \qquad  + Kiểm tra
+\texttt{.env.example} đầy đủ biến & 21/07/2026 & 21/07/2026 & \\
+3 & - So sánh chi tiết v1 vs v2: \qquad  + Crawler: Lambda (15 phút
+timeout) \(\rightarrow\) Fargate (không giới hạn) \qquad  + Stream:
+Kafka \(\rightarrow\) SQS (\textasciitilde\$0) \qquad  + Embedding:
+bge-m3 local \(\rightarrow\) Bedrock API \qquad  + Vector DB: Qdrant
+Cloud \(\rightarrow\) Aurora pgvector \qquad  + Chi phí:
+\textasciitilde\$35/tháng \(\rightarrow\) \textasciitilde\$21-26/tháng
+(giảm \textasciitilde30\%) & 22/07/2026 & 22/07/2026 &
+Pipeline\_v3.md \\
+4 & - Viết tài liệu kỹ thuật \texttt{Pipeline\_v3.md}: \qquad  + Kiến
+trúc tổng thể (text diagram) \qquad  + Bảng so sánh v1 vs v2 \qquad  +
+Component map \qquad  + Chi tiết kỹ thuật từng module \qquad  + Chi phí
+vận hành \qquad  + Kết quả đánh giá Ragas & 23/07/2026 & 23/07/2026 & \\
+5 & - Viết phần phân chia công việc \& timeline trong Pipeline\_v3.md -
+Viết hướng phát triển tương lai - Viết hướng dẫn deploy và phát triển
+local & 24/07/2026 & 24/07/2026 & \\
+6 & - Hoàn thiện báo cáo thực tập (Hugo report) - Kiểm tra lại toàn bộ
+nội dung worklog 8 tuần - Chuẩn bị slide trình bày (nếu cần) - Nộp báo
+cáo & 25/07/2026 & 25/07/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{kux1ebft-quux1ea3-ux111ux1ea1t-ux111ux1b0ux1ee3c-tuux1ea7n-8}{%
+\subsubsection{Kết quả đạt được tuần
+8:}}
+
+\begin{itemize}
+\item
+  Hoàn thiện code chất lượng sản xuất:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Tất cả module đều có error handling, logging
+  \item
+    \texttt{.env.example} đầy đủ 50 biến môi trường
+  \item
+    \texttt{Makefile} với 12 commands tiện lợi (setup, up, down, full,
+    auto, crawl, etl,\ldots)
+  \item
+    \texttt{deploy.sh} cho automated deployment
+  \end{itemize}
+\item
+  Bảng so sánh kiến trúc v1 vs v2:
+
+  \begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1311}}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2787}}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2787}}
+    >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3115}}@{}}
+  \toprule\noalign{}
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Component
+  \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+  v1 (Khóa luận)
+  \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+  v2 (Cải tiến)
+  \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+  Lý do
+  \end{minipage} \\
+  \midrule\noalign{}
+  \endhead
+  \bottomrule\noalign{}
+  \endlastfoot
+  Crawler & Lambda + CrawlSpider (15 phút) & \textbf{Fargate +
+  SitemapSpider} & Không bị timeout, crawl bài cũ \\
+  Stream & Kafka trên Docker & \textbf{SQS Standard
+  (\textasciitilde\$0)} & Overkill cho batch pipeline \\
+  Embedding & BAAI/bge-m3 (1024d, local) & \textbf{Bedrock Titan Embed
+  v2} & Serverless, không tải model \\
+  Vector DB & Qdrant Cloud (bên thứ ba) & \textbf{Aurora pgvector} & Tận
+  dụng RDS, không phụ thuộc ngoài \\
+  \textbf{Tổng chi phí} & \textbf{\textasciitilde\$35/tháng} &
+  \textbf{\textasciitilde\$21-26/tháng} & \textbf{Giảm
+  \textasciitilde30\%} \\
+  \end{longtable}
+\endgroup
+\item
+  Hoàn thành tài liệu \texttt{Pipeline\_v3.md} (460 dòng) bao gồm:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Kiến trúc tổng thể với text diagram
+  \item
+    Chi tiết 5 module kỹ thuật với code samples
+  \item
+    Schema SQL (Star Schema + pgvector)
+  \item
+    Chi phí vận hành chi tiết
+  \item
+    Kết quả đánh giá Ragas và so sánh với FlashRAG
+  \item
+    Hướng phát triển tương lai
+  \end{itemize}
+\item
+  Hoàn thiện báo cáo thực tập:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    8 tuần worklog chi tiết
+  \item
+    Proposal dự án NewsRAG
+  \item
+    Workshop thực tế
+  \item
+    Tự đánh giá và phản hồi
+  \end{itemize}
+\end{itemize}

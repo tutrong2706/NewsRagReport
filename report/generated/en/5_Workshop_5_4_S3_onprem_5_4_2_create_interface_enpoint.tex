@@ -1,0 +1,108 @@
+In this section you will create and test an S3 interface endpoint using
+the simulated on-premises environment deployed as part of this workshop.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Return to the Amazon VPC menu. In the navigation pane, choose
+  Endpoints, then click Create Endpoint.
+\item
+  In Create endpoint console:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Name the interface endpoint
+\item
+  In Service category, choose \textbf{aws services}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint1.png}
+\caption{name}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  In the Search box, type S3 and press Enter. Select the endpoint named
+  com.amazonaws.us-east-1.s3. Ensure that the Type column indicates
+  Interface.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint2.png}
+\caption{service}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  For VPC, select VPC Cloud from the drop-down.
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Expand \textbf{Additional settings} and ensure that Enable DNS name is
+  \emph{not} selected (we will use this in the next part of the
+  workshop)
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint3.png}
+\caption{vpc}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Select 2 subnets in the following AZs: us-east-1a and us-east-1b
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint4.png}
+\caption{subnets}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  For Security group, choose SGforS3Endpoint:
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint5.png}
+\caption{sg}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Keep the default policy - full access and click Create endpoint
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint-success.png}
+\caption{success}
+\end{figure}
+
+Congratulation on successfully creating S3 interface endpoint. In the
+next step, we will test the interface endpoint.

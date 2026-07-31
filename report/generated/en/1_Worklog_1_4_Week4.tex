@@ -1,0 +1,134 @@
+\hypertarget{week-4-objectives}{%
+\subsubsection{Week 4 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Package the Crawler into a Docker container.
+\item
+  Build and push Docker image to Amazon ECR.
+\item
+  Configure ECS Task Definition for Fargate Crawler.
+\item
+  Test running the Crawler on Fargate instead of locally.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0120}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7149}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0482}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0602}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1647}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Write Dockerfile for Crawler: \qquad  + Base image:
+\texttt{python:3.10-slim} \qquad  + Install system deps:
+\texttt{build-essential}, \texttt{libpq-dev} \qquad  + COPY
+requirements.txt \& pip install \qquad  + CMD:
+\texttt{python\ main.py\ -\/-mode\ crawl} & 23/06/2026 & 23/06/2026 &
+Dockerfile \\
+Tue & - Build Docker image locally:
+\texttt{docker\ build\ -t\ news-crawler\ .} - Test container run:
+\texttt{docker\ run\ news-crawler} - Debug issues: PYTHONPATH, encoding,
+env variables & 24/06/2026 & 24/06/2026 & \\
+Wed & - Create ECR repository: \texttt{newsrag-api} - Push image to ECR:
+\qquad  + \texttt{aws\ ecr\ get-login-password} \qquad  +
+\texttt{docker\ tag} \& \texttt{docker\ push} - Verify image on AWS
+Console & 25/06/2026 & 25/06/2026 &
+\url{https://docs.aws.amazon.com/ecr/} \\
+Thu & - Configure ECS Task Definition for Fargate: \qquad  + CPU: 256
+(0.25 vCPU), Memory: 512 MB \qquad  + Network mode: awsvpc \qquad  +
+Container command: \texttt{python\ main.py\ -\/-mode\ crawl} \qquad  +
+Environment variables from \texttt{.env} \qquad  + Log driver: awslogs
+\(\rightarrow\) CloudWatch & 26/06/2026 & 26/06/2026 & main.tf \\
+Fri & - Create ECS Cluster: \texttt{newsrag-cluster} - Manually test
+Fargate Task run - Check logs on CloudWatch - Debug networking issues
+(Security Groups, VPC, Public IP) & 27/06/2026 & 27/06/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-4-results}{%
+\subsubsection{Week 4 Results:}}
+
+\begin{itemize}
+\item
+  Completed optimized Dockerfile:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{FROM}\NormalTok{ python:3.10{-}slim}
+\KeywordTok{WORKDIR}\NormalTok{ /app}
+\KeywordTok{RUN} \ExtensionTok{apt{-}get}\NormalTok{ update }\KeywordTok{\&\&} \ExtensionTok{apt{-}get}\NormalTok{ install }\AttributeTok{{-}y}\NormalTok{ build{-}essential libpq{-}dev curl}
+\KeywordTok{COPY}\NormalTok{ requirements.txt .}
+\KeywordTok{RUN} \ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}no{-}cache{-}dir} \AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\KeywordTok{COPY}\NormalTok{ . .}
+\KeywordTok{ENV}\NormalTok{ PYTHONPATH=/app}
+\KeywordTok{CMD}\NormalTok{ [}\StringTok{"python"}\NormalTok{, }\StringTok{"main.py"}\NormalTok{, }\StringTok{"{-}{-}mode"}\NormalTok{, }\StringTok{"full"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+\item
+  Docker image builds successfully, runs stably on local
+\item
+  Successfully pushed image to ECR:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Repository: \texttt{newsrag-api}
+  \item
+    Tag: \texttt{latest}
+  \item
+    Size: \textasciitilde350 MB (after optimization)
+  \end{itemize}
+\item
+  Completed ECS Task Definition configuration:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Family: \texttt{newsrag-crawler}
+  \item
+    Fargate compatibility, CPU 256, Memory 512
+  \item
+    awsvpc network mode for private networking
+  \item
+    CloudWatch Logs with \texttt{crawler} prefix
+  \item
+    Environment variables injected from Terraform locals
+  \end{itemize}
+\item
+  ECS Cluster \texttt{newsrag-cluster} operational, Fargate Task running
+  successfully:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Crawler runs inside container on Fargate
+  \item
+    Logs appearing in CloudWatch
+  \item
+    Security Group configured to allow egress (page downloads, Kafka
+    communication)
+  \end{itemize}
+\end{itemize}

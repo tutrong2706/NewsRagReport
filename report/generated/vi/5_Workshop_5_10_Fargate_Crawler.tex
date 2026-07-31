@@ -1,0 +1,195 @@
+\hypertarget{fargate-crawler-ecs-fargate-eventbridge-scheduler}{%
+\section{Fargate Crawler: ECS Fargate + EventBridge
+Scheduler}}
+
+Phần này bao gồm việc deploy Scrapy crawler như ECS Fargate task được
+trigger bởi EventBridge Scheduler.
+
+\hypertarget{kiux1ebfn-truxfac}{%
+\subsection{Kiến trúc}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{task-definition-terraform}{%
+\subsection{Task Definition
+(Terraform)}}
+
+Từ \texttt{main.tf}:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{eventbridge-scheduler-terraform}{%
+\subsection{EventBridge Scheduler
+(Terraform)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{iam-permissions-cho-task-role}{%
+\subsection{IAM Permissions cho Task
+Role}}
+
+\texttt{ecs\_task\_role} cần permissions cho: - \textbf{SQS}:
+SendMessage tới \texttt{news\_raw} queue - \textbf{Secrets Manager}:
+GetSecretValue cho DB credentials - \textbf{CloudWatch Logs}:
+CreateLogStream, PutLogEvents - \textbf{ECR}: BatchGetImage,
+GetDownloadUrlForLayer (via execution role)
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sqs-queue-terraform}{%
+\subsection{SQS Queue (Terraform)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{build-push-docker-image}{%
+\subsection{Build \& Push Docker Image}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{alternative-buildx-cho-multi-platform-arm64-cho-graviton}{%
+\subsection{Alternative: Buildx cho Multi-platform (ARM64 cho
+Graviton)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Cost Tip:} Graviton2 (ARM64) Fargate \textasciitilde20\% rẻ hơn
+x86. Dùng \texttt{db.t4g.medium} cho Aurora và \texttt{linux/arm64} cho
+Fargate.
+\end{quote}
+
+\hypertarget{manual-testing}{%
+\subsection{Manual Testing}}
+
+\hypertarget{chux1ea1y-task-thux1ee7-cuxf4ng}{%
+\subsubsection{Chạy Task Thủ
+Công}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{kiux1ec3m-tra-trux1ea1ng-thuxe1i-task}{%
+\subsubsection{Kiểm Tra Trạng Thái
+Task}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Liệt kê tasks gần đây}
+\ExtensionTok{aws}\NormalTok{ ecs list{-}tasks }\AttributeTok{{-}{-}cluster} \VariableTok{$CLUSTER} \AttributeTok{{-}{-}family} \VariableTok{$TASK\_DEF} \AttributeTok{{-}{-}desired{-}status}\NormalTok{ STOPPED}
+
+\CommentTok{\# Chi tiết task}
+\VariableTok{TASK\_ARN}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{aws}\NormalTok{ ecs list{-}tasks }\AttributeTok{{-}{-}cluster} \VariableTok{$CLUSTER} \AttributeTok{{-}{-}family} \VariableTok{$TASK\_DEF} \AttributeTok{{-}{-}desired{-}status}\NormalTok{ STOPPED }\AttributeTok{{-}{-}query} \StringTok{"taskArns[0]"} \AttributeTok{{-}{-}output}\NormalTok{ text}\VariableTok{)}
+\ExtensionTok{aws}\NormalTok{ ecs describe{-}tasks }\AttributeTok{{-}{-}cluster} \VariableTok{$CLUSTER} \AttributeTok{{-}{-}tasks} \VariableTok{$TASK\_ARN}
+
+\CommentTok{\# Xem logs}
+\ExtensionTok{aws}\NormalTok{ logs tail /ecs/newsrag{-}project }\AttributeTok{{-}{-}follow} \AttributeTok{{-}{-}filter{-}pattern} \StringTok{"crawler"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{monitoring-debugging}{%
+\subsection{Monitoring \& Debugging}}
+
+\hypertarget{cloudwatch-logs}{%
+\subsubsection{CloudWatch Logs}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Tail crawler logs}
+\ExtensionTok{aws}\NormalTok{ logs tail /ecs/newsrag{-}project }\AttributeTok{{-}{-}follow} \AttributeTok{{-}{-}filter{-}pattern} \StringTok{"crawler"}
+
+\CommentTok{\# Tìm lỗi}
+\ExtensionTok{aws}\NormalTok{ logs filter{-}log{-}events }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}log{-}group{-}name}\NormalTok{ /ecs/newsrag{-}project }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}filter{-}pattern} \StringTok{"ERROR"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}start{-}time} \VariableTok{$(}\FunctionTok{date} \AttributeTok{{-}d} \StringTok{\textquotesingle{}1 hour ago\textquotesingle{}}\NormalTok{ +\%s}\VariableTok{)}\NormalTok{000}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cloudwatch-metrics}{%
+\subsubsection{CloudWatch Metrics}}
+
+Tạo dashboard với: - \texttt{ECS/TaskCount} (Running, Pending, Stopped)
+- \texttt{ECS/CPUUtilization} (per task) -
+\texttt{ECS/MemoryUtilization} (per task) -
+\texttt{SQS/NumberOfMessagesSent} (news\_raw queue) -
+\texttt{SQS/NumberOfMessagesReceived} (Lambda consumer)
+
+\hypertarget{vux1ea5n-ux111ux1ec1-thux1b0ux1eddng-gux1eb7p}{%
+\subsubsection{Vấn đề thường
+gặp}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4211}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5789}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Vấn đề
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Giải pháp
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{CannotPullContainerError} & Check ECR permissions, image tag
+exists, VPC có Internet Gateway \\
+\texttt{Task\ failed\ to\ start} & Check CloudWatch Logs cho container
+error; verify \texttt{command} trong task definition \\
+\texttt{SQS\ AccessDenied} & Attach SQS policy vào
+\texttt{ecs\_task\_role} \\
+\texttt{Database\ connection\ timeout} & Verify security group cho phép
+5432 từ ECS SG; check Secrets Manager access \\
+\texttt{Crawler\ takes\ \textgreater{}\ 15\ min} & Tăng task CPU/memory;
+optimize Scrapy settings (\texttt{CLOSESPIDER\_TIMEOUT}) \\
+\end{longtable}
+\endgroup
+
+\hypertarget{scaling-considerations}{%
+\subsection{Scaling Considerations}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Concurrency:} Chạy multiple crawler tasks song song (khác
+  spiders)
+\item
+  \textbf{Queue depth:} Monitor SQS
+  \texttt{ApproximateNumberOfMessagesVisible}
+\item
+  \textbf{Cost:} Fargate Spot (lên đến 70\% tiết kiệm) cho
+  fault-tolerant crawling:
+\end{itemize}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cux1eadp-nhux1eadt-crawler}{%
+\subsection{Cập nhật Crawler}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{bux1b0ux1edbc-tiux1ebfp-theo}{%
+\subsection{Bước tiếp theo}}
+
+Sau khi crawler đẩy lên SQS: 1. \textbf{Lambda Consumer} đọc SQS
+\(\rightarrow\) insert Aurora: \href{5.11-Lambda-Consumer/}{Lambda
+Consumer} 2. \textbf{Lambda ETL} xử lý raw \(\rightarrow\) Star Schema +
+Bedrock Embed: \href{5.12-Lambda-ETL/}{Lambda ETL} 3. \textbf{RAG API}
+serve queries: \href{5.13-RAG-API/}{RAG API}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.11-Lambda-Consumer/}{Lambda Consumer (SQS
+\(\rightarrow\) Aurora)}

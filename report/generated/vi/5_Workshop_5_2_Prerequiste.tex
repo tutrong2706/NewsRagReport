@@ -1,0 +1,62 @@
+\hypertarget{yuxeau-cux1ea7u-trux1b0ux1edbc-khi-bux1eaft-ux111ux1ea7u}{%
+\paragraph{Yêu cầu trước khi bắt
+đầu}}
+
+\textbf{Tài khoản và công cụ:} - AWS Account (Free Tier) - AWS CLI đã
+cấu hình (access key, secret key, region \texttt{ap-southeast-2}) -
+Python 3.10+ - Docker Desktop - Terraform CLI - Git
+
+\textbf{Clone repository:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{git}\NormalTok{ clone }\OperatorTok{\textless{}}\NormalTok{repository{-}url}\OperatorTok{\textgreater{}}
+\BuiltInTok{cd}\NormalTok{ NewsRagProject}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Thiết lập môi trường Python:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{make}\NormalTok{ setup}
+\CommentTok{\# hoặc}
+\ExtensionTok{python3} \AttributeTok{{-}m}\NormalTok{ venv venv}
+\ExtensionTok{./venv/bin/pip}\NormalTok{ install }\AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Cấu hình biến môi trường:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cp}\NormalTok{ .env.example .env}
+\CommentTok{\# Điền thông tin vào .env:}
+\CommentTok{\# DB\_NAME, DB\_USER, DB\_PASSWORD, DB\_HOST, DB\_PORT}
+\CommentTok{\# QDRANT\_HOST, QDRANT\_API\_KEY}
+\CommentTok{\# KAFKA\_BOOTSTRAP\_SERVERS}
+\CommentTok{\# EMBEDDING\_MODEL, EMBEDDING\_SIZE}
+\CommentTok{\# MODEL\_1\_API\_KEY (Groq), MODEL\_3\_API\_KEY (Google)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Khởi chạy Docker services:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{docker{-}compose}\NormalTok{ up }\AttributeTok{{-}d}
+\CommentTok{\# Khởi tạo PostgreSQL + Kafka local}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Kiểm tra kết nối:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# PostgreSQL}
+\ExtensionTok{psql} \AttributeTok{{-}h}\NormalTok{ localhost }\AttributeTok{{-}U}\NormalTok{ postgres }\AttributeTok{{-}d}\NormalTok{ newsrag}
+
+\CommentTok{\# Kafka}
+\ExtensionTok{docker}\NormalTok{ exec }\AttributeTok{{-}it}\NormalTok{ kafka\_newsrag /opt/kafka/bin/kafka{-}topics.sh }\AttributeTok{{-}{-}list} \AttributeTok{{-}{-}bootstrap{-}server}\NormalTok{ localhost:9092}
+\end{Highlighting}
+\end{Shaded}

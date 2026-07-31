@@ -1,0 +1,140 @@
+\hypertarget{week-2-objectives}{%
+\subsubsection{Week 2 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Deep-dive into Scrapy framework --- the main tool for news crawling.
+\item
+  Understand the differences between CrawlSpider (v1) and SitemapSpider
+  (v2).
+\item
+  Master Docker, Dockerfile, docker-compose for containerization
+  preparation.
+\item
+  Analyze sitemap XML structure of 3 Vietnamese news outlets.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0121}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7126}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0486}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0607}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1660}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Study Scrapy framework: \qquad  + Scrapy project structure
+\qquad  + Spider, Pipeline, Settings \qquad  + Middleware and Item
+Pipeline & 09/06/2026 & 09/06/2026 & \url{https://docs.scrapy.org/} \\
+Tue & - Compare CrawlSpider vs SitemapSpider: \qquad  + CrawlSpider:
+relies on DEPTH\_LIMIT, misses old articles \qquad  + SitemapSpider:
+reads all URLs from sitemap, navigation-independent & 10/06/2026 &
+10/06/2026 & \url{https://docs.scrapy.org/} \\
+Wed & - Analyze sitemap XML structure of 3 news outlets: \qquad  +
+VnExpress: \texttt{sitemap\_news.xml} \qquad  + Thanh Niên:
+\texttt{sitemap.xml} \qquad  + VietnamNet: \texttt{sitemap\_news.xml} &
+11/06/2026 & 11/06/2026 & \\
+Thu & - Learn Docker basics: \qquad  + Dockerfile: FROM, WORKDIR, COPY,
+RUN, CMD \qquad  + docker-compose.yml: services, volumes, environment
+\qquad  + Multi-stage build & 12/06/2026 & 12/06/2026 &
+\url{https://docs.docker.com/} \\
+Fri & - Study \texttt{newspaper3k} library for article content
+extraction - Research Kafka Producer/Consumer pattern - Learn
+\texttt{confluent\_kafka} Python client & 13/06/2026 & 13/06/2026 &
+\url{https://newspaper.readthedocs.io/} \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-2-results}{%
+\subsubsection{Week 2 Results:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Mastered Scrapy project structure:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{spiders/}: contains spider classes
+  \item
+    \texttt{pipelines.py}: processes items after spider yields
+  \item
+    \texttt{settings.py}: configures CONCURRENT\_REQUESTS,
+    DOWNLOAD\_DELAY, DEPTH\_LIMIT,\ldots{}
+  \end{itemize}
+\item
+  Understood the key differences between 2 spider types:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{CrawlSpider (v1)}: Uses \texttt{DEPTH\_LIMIT=5}, only crawls
+    pages within link scope \(\rightarrow\) misses old articles not
+    linked from homepage
+  \item
+    \textbf{SitemapSpider (v2)}: Reads directly from sitemap XML file
+    \(\rightarrow\) crawls all articles including old ones, avoids
+    Lambda's 15-minute timeout
+  \end{itemize}
+\item
+  Analyzed sitemap XML of 3 news outlets:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    VnExpress: \texttt{https://vnexpress.net/sitemap\_news.xml}
+  \item
+    Thanh Niên: \texttt{https://thanhnien.vn/sitemap.xml}
+  \item
+    VietnamNet: \texttt{https://vietnamnet.vn/sitemap\_news.xml}
+  \end{itemize}
+\item
+  Acquired necessary Docker knowledge:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    How to write optimized Dockerfile (base image
+    \texttt{python:3.10-slim}, multi-layer caching)
+  \item
+    Docker Compose to run PostgreSQL + Kafka locally
+  \item
+    Understanding \texttt{.env} files and how to inject into containers
+  \end{itemize}
+\item
+  Studied \texttt{newspaper3k}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Python library for extracting title, content, author, publish\_date
+    from HTML
+  \item
+    Uses \texttt{article.set\_html()} + \texttt{article.parse()} instead
+    of direct download
+  \item
+    Combined with Scrapy's CSS Selectors for improved accuracy
+  \end{itemize}
+\end{itemize}

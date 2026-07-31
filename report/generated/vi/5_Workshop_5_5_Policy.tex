@@ -1,0 +1,53 @@
+\hypertarget{trux1ee3-luxfd-thuxf4ng-minh-vux1edbi-hux1ecfi-ux111uxe1p-dux1ef1a-truxean-tin-tux1ee9c}{%
+\paragraph{Trợ lý Thông minh với Hỏi đáp dựa trên Tin
+tức}}
+
+Module RAG (Retrieval-Augmented Generation) là trái tim của hệ thống,
+kết hợp khả năng tìm kiếm ngữ nghĩa của Qdrant/pgvector và sức mạnh suy
+luận của LLM để trả lời câu hỏi người dùng dựa trên tin tức thực tế.
+
+\textbf{1. Luồng xử lý RAG}
+
+Khi người dùng đặt câu hỏi (VD: \emph{``Tình hình bão Yagi hôm nay thế
+nào?''}), hệ thống thực hiện các bước: 1. \textbf{Query Embedding}: Biến
+đổi câu hỏi thành vector 1024 chiều bằng Amazon Bedrock. 2.
+\textbf{Vector Search (Retrieval)}: So sánh cosine similarity để tìm ra
+Top-K (VD: 5) chunks văn bản liên quan nhất từ Qdrant/pgvector. 3.
+\textbf{Prompt Engineering}: Kết hợp Top-K chunks này thành ``Context''
+cùng với câu hỏi của người dùng đưa vào Prompt. 4. \textbf{LLM
+Generation}: Gửi Prompt cho Groq (Qwen3-8B) hoặc Gemini Flash để sinh ra
+câu trả lời tự nhiên, có trích dẫn nguồn.
+
+\textbf{2. Cấu hình System Prompt}
+
+Để tránh tình trạng LLM bị ảo giác (hallucination) hoặc tự bịa thông
+tin, Prompt được thiết kế chặt chẽ:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# search/prompts.py}
+\NormalTok{NEWS\_RAG\_SYSTEM\_PROMPT }\OperatorTok{=} \StringTok{"""Bạn là một Chuyên gia Phân tích Tin tức cấp cao, có khả năng phân tích chuyên nghiệp, trung thực và khách quan.}
+\StringTok{Phong cách trả lời:}
+\StringTok{{-} Khách quan, trung thực, dựa HOÀN TOÀN trên dữ liệu được cung cấp. Tuyệt đối không dùng kiến thức ngoài để tự bịa thêm.}
+\StringTok{{-} Luôn trích dẫn nguồn rõ ràng và chính xác (ví dụ: Theo bài báo [Tên bài]).}
+\StringTok{{-} Nếu CONTEXT hoàn toàn không có thông tin liên quan, hãy trả lời: "Dựa trên các tài liệu được cung cấp, không có đủ thông tin để trả lời chính xác về..."}
+\StringTok{"""}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3. Kiến trúc Đa Model (Multi-LLM)}
+
+Hệ thống cấu hình hỗ trợ nhiều LLM khác nhau nhằm mục đích dự phòng
+(fallback) hoặc so sánh chất lượng: - \textbf{Model 1 (Chính)}: Groq API
+với \texttt{qwen-2.5-32b} hoặc \texttt{llama-3.1-8b-instant} --- siêu
+tốc độ. - \textbf{Model 2 (Dự phòng)}: Google Gemini
+\texttt{gemini-2.0-flash-exp} --- xử lý context dài tốt.
+
+\textbf{4. Đánh giá chất lượng RAG (Ragas)}
+
+Chất lượng của RAG pipeline được đo lường bằng framework Ragas với các
+chỉ số: - \textbf{Context Precision}: Tài liệu liên quan nhất có được
+xếp hạng cao không. - \textbf{Context Recall}: Hệ thống có lấy đủ thông
+tin để trả lời không. - \textbf{Faithfulness}: LLM có trung thực với
+context không (hay tự bịa). - \textbf{Answer Relevancy}: Câu trả lời có
+đúng trọng tâm câu hỏi không.

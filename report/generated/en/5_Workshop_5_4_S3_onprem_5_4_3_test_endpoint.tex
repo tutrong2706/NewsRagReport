@@ -1,0 +1,117 @@
+\hypertarget{get-the-regional-dns-name-of-s3-interface-endpoint}{%
+\paragraph{Get the regional DNS name of S3 interface
+endpoint}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  From the Amazon VPC menu, choose Endpoints.
+\item
+  Click the name of newly created endpoint: s3-interface-endpoint. Click
+  details and save the regional DNS name of the endpoint (the first one)
+  to your text-editor for later use.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/dns.png}
+\caption{dns name}
+\end{figure}
+
+\hypertarget{connect-to-ec2-instance-in-vpc-on-prem}{%
+\paragraph{Connect to EC2 instance in ``VPC
+On-prem''}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Navigate to \textbf{Session manager} by typing ``session manager'' in
+  the search box
+\item
+  Click \textbf{Start Session}, and select the EC2 instance named
+  \textbf{Test-Interface-Endpoint}. This EC2 instance is running in
+  ``VPC On-prem'' and will be used to test connectivty to Amazon S3
+  through the Interface endpoint we just created. Session Manager will
+  open a new browser tab with a shell prompt: \textbf{sh-4.2 \$}
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/start-session.png}
+\caption{Start session}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  Change to the ssm-user's home directory with command ``cd
+  \textasciitilde{}''
+\item
+  Create a file named testfile2.xyz
+\end{enumerate}
+
+\begin{verbatim}
+fallocate -l 1G testfile2.xyz
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/cli1.png}
+\caption{user}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Copy file to the same S3 bucket we created in section 3.2
+\end{enumerate}
+
+\begin{verbatim}
+aws s3 cp --endpoint-url https://bucket.<Regional-DNS-Name> testfile2.xyz s3://<your-bucket-name>
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  This command requires the --endpoint-url parameter, because you need
+  to use the endpoint-specific DNS name to access S3 using an Interface
+  endpoint.
+\item
+  Do not include the leading ' * ' when copying/pasting the regional DNS
+  name.
+\item
+  Provide your S3 bucket name created earlier
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/cli2.png}
+\caption{copy file}
+\end{figure}
+
+Now the file has been added to your S3 bucket. Let check your S3 bucket
+in the next step.
+
+\hypertarget{check-object-in-s3-bucket}{%
+\paragraph{Check Object in S3 bucket}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Navigate to S3 console
+\item
+  Click Buckets
+\item
+  Click the name of your bucket and you will see testfile2.xyz has been
+  added to your bucket
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/check-bucket.png}
+\caption{check bucket}
+\end{figure}

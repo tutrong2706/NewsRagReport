@@ -1,0 +1,80 @@
+\hypertarget{building-automated-crawler-with-scrapy-and-ecs-fargate}{%
+\paragraph{Building Automated Crawler with Scrapy and ECS
+Fargate}}
+
+The Crawler module is responsible for collecting new articles daily and
+pushing them to the SQS queue for processing. Using ECS Fargate
+eliminates the 15-minute timeout limit of AWS Lambda (v1 architecture).
+
+\textbf{1. Scrapy SitemapSpider}
+
+Unlike CrawlSpider which relies on links from the homepage,
+SitemapSpider directly reads the \texttt{sitemap\_news.xml} file of
+newspapers to ensure no older articles are missed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# crawler/spiders/spider.py (Excerpt)}
+\ImportTok{import}\NormalTok{ scrapy}
+\ImportTok{from}\NormalTok{ newspaper }\ImportTok{import}\NormalTok{ Article}
+\ImportTok{from}\NormalTok{ crawler.utils }\ImportTok{import}\NormalTok{ is\_valid\_author}
+
+\KeywordTok{class}\NormalTok{ NewsRAGSpider(scrapy.Spider):}
+\NormalTok{    name }\OperatorTok{=} \StringTok{\textquotesingle{}news\_rag\_spider\textquotesingle{}}
+    
+    \KeywordTok{def}\NormalTok{ parse(}\VariableTok{self}\NormalTok{, response):}
+        \CommentTok{\# Filter internal URLs and classify articles}
+\NormalTok{        ...}
+        
+    \KeywordTok{def}\NormalTok{ parse\_article(}\VariableTok{self}\NormalTok{, response):}
+\NormalTok{        article }\OperatorTok{=}\NormalTok{ Article(response.url)}
+\NormalTok{        article.set\_html(response.text)}
+
+\NormalTok{... (Đoạn mã đã được rút gọn, còn }\DecValTok{15}\NormalTok{ dòng) ...}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{2. Docker Container Packaging}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# crawler/Dockerfile}
+\KeywordTok{FROM}\NormalTok{ python:3.10{-}slim}
+\KeywordTok{WORKDIR}\NormalTok{ /app}
+
+\CommentTok{\# Install system dependencies for psycopg2}
+\KeywordTok{RUN} \ExtensionTok{apt{-}get}\NormalTok{ update }\KeywordTok{\&\&} \ExtensionTok{apt{-}get}\NormalTok{ install }\AttributeTok{{-}y}\NormalTok{ build{-}essential libpq{-}dev}
+
+\KeywordTok{COPY}\NormalTok{ requirements.txt .}
+\KeywordTok{RUN} \ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}no{-}cache{-}dir} \AttributeTok{{-}r}\NormalTok{ requirements.txt}
+
+\KeywordTok{COPY}\NormalTok{ . .}
+\KeywordTok{ENV}\NormalTok{ PYTHONPATH=/app}
+\KeywordTok{CMD}\NormalTok{ [}\StringTok{"python"}\NormalTok{, }\StringTok{"main.py"}\NormalTok{, }\StringTok{"{-}{-}mode"}\NormalTok{, }\StringTok{"crawl"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3. Amazon SQS Integration}
+
+Crawled data is serialized to JSON and pushed to SQS instead of Kafka to
+save costs:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# crawler/pipelines.py}
+\ImportTok{import}\NormalTok{ boto3}
+\ImportTok{import}\NormalTok{ json}
+
+\KeywordTok{class}\NormalTok{ SQSPipeline:}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{):}
+        \VariableTok{self}\NormalTok{.sqs }\OperatorTok{=}\NormalTok{ boto3.client(}\StringTok{\textquotesingle{}sqs\textquotesingle{}}\NormalTok{, region\_name}\OperatorTok{=}\StringTok{\textquotesingle{}ap{-}southeast{-}2\textquotesingle{}}\NormalTok{)}
+        \VariableTok{self}\NormalTok{.queue\_url }\OperatorTok{=} \StringTok{\textquotesingle{}https://sqs.ap{-}southeast{-}2.amazonaws.com/123456789/newsrag{-}articles\textquotesingle{}}
+        
+    \KeywordTok{def}\NormalTok{ process\_item(}\VariableTok{self}\NormalTok{, item, spider):}
+        \VariableTok{self}\NormalTok{.sqs.send\_message(}
+\NormalTok{            QueueUrl}\OperatorTok{=}\VariableTok{self}\NormalTok{.queue\_url,}
+\NormalTok{            MessageBody}\OperatorTok{=}\NormalTok{json.dumps(}\BuiltInTok{dict}\NormalTok{(item), ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{        )}
+        \ControlFlowTok{return}\NormalTok{ item}
+\end{Highlighting}
+\end{Shaded}

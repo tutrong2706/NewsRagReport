@@ -1,0 +1,78 @@
+\hypertarget{data-normalization-and-vector-embedding}{%
+\paragraph{Data Normalization and Vector
+Embedding}}
+
+Raw data from the Crawler needs to be cleaned, chunked, and transformed
+into vectors to support semantic search.
+
+\textbf{1. Data Cleaning \& Star Schema}
+
+Data is stripped of redundant HTML tags, date formats are normalized,
+and stored in RDS Aurora PostgreSQL following the Star Schema model:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{dim\_source}: Contains newspaper information
+\item
+  \texttt{dim\_time}: Detailed split of day/month/year
+\item
+  \texttt{dim\_author}: Manages normalized author information
+\item
+  \texttt{fact\_articles}: Central table containing articles
+\item
+  \texttt{fact\_chunks}: Contains text chunks split from articles
+\end{itemize}
+
+\textbf{2. Chunking with Langchain}
+
+Articles are split into chunks with a maximum length of 800 characters
+and a 150-character overlap to preserve context between segments.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ langchain.text\_splitter }\ImportTok{import}\NormalTok{ RecursiveCharacterTextSplitter}
+
+\NormalTok{text\_splitter }\OperatorTok{=}\NormalTok{ RecursiveCharacterTextSplitter(}
+\NormalTok{    chunk\_size}\OperatorTok{=}\DecValTok{800}\NormalTok{,}
+\NormalTok{    chunk\_overlap}\OperatorTok{=}\DecValTok{150}\NormalTok{,}
+\NormalTok{    separators}\OperatorTok{=}\NormalTok{[}\StringTok{"}\CharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{"."}\NormalTok{, }\StringTok{" "}\NormalTok{, }\StringTok{""}\NormalTok{]}
+\NormalTok{)}
+
+\NormalTok{chunks }\OperatorTok{=}\NormalTok{ text\_splitter.split\_text(article\_content)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3. Vector Embedding with Amazon Bedrock}
+
+NewsRAG v2 uses Amazon Bedrock with the
+\texttt{amazon.titan-embed-text-v2:0} model (1024 dimensions) to
+generate vectors instead of hosting a local \texttt{BAAI/bge-m3} model
+like in v1. This reduces container load and saves resources.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ boto3}
+\ImportTok{import}\NormalTok{ json}
+
+\NormalTok{bedrock\_runtime }\OperatorTok{=}\NormalTok{ boto3.client(}\StringTok{\textquotesingle{}bedrock{-}runtime\textquotesingle{}}\NormalTok{, region\_name}\OperatorTok{=}\StringTok{\textquotesingle{}ap{-}southeast{-}2\textquotesingle{}}\NormalTok{)}
+
+\KeywordTok{def}\NormalTok{ get\_embedding(text):}
+\NormalTok{    body }\OperatorTok{=}\NormalTok{ json.dumps(\{}\StringTok{"inputText"}\NormalTok{: text\})}
+\NormalTok{    response }\OperatorTok{=}\NormalTok{ bedrock\_runtime.invoke\_model(}
+\NormalTok{        modelId}\OperatorTok{=}\StringTok{\textquotesingle{}amazon.titan{-}embed{-}text{-}v2:0\textquotesingle{}}\NormalTok{,}
+\NormalTok{        contentType}\OperatorTok{=}\StringTok{\textquotesingle{}application/json\textquotesingle{}}\NormalTok{,}
+\NormalTok{        accept}\OperatorTok{=}\StringTok{\textquotesingle{}application/json\textquotesingle{}}\NormalTok{,}
+\NormalTok{        body}\OperatorTok{=}\NormalTok{body}
+\NormalTok{    )}
+\NormalTok{    response\_body }\OperatorTok{=}\NormalTok{ json.loads(response.get(}\StringTok{\textquotesingle{}body\textquotesingle{}}\NormalTok{).read())}
+    \ControlFlowTok{return}\NormalTok{ response\_body.get(}\StringTok{\textquotesingle{}embedding\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{4. Vector Database (Qdrant \& pgvector)}
+
+Vectors are upserted into Qdrant Cloud or stored directly in Aurora via
+the \texttt{pgvector} extension with HNSW (Hierarchical Navigable Small
+World) index to ensure \texttt{Top-K} query speeds remain under 50ms
+even with millions of vectors.

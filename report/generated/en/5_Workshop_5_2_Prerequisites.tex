@@ -1,0 +1,233 @@
+\hypertarget{prerequisites}{%
+\section{Prerequisites}}
+
+Before starting this workshop, ensure you have the following tools
+installed and configured.
+
+\hypertarget{required-accounts-permissions}{%
+\subsection{Required Accounts \&
+Permissions}}
+
+\hypertarget{aws-account}{%
+\subsubsection{AWS Account}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AWS Account} with administrative access or permissions for:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    VPC, EC2, Subnets, Route Tables, Internet Gateway
+  \item
+    RDS (Aurora PostgreSQL Serverless v2)
+  \item
+    ECS (Fargate, Clusters, Task Definitions, Services)
+  \item
+    ECR (Repositories)
+  \item
+    Lambda (Functions, Layers, Permissions)
+  \item
+    SQS (Queues)
+  \item
+    EventBridge (Rules, Schedules, Targets)
+  \item
+    API Gateway (REST APIs)
+  \item
+    Bedrock (Model access: \texttt{amazon.titan-embed-text-v2:0})
+  \item
+    IAM (Roles, Policies)
+  \item
+    CloudWatch (Log Groups, Metrics)
+  \item
+    CloudFormation (Stacks)
+  \end{itemize}
+\end{itemize}
+
+\begin{quote}
+\textbf{Tip:} Use an IAM user with \texttt{AdministratorAccess} for the
+workshop, or ensure your role has the above permissions.
+\end{quote}
+
+\hypertarget{external-api-keys-for-rag}{%
+\subsubsection{External API Keys (for
+RAG)}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Groq API Key} --- Get from
+  \href{https://console.groq.com/}{console.groq.com} (Free tier
+  available)
+\item
+  \textbf{Google Gemini API Key} --- Get from
+  \href{https://aistudio.google.com/}{aistudio.google.com} (Free tier
+  available)
+\end{itemize}
+
+\hypertarget{required-tools}{%
+\subsection{Required Tools}}
+
+\hypertarget{aws-cli-v2}{%
+\subsubsection{1. AWS CLI v2}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Configure AWS CLI:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ configure}
+\CommentTok{\# Enter: AWS Access Key ID, Secret Access Key, Region (e.g., ap{-}southeast{-}2), Output format (json)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{terraform-1.5.0}{%
+\subsubsection{2. Terraform \textgreater= 1.5.0}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{docker-docker-compose}{%
+\subsubsection{3. Docker \& Docker
+Compose}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{python-3.10}{%
+\subsubsection{4. Python 3.10+}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{git}{%
+\subsubsection{5. Git}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{code-editor-recommended-vs-code}{%
+\subsubsection{6. Code Editor (Recommended: VS
+Code)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{project-setup}{%
+\subsection{Project Setup}}
+
+\hypertarget{clone-the-repository}{%
+\subsubsection{Clone the Repository}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{git}\NormalTok{ clone }\OperatorTok{\textless{}}\NormalTok{your{-}repo{-}url}\OperatorTok{\textgreater{}}\NormalTok{ AWS{-}Projects}
+\BuiltInTok{cd}\NormalTok{ AWS{-}Projects}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{python-virtual-environment}{%
+\subsubsection{Python Virtual
+Environment}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3} \AttributeTok{{-}m}\NormalTok{ venv venv}
+\BuiltInTok{source}\NormalTok{ venv/bin/activate  }\CommentTok{\# Linux/macOS}
+\CommentTok{\# venv\textbackslash{}Scripts\textbackslash{}activate   \# Windows}
+
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}{-}upgrade}\NormalTok{ pip}
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}r}\NormalTok{ requirements.txt}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{environment-variables}{%
+\subsubsection{Environment Variables}}
+
+Copy the example file and fill in your values:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cp}\NormalTok{ .env.example .env}
+\end{Highlighting}
+\end{Shaded}
+
+Edit \texttt{.env} with your credentials:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{terraform-variables}{%
+\subsubsection{Terraform Variables}}
+
+Create \texttt{terraform.tfvars}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat} \OperatorTok{\textgreater{}}\NormalTok{ terraform.tfvars }\OperatorTok{\textless{}\textless{} EOF}
+\StringTok{db\_password     = "your\_secure\_password\_123!"}
+\StringTok{db\_user         = "postgres"}
+\StringTok{qdrant\_api\_key  = ""  \# Leave empty for AWS deployment}
+\StringTok{qdrant\_host     = ""  \# Leave empty for AWS deployment}
+\StringTok{model\_1\_api\_key = "gsk\_xxxxxxxxxxxxxxxxxxxx"  \# Groq}
+\StringTok{model\_2\_api\_key = "gsk\_xxxxxxxxxxxxxxxxxxxx"  \# Groq backup}
+\StringTok{model\_3\_api\_key = "AIza\_xxxxxxxxxxxxxxxxxxxx" \# Gemini}
+\OperatorTok{EOF}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{Security:} Never commit \texttt{.env} or
+\texttt{terraform.tfvars} to git. They are in \texttt{.gitignore}.
+\end{quote}
+
+\hypertarget{verify-setup}{%
+\subsection{Verify Setup}}
+
+Run the verification script:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{make}\NormalTok{ verify}
+\end{Highlighting}
+\end{Shaded}
+
+Or manually check each tool:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ sts get{-}caller{-}identity  }\CommentTok{\# Should show your AWS account}
+\ExtensionTok{terraform}\NormalTok{ version            }\CommentTok{\# Should be \textgreater{}= 1.5.0}
+\ExtensionTok{docker}\NormalTok{ run hello{-}world       }\CommentTok{\# Should print "Hello from Docker!"}
+\ExtensionTok{python3} \AttributeTok{{-}c} \StringTok{"import scrapy; print(\textquotesingle{}Scrapy OK\textquotesingle{})"}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{aws-region}{%
+\subsection{AWS Region}}
+
+This workshop uses \textbf{ap-southeast-2 (Sydney)} by default. To
+change: 1. Update
+\texttt{provider\ "aws"\ \{\ region\ =\ "your-region"\ \}} in
+\texttt{main.tf} 2. Update \texttt{AWS\_REGION} in \texttt{.env} 3.
+Ensure Bedrock model \texttt{amazon.titan-embed-text-v2:0} is available
+in your region (check
+\href{https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html}{Bedrock
+regions})
+
+\hypertarget{bedrock-model-access}{%
+\subsection{Bedrock Model Access}}
+
+Enable model access in AWS Console: 1. Go to \textbf{Amazon Bedrock}
+\(\rightarrow\) \textbf{Model access} 2. Click \textbf{Manage model
+access} 3. Enable \textbf{Amazon Titan Embeddings G1 - Text v2}
+(\texttt{amazon.titan-embed-text-v2:0}) 4. Wait for status to show
+``Access granted''
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.3-Infrastructure/}{Infrastructure as Code
+(Terraform)}

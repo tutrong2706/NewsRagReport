@@ -1,0 +1,228 @@
+\hypertarget{news-rag-pipeline-truxean-aws-tux1ed5ng-quan-workshop}{%
+\section{News RAG Pipeline trên AWS --- Tổng quan
+Workshop}}
+
+Workshop này hướng dẫn bạn xây dựng một \textbf{News RAG
+(Retrieval-Augmented Generation) Pipeline} hoàn chỉnh trên AWS sử dụng
+kiến trúc serverless. Bạn sẽ học cách thiết kế, triển khai và vận hành
+một hệ thống end-to-end tự động thu thập tin tức, xử lý thành Data
+Warehouse, tạo vector embedding, và cho phép hỏi đáp thông minh bằng LLM
+--- tất cả chạy serverless trên AWS.
+
+\hypertarget{kiux1ebfn-truxfac-workshop}{%
+\subsection{Kiến trúc Workshop}}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.1-Workshop-overview/architecture.png}
+\caption{Kiến trúc Workshop}
+\end{figure}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{mux1ee5c-tiuxeau-hux1ecdc-tux1eadp}{%
+\subsection{Mục tiêu học tập}}
+
+Sau khi hoàn thành workshop này, bạn sẽ có thể:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Infrastructure as Code}: Định nghĩa hạ tầng AWS bằng Terraform
+  (VPC, Aurora, ECS, Lambda, EventBridge)
+\item
+  \textbf{Serverless Containers}: Đóng gói và triển khai Scrapy crawler
+  trên ECS Fargate với ECR
+\item
+  \textbf{Thiết kế Data Warehouse}: Triển khai Star Schema trên Aurora
+  PostgreSQL với extension pgvector
+\item
+  \textbf{Tự động hóa Workflow}: Lên lịch pipeline hàng ngày bằng
+  EventBridge Scheduler
+\item
+  \textbf{Hệ thống RAG}: Tích hợp vector database (pgvector) với LLM
+  APIs cho hỏi đáp thông minh
+\item
+  \textbf{Tối ưu chi phí}: Tận dụng dịch vụ serverless để giảm thiểu chi
+  phí vận hành (\textasciitilde\$21-26/tháng)
+\end{enumerate}
+
+\hypertarget{cuxe1c-module-workshop}{%
+\subsection{Các Module Workshop}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0661}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3306}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.5124}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0909}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Module
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tiêu đề
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mô tả
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Thời gian
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+5.1 & \textbf{Tổng quan Workshop} & Kiến trúc, mục tiêu, điều kiện tiên
+quyết, ước lượng chi phí & 30 phút \\
+5.2 & \textbf{Điều kiện tiên quyết} & AWS CLI, Terraform, Docker, Python
+setup & 30 phút \\
+5.3 & \textbf{Hạ tầng (Terraform)} & VPC, Aurora pgvector, ECS Cluster,
+ECR, IAM, EventBridge & 60 phút \\
+5.4 & \textbf{Crawler (ECS Fargate)} & Dockerfile, Scrapy SitemapSpider,
+ECR push, Task Definition & 45 phút \\
+5.5 & \textbf{Hàng đợi \& Consumer (SQS + Lambda)} & SQS queue, Lambda
+Consumer, SHA256 dedup, Aurora insert & 45 phút \\
+5.6 & \textbf{ETL + Embedding (Lambda + Bedrock)} & HTML clean,
+chunking, Titan Embed v2, pgvector HNSW insert & 60 phút \\
+5.7 & \textbf{RAG API (Lambda + API Gateway)} & Query embed, pgvector
+search, LLM generation, response & 45 phút \\
+5.8 & \textbf{Tích hợp Frontend} & Next.js Dashboard, Search, Chat,
+Explorer, Pipeline Monitor & 60 phút \\
+5.9 & \textbf{Kiểm thử \& Giám sát} & CloudWatch Logs, query testing,
+RAG evaluation & 30 phút \\
+5.10 & \textbf{Dọn dẹp} & Terraform destroy, dọn dẹp tài nguyên & 15
+phút \\
+\end{longtable}
+\endgroup
+
+\hypertarget{ux111iux1ec1u-kiux1ec7n-tiuxean-quyux1ebft}{%
+\subsection{Điều kiện tiên
+quyết}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Tài khoản AWS} với quyền cho: VPC, EC2, RDS, ECS, ECR, Lambda,
+  SQS, EventBridge, API Gateway, Bedrock, CloudWatch, IAM
+\item
+  \textbf{AWS CLI} đã cấu hình (\texttt{aws\ configure}) với thông tin
+  xác thực phù hợp
+\item
+  \textbf{Terraform} \textgreater= 1.5.0 đã cài đặt
+\item
+  \textbf{Docker} \& \textbf{Docker Compose} đã cài đặt
+\item
+  \textbf{Python} 3.10+ với pip
+\item
+  \textbf{Git} để kiểm soát phiên bản
+\item
+  \textbf{Trình soạn thảo mã} (VS Code khuyến nghị)
+\end{itemize}
+
+\hypertarget{ux1b0ux1edbc-lux1b0ux1ee3ng-chi-phuxed-huxe0ng-thuxe1ng-ap-southeast-2}{%
+\subsection{Ước lượng chi phí (Hàng tháng,
+ap-southeast-2)}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2093}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3488}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4419}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Dịch vụ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cấu hình
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Chi phí ước tính
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Aurora Serverless v2 & 2 ACU (db.t4g.medium) & \textasciitilde\$15-20 \\
+ECS Fargate Crawler & 0.25 vCPU, 0.5 GB, 30 phút/ngày &
+\textasciitilde\$0.50 \\
+Lambda (Consumer, ETL, RAG) & \textasciitilde1M invocations, timeout 15
+phút & \textasciitilde\$2-3 \\
+SQS Standard & \textasciitilde30K messages/tháng & \textasciitilde\$0 \\
+API Gateway & \textasciitilde10K requests/tháng &
+\textasciitilde\$0.30 \\
+Bedrock Titan Embed & \textasciitilde500K tokens/tháng &
+\textasciitilde\$0.50 \\
+CloudWatch Logs & Giữ 7 ngày & \textasciitilde\$1-2 \\
+\textbf{Tổng cộng} & & \textbf{\textasciitilde\$21-26/tháng} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Lưu ý:} Chi phí thay đổi theo khu vực và mức sử dụng. Kiểm tra
+\href{https://calculator.aws/}{AWS Pricing Calculator} để biết mức giá
+hiện tại.
+\end{quote}
+
+\hypertarget{cux1ea5u-truxfac-dux1ef1-uxe1n}{%
+\subsection{Cấu trúc dự án}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{so-suxe1nh-kiux1ebfn-truxfac-v1-vs-v2}{%
+\subsection{So sánh Kiến trúc: v1 vs
+v2}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2222}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2963}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3519}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1296}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Thành phần
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v1 (Khóa luận)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v2 (Workshop này)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Lý do
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Crawler} & Lambda + Scrapy (timeout 15 phút) & \textbf{Fargate +
+SitemapSpider} & Không timeout, crawl được bài cũ qua sitemap \\
+\textbf{Stream} & Kafka trên Docker & \textbf{SQS Standard
+(\textasciitilde\$0)} & Đơn giản hơn, serverless, tiết kiệm chi phí \\
+\textbf{Embedding} & Model BGE cục bộ & \textbf{Bedrock Titan Embed v2}
+& AWS native, serverless, vector space nhất quán \\
+\textbf{Vector DB} & Qdrant Cloud & \textbf{Aurora + pgvector} & DB
+thống nhất, không phụ thuộc bên ngoài \\
+\textbf{Vectorize} & Fargate task riêng & \textbf{Gộp vào ETL Lambda} &
+Giảm dịch vụ, pipeline đơn giản hơn \\
+\textbf{RAG Query Embed} & Model local (cold start 5-10s) &
+\textbf{Bedrock API} & Nhất quán embedding, không cold start \\
+\textbf{Chi phí/tháng} & \textasciitilde\$35 &
+\textbf{\textasciitilde\$21-26} & Giảm \textasciitilde30\% \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Nguyên tắc quan trọng:} ETL và RAG API \textbf{bắt buộc dùng
+cùng một embedding model} (\texttt{amazon.titan-embed-text-v2:0}). Model
+khác nhau = vector space khác nhau = tìm kiếm hỏng.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.2-Prerequisites/}{Điều kiện tiên quyết}

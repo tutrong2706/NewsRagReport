@@ -1,0 +1,297 @@
+\hypertarget{clean-up-resources}{%
+\section{Clean Up Resources}}
+
+This section provides step-by-step instructions to tear down all AWS
+resources created during the workshop to avoid ongoing charges.
+
+\hypertarget{before-you-begin}{%
+\subsection{! Before You Begin}}
+
+\textbf{Backup any important data!} This process is
+\textbf{irreversible} and will permanently delete: - Aurora PostgreSQL
+database (all articles, chunks, embeddings) - ECR Docker images -
+CloudWatch Logs - S3 objects (if any) - Lambda functions and their
+versions
+
+\hypertarget{option-1-terraform-destroy-recommended}{%
+\subsection{Option 1: Terraform Destroy
+(Recommended)}}
+
+This destroys all resources managed by Terraform in the correct
+dependency order.
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Expected output:}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{option-2-manual-cleanup-if-terraform-state-lost}{%
+\subsection{Option 2: Manual Cleanup (If Terraform State
+Lost)}}
+
+If you don't have the Terraform state, clean up manually in this order:
+
+\hypertarget{delete-lambda-functions}{%
+\subsubsection{1. Delete Lambda
+Functions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ lambda delete{-}function }\AttributeTok{{-}{-}function{-}name}\NormalTok{ newsrag{-}consumer }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ lambda delete{-}function }\AttributeTok{{-}{-}function{-}name}\NormalTok{ newsrag{-}etl }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ lambda delete{-}function }\AttributeTok{{-}{-}function{-}name}\NormalTok{ newsrag{-}rag{-}api }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-eventbridge-rules-targets}{%
+\subsubsection{2. Delete EventBridge Rules \&
+Targets}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Remove targets first}
+\ExtensionTok{aws}\NormalTok{ events remove{-}targets }\AttributeTok{{-}{-}rule}\NormalTok{ newsrag{-}crawler{-}rule }\AttributeTok{{-}{-}ids}\NormalTok{ crawler{-}target }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ events remove{-}targets }\AttributeTok{{-}{-}rule}\NormalTok{ newsrag{-}etl{-}rule }\AttributeTok{{-}{-}ids}\NormalTok{ etl{-}target }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ events remove{-}targets }\AttributeTok{{-}{-}rule}\NormalTok{ newsrag{-}vectorize{-}rule }\AttributeTok{{-}{-}ids}\NormalTok{ vectorize{-}target }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+
+\CommentTok{\# Delete rules}
+\ExtensionTok{aws}\NormalTok{ events delete{-}rule }\AttributeTok{{-}{-}name}\NormalTok{ newsrag{-}crawler{-}rule }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ events delete{-}rule }\AttributeTok{{-}{-}name}\NormalTok{ newsrag{-}etl{-}rule }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ events delete{-}rule }\AttributeTok{{-}{-}name}\NormalTok{ newsrag{-}vectorize{-}rule }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-ecs-resources}{%
+\subsubsection{3. Delete ECS Resources}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Deregister task definitions}
+\ExtensionTok{aws}\NormalTok{ ecs deregister{-}task{-}definition }\AttributeTok{{-}{-}task{-}definition}\NormalTok{ newsrag{-}crawler }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ ecs deregister{-}task{-}definition }\AttributeTok{{-}{-}task{-}definition}\NormalTok{ newsrag{-}etl }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ ecs deregister{-}task{-}definition }\AttributeTok{{-}{-}task{-}definition}\NormalTok{ newsrag{-}vectorize }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+
+\CommentTok{\# Delete cluster}
+\ExtensionTok{aws}\NormalTok{ ecs delete{-}cluster }\AttributeTok{{-}{-}cluster}\NormalTok{ newsrag{-}cluster }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-ecr-repository}{%
+\subsubsection{4. Delete ECR Repository}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Delete all images first}
+\ExtensionTok{aws}\NormalTok{ ecr batch{-}delete{-}image }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}repository{-}name}\NormalTok{ newsrag{-}api }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}image{-}ids} \VariableTok{$(}\ExtensionTok{aws}\NormalTok{ ecr list{-}images }\AttributeTok{{-}{-}repository{-}name}\NormalTok{ newsrag{-}api }\AttributeTok{{-}{-}query} \StringTok{\textquotesingle{}imageIds[*]\textquotesingle{}} \AttributeTok{{-}{-}output}\NormalTok{ json}\VariableTok{)} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+
+\CommentTok{\# Delete repository}
+\ExtensionTok{aws}\NormalTok{ ecr delete{-}repository }\AttributeTok{{-}{-}repository{-}name}\NormalTok{ newsrag{-}api }\AttributeTok{{-}{-}force} \AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-rds-aurora-cluster}{%
+\subsubsection{5. Delete RDS Aurora
+Cluster}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{delete-vpc-resources}{%
+\subsubsection{6. Delete VPC Resources}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{delete-iam-roles-policies}{%
+\subsubsection{7. Delete IAM Roles \&
+Policies}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{delete-cloudwatch-log-groups}{%
+\subsubsection{8. Delete CloudWatch Log
+Groups}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ logs delete{-}log{-}group }\AttributeTok{{-}{-}log{-}group{-}name}\NormalTok{ /ecs/newsrag{-}project }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ logs delete{-}log{-}group }\AttributeTok{{-}{-}log{-}group{-}name}\NormalTok{ /aws/lambda/newsrag{-}consumer }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ logs delete{-}log{-}group }\AttributeTok{{-}{-}log{-}group{-}name}\NormalTok{ /aws/lambda/newsrag{-}etl }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ logs delete{-}log{-}group }\AttributeTok{{-}{-}log{-}group{-}name}\NormalTok{ /aws/lambda/newsrag{-}rag{-}api }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-sqs-queues}{%
+\subsubsection{9. Delete SQS Queues}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ sqs delete{-}queue }\AttributeTok{{-}{-}queue{-}url}\NormalTok{ https://sqs.ap{-}southeast{-}2.amazonaws.com/123456789012/newsrag{-}news{-}raw }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\ExtensionTok{aws}\NormalTok{ sqs delete{-}queue }\AttributeTok{{-}{-}queue{-}url}\NormalTok{ https://sqs.ap{-}southeast{-}2.amazonaws.com/123456789012/newsrag{-}news{-}raw{-}dlq }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-api-gateway}{%
+\subsubsection{10. Delete API Gateway}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\VariableTok{API\_ID}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{aws}\NormalTok{ apigateway get{-}rest{-}apis }\AttributeTok{{-}{-}query} \StringTok{"items[?name==\textquotesingle{}newsrag{-}api\textquotesingle{}].id"} \AttributeTok{{-}{-}output}\NormalTok{ text}\VariableTok{)}
+\ExtensionTok{aws}\NormalTok{ apigateway delete{-}rest{-}api }\AttributeTok{{-}{-}rest{-}api{-}id} \VariableTok{$API\_ID} \AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-secrets-manager-secrets}{%
+\subsubsection{11. Delete Secrets Manager
+Secrets}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ secretsmanager delete{-}secret }\AttributeTok{{-}{-}secret{-}id}\NormalTok{ newsrag/db{-}credentials }\AttributeTok{{-}{-}force{-}delete{-}without{-}recovery} \AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{delete-sns-topic-alarms}{%
+\subsubsection{12. Delete SNS Topic
+(Alarms)}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ sns delete{-}topic }\AttributeTok{{-}{-}topic{-}arn}\NormalTok{ arn:aws:sns:ap{-}southeast{-}2:123456789012:newsrag{-}alerts }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{verify-complete-cleanup}{%
+\subsection{Verify Complete Cleanup}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+All should return empty results \texttt{{[}{]}}.
+
+\hypertarget{clean-up-local-files}{%
+\subsection{Clean Up Local Files}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cost-verification}{%
+\subsection{Cost Verification}}
+
+After cleanup, verify no ongoing charges:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{AWS Billing Dashboard} \(\rightarrow\) Check ``Cost Explorer''
+  for current month
+\item
+  \textbf{Set up Budget Alert} for \$1/month to catch any stray
+  resources:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{aws}\NormalTok{ budgets create{-}budget }\AttributeTok{{-}{-}account{-}id} \VariableTok{$(}\ExtensionTok{aws}\NormalTok{ sts get{-}caller{-}identity }\AttributeTok{{-}{-}query}\NormalTok{ Account }\AttributeTok{{-}{-}output}\NormalTok{ text}\VariableTok{)} \AttributeTok{{-}{-}budget}\NormalTok{ file://budget.json}
+\end{Highlighting}
+\end{Shaded}
+\end{enumerate}
+
+\hypertarget{common-issues}{%
+\subsection{Common Issues}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4118}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5882}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Issue
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Solution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{DependencyViolation} deleting VPC & Delete ENIs first:
+\texttt{aws\ ec2\ describe-network-interfaces\ -\/-filters\ Name=vpc-id,Values=\$VPC\_ID}
+then \texttt{aws\ ec2\ delete-network-interface} \\
+\texttt{DBInstanceNotFound} & Instance already deleted, skip to cluster
+deletion \\
+\texttt{ResourceInUseException} (Lambda) & Wait 1-2 minutes for
+EventBridge targets to detach \\
+\texttt{InvalidParameterException} (RDS) & Ensure
+\texttt{skip-final-snapshot} is used for dev environments \\
+\end{longtable}
+\endgroup
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{workshop-complete}{%
+\subsection{Workshop Complete!}}
+
+You have successfully built and deployed a \textbf{production-ready News
+RAG Pipeline on AWS} with:
+
+\begin{itemize}
+\tightlist
+\item
+  \checkmark **Infrastructure as Code** (Terraform)
+\item
+  \checkmark **Serverless Architecture** (Fargate, Lambda, Aurora
+  Serverless v2)
+\item
+  \checkmark **Event-Driven Pipeline** (EventBridge \(\rightarrow\) SQS
+  \(\rightarrow\) Lambda \(\rightarrow\) Bedrock \(\rightarrow\)
+  pgvector)
+\item
+  \checkmark **RAG API** (Vector search + LLM generation)
+\item
+  \checkmark **Monitoring \& Alerting** (CloudWatch, Logs, Metrics)
+\item
+  \checkmark **Cost Optimization** (\textasciitilde\$21-26/month)
+\item
+  \checkmark **CI/CD Ready** (GitHub Actions)
+\end{itemize}
+
+\hypertarget{next-steps-for-production}{%
+\subsubsection{Next Steps for
+Production}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Add Authentication} - API Gateway Authorizers (Cognito/JWT)
+\item
+  \textbf{Custom Domain} - Route 53 + ACM certificate for API Gateway
+\item
+  \textbf{WAF} - Protect API from abuse
+\item
+  \textbf{Multi-AZ Aurora} - Enable \texttt{storage\_encrypted},
+  \texttt{deletion\_protection}
+\item
+  \textbf{RDS Proxy} - For connection pooling at scale
+\item
+  \textbf{Secrets Rotation} - Automatic credential rotation
+\item
+  \textbf{Blue/Green Deploy} - ECS deployment circuits
+\item
+  \textbf{Chaos Engineering} - Test failure scenarios
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Thank you for completing the workshop!}
+
+\emph{Repository: https://github.com/your-org/AWS-Projects}

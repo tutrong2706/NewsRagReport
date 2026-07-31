@@ -1,0 +1,55 @@
+\hypertarget{overcoming-aws-lambdas-15-minute-limit-with-ecs-fargate-architecture}{%
+\section{Overcoming AWS Lambda's 15-minute Limit with ECS Fargate
+Architecture}}
+
+During the development of the \textbf{News RAG Pipeline}, one of the
+biggest technical challenges we faced was automating the crawling of
+news from major Vietnamese websites (VnExpress, Thanh Nien, VietnamNet).
+Initially, the system was designed to run on \textbf{AWS Lambda}.
+
+\hypertarget{the-problem-execution-timeout}{%
+\subsubsection{The Problem: Execution
+Timeout}}
+
+AWS Lambda is a fantastic service for running serverless code. However,
+it has a \textbf{hard limit of 15 minutes (900 seconds)} per execution.
+
+When our crawler parses sitemaps of news websites, the number of
+articles to process can reach thousands daily. Fetching HTML content,
+parsing data, and sending it to a queue takes a significant amount of
+time, especially since we must respect the origin server's rate limits
+to avoid being blocked. As a result, the Lambda function frequently
+\textbf{timed out} before completing its job.
+
+\hypertarget{the-solution-migrating-to-amazon-ecs-fargate}{%
+\subsubsection{The Solution: Migrating to Amazon ECS
+Fargate}}
+
+To solve this problem while maintaining the ``Serverless'' philosophy
+(avoiding 24/7 running EC2 instances), we decided to migrate our
+crawling architecture to \textbf{Amazon ECS Fargate}.
+
+\textbf{Why Fargate?} 1. \textbf{No Execution Time Limits}: Fargate
+tasks can run as long as needed until the crawling job is finished. 2.
+\textbf{Scheduled Execution}: By integrating with \textbf{Amazon
+EventBridge}, we easily scheduled the Crawler to run automatically at
+01:00 and 02:00 AM UTC every day. 3. \textbf{Easy Scaling}: If we need
+to crawl more websites, we can simply adjust the CPU and RAM allocation
+for the Task (currently, 0.25 vCPU and 0.5 GB RAM are sufficient). 4.
+\textbf{Docker Packaging}: The Scrapy framework and its dependencies are
+neatly packaged in a Docker Image and stored in \textbf{Amazon ECR}.
+
+\hypertarget{results-achieved}{%
+\subsubsection{Results Achieved}}
+
+Migrating to ECS Fargate brought absolute stability to our data
+ingestion pipeline. The crawler can now run continuously for 30-40
+minutes every night, fetching hundreds of new articles without any
+interruptions. Furthermore, the cost for Fargate is highly optimized
+since we only pay for the exact compute minutes the Crawler actually
+runs.
+
+\emph{Key takeaway: No single AWS service is a ``silver bullet.''
+Understanding the limits of services like Lambda and flexibly switching
+to more appropriate services like ECS Fargate is a crucial skill in
+Cloud architecture design.}

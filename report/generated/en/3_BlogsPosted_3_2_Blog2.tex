@@ -1,0 +1,57 @@
+\hypertarget{system-cost-optimization-migrating-from-apache-kafka-to-amazon-sqs}{%
+\section{System Cost Optimization: Migrating from Apache Kafka to Amazon
+SQS}}
+
+A crucial criterion when designing systems on the Cloud is \textbf{Cost
+Optimization}. In the first version (v1) developed in our local
+environment, the project used \textbf{Apache Kafka} as the message
+broker to stream data from the Crawler to the Database. However, when
+migrating to AWS, cost became a significant barrier.
+
+\hypertarget{the-cost-challenge-with-kafka}{%
+\subsubsection{The Cost Challenge with
+Kafka}}
+
+Apache Kafka is an incredibly powerful stream processing tool. But to
+run Kafka on AWS, we generally have two main choices: 1. \textbf{Amazon
+MSK (Managed Streaming for Apache Kafka)}: Very expensive (can cost
+dozens or hundreds of USD per month). 2. \textbf{Self-hosting Kafka on
+EC2}: Requires maintaining EC2 instances running 24/7, incurring fixed
+costs (at least \textasciitilde\$10-15/month) plus the overhead of
+system administration, security updates, and managing ZooKeeper.
+
+Meanwhile, the data flow of NewsRAG is fundamentally \textbf{Batch
+processing}: The Crawler only runs 1-2 times a day (at night) and pushes
+around 500 - 1000 new articles. Maintaining a Kafka cluster running 24/7
+just to serve this intermittent data flow is extremely wasteful.
+
+\hypertarget{the-alternative-amazon-sqs-simple-queue-service}{%
+\subsubsection{The Alternative: Amazon SQS (Simple Queue
+Service)}}
+
+We decided to completely replace the queue architecture with
+\textbf{Amazon SQS}.
+
+\textbf{Why SQS is the perfect fit:} 1. \textbf{Fully Serverless \&
+Pay-as-you-go}: SQS requires no servers. You only pay based on the
+number of requests. With our system's daily news volume, the number of
+requests easily fits within the \textbf{Free Tier} (the first 1 million
+requests per month are free). The queue cost was reduced to
+\textbf{essentially \$0}. 2. \textbf{Native Integration with AWS
+Lambda}: SQS can act as an ``Event Source'' to automatically trigger a
+Lambda function (Lambda Consumer). When the Crawler pushes an article to
+SQS, SQS automatically invokes Lambda to save it into the Database,
+without us having to write polling loops. 3. \textbf{Dead-Letter Queue
+(DLQ)}: SQS provides a built-in DLQ mechanism. If an article is
+malformed and Lambda fails to save it to the DB after several retries,
+that message is moved to the DLQ so we can analyze it later, ensuring no
+data loss.
+
+\hypertarget{design-evaluation}{%
+\subsubsection{Design Evaluation}}
+
+By removing Kafka and switching to SQS, the system became not only
+lighter and easier to maintain but also saved a massive amount in
+operational budget. This is a practical proof that: \textbf{Choosing
+technology is not about picking the ``fanciest'' tool, but choosing the
+most ``appropriate'' one for the current scale and problem.}

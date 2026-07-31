@@ -1,0 +1,149 @@
+\hypertarget{week-3-objectives}{%
+\subsubsection{Week 3 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Develop the complete \texttt{NewsRAGSpider} --- the main spider for
+  news crawling.
+\item
+  Implement article information extraction logic: title, content,
+  author, publish\_date.
+\item
+  Write \texttt{KafkaPipeline} to push crawled data into Kafka topic.
+\item
+  Test crawling locally.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0120}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7149}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0482}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0602}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1647}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Write \texttt{NewsRAGSpider} class inheriting
+\texttt{scrapy.Spider} - Implement \texttt{parse()} method: filter
+internal URLs, classify article links (.html, .htm) and category links -
+Configure \texttt{custom\_settings}: CONCURRENT\_REQUESTS,
+DOWNLOAD\_DELAY, DEPTH\_LIMIT & 16/06/2026 & 16/06/2026 & spider.py \\
+Tue & - Implement \texttt{parse\_article()}: use \texttt{newspaper3k} to
+parse HTML - Filter articles with content \textless{} 100 characters -
+Extract author from \texttt{article.authors} & 17/06/2026 & 17/06/2026
+& \\
+Wed & - Advanced author extraction: \qquad  + Fallback through multiple
+CSS selectors (\texttt{.author-name}, \texttt{.tac-gia},
+\texttt{a{[}rel="author"{]}},\ldots) \qquad  + Validate author: filter
+out fake authors (URLs, dates, newspaper names) \qquad  +
+\texttt{is\_valid\_author()} function: check length, special characters,
+bad words & 18/06/2026 & 18/06/2026 & \\
+Thu & - Publish\_date parsing: \qquad  + Parse ISO format:
+\texttt{2026-07-01T14:30} \qquad  + Parse VN format:
+\texttt{17/06/2026\ 14:30} \qquad  + Fallback through multiple CSS
+selectors + \texttt{article.publish\_date} - Write
+\texttt{KafkaPipeline}: serialize item to JSON \(\rightarrow\) push to
+Kafka topic \texttt{news\_raw} & 19/06/2026 & 19/06/2026 &
+pipelines.py \\
+Fri & - Test local crawl: \texttt{scrapy\ crawl\ news\_rag\_spider} -
+Verify output: correct JSON format, valid author, proper dates - Debug
+and fix CSS selectors for each newspaper & 20/06/2026 & 20/06/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-3-results}{%
+\subsubsection{Week 3 Results:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Completed \texttt{NewsRAGSpider} (\texttt{crawler/spiders/spider.py})
+  with features:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{parse()}: Traverses all links on page, filters same-domain
+    URLs, classifies articles vs category pages
+  \item
+    \textbf{parse\_article()}: Uses \texttt{newspaper3k} combined with
+    CSS Selectors
+  \item
+    \textbf{Custom settings}: CONCURRENT\_REQUESTS=16 (Windows) / 32
+    (Linux), DOWNLOAD\_DELAY=1.0/0.5, DEPTH\_LIMIT=5
+  \end{itemize}
+\item
+  Built complex author extraction system with multi-level fallback:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    Extract from \texttt{newspaper3k} \(\rightarrow\) validate
+  \item
+    Fallback through 12+ CSS selectors: \texttt{.author-name},
+    \texttt{.tac-gia}, \texttt{a{[}href*="tac-gia"{]}},\ldots{}
+  \item
+    Scan bottom paragraphs for patterns like ``Theo: \ldots{}'' /
+    ``Nguon: \ldots{}''
+  \item
+    Final fallback to \texttt{meta{[}name="author"{]}}
+  \end{enumerate}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{is\_valid\_author()} checks: length 2-100 chars, no
+    URLs/emails, no date patterns, no bad words (newspaper names,
+    generic labels)
+  \end{itemize}
+\item
+  Handled diverse date parsing:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ISO format: \texttt{2026-07-01T14:30:00}
+  \item
+    VN format: \texttt{17/06/2026\ 14:30} or \texttt{01-07-2026}
+  \item
+    Fallback through 10 CSS selectors + \texttt{article.publish\_date}
+  \item
+    Standardized output: \texttt{YYYY-MM-DD\ HH:MM:SS}
+  \end{itemize}
+\item
+  Completed \texttt{KafkaPipeline} (\texttt{crawler/pipelines.py}):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Serializes item to JSON (ensure\_ascii=False for Vietnamese)
+  \item
+    Pushes to Kafka topic \texttt{news\_raw}
+  \item
+    Producer flush after each item
+  \end{itemize}
+\item
+  Successfully tested local crawling with valid output format
+\end{itemize}

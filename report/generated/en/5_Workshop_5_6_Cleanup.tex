@@ -1,0 +1,78 @@
+\hypertarget{deploying-infrastructure-as-code-with-terraform}{%
+\paragraph{Deploying Infrastructure as Code with
+Terraform}}
+
+Instead of manually configuring each service on the AWS Console, the
+NewsRAG project uses Terraform to automate the provisioning of the
+entire infrastructure (Infrastructure as Code - IaC).
+
+\textbf{1. Terraform Structure}
+
+The \texttt{main.tf} file (over 370 lines) manages all resources: -
+\textbf{Networking}: VPC (\texttt{10.0.0.0/16}), 2 Public Subnets
+(multi-AZ), Internet Gateway, Route Tables. - \textbf{Security Groups}:
+Access control following the Principle of Least Privilege --- e.g., RDS
+only accepts traffic from the ECS Security Group. - \textbf{Database}:
+RDS Aurora PostgreSQL Serverless cluster. - \textbf{Compute}: ECS
+Cluster, ECR Repository, and Task Definitions for Crawler, ETL,
+Vectorize running on Fargate. - \textbf{Scheduling}: EventBridge Rules
+to trigger ECS Tasks via cron schedules (01:00, 02:00, 03:00 UTC).
+
+\textbf{2. Deploying to AWS}
+
+To deploy the system, you only need to configure the AWS CLI and run
+these commands:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Initialize Terraform provider}
+\ExtensionTok{terraform}\NormalTok{ init}
+
+\CommentTok{\# Preview the resources to be created}
+\ExtensionTok{terraform}\NormalTok{ plan}
+
+\CommentTok{\# Execute resource creation on AWS}
+\ExtensionTok{terraform}\NormalTok{ apply }\AttributeTok{{-}auto{-}approve}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3. Deployment Automation (CI/CD)}
+
+The \texttt{deploy.sh} script is provided to automatically build Docker
+images, tag and push them to Amazon ECR, and then update the ECS service
+to force a deployment of the latest version:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#!/bin/bash}
+\CommentTok{\# deploy.sh}
+
+\CommentTok{\# 1. Authenticate with ECR}
+\ExtensionTok{aws}\NormalTok{ ecr get{-}login{-}password }\AttributeTok{{-}{-}region}\NormalTok{ ap{-}southeast{-}2 }\KeywordTok{|} \ExtensionTok{docker}\NormalTok{ login }\AttributeTok{{-}{-}username}\NormalTok{ AWS }\AttributeTok{{-}{-}password{-}stdin} \VariableTok{$ACCOUNT\_ID}\NormalTok{.dkr.ecr.ap{-}southeast{-}2.amazonaws.com}
+
+\CommentTok{\# 2. Build Docker images}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ newsrag{-}crawler }\AttributeTok{{-}f}\NormalTok{ crawler/Dockerfile .}
+\ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ newsrag{-}etl }\AttributeTok{{-}f}\NormalTok{ etl/Dockerfile .}
+
+\CommentTok{\# 3. Tag and Push to ECR}
+\ExtensionTok{docker}\NormalTok{ tag newsrag{-}crawler:latest }\VariableTok{$ACCOUNT\_ID}\NormalTok{.dkr.ecr.ap{-}southeast{-}2.amazonaws.com/newsrag{-}api:crawler{-}latest}
+\ExtensionTok{docker}\NormalTok{ push }\VariableTok{$ACCOUNT\_ID}\NormalTok{.dkr.ecr.ap{-}southeast{-}2.amazonaws.com/newsrag{-}api:crawler{-}latest}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{4. Resource Cleanup}
+
+When the system is not in use, to avoid incurring costs, you can delete
+all resources with a single command:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{terraform}\NormalTok{ destroy}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{Note}: This command will delete all VPC, ECS, RDS, and
+EventBridge resources defined in \texttt{main.tf}. Database data will be
+lost if you haven't configured a snapshot.
+\end{quote}

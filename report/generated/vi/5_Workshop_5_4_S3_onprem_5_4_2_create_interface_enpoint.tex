@@ -1,0 +1,108 @@
+Trong phần này, bạn sẽ tạo và kiểm tra Interface Endpoint S3 bằng cách
+sử dụng môi trường truyền thống mô phỏng.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Quay lại Amazon VPC menu. Trong thanh điều hướng bên trái, chọn
+  Endpoints, sau đó click Create Endpoint.
+\item
+  Trong Create endpoint console:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Đặt tên interface endpoint
+\item
+  Trong Service category, chọn \textbf{aws services}
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint1.png}
+\caption{name}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Trong Search box, gõ S3 và nhấn Enter. Chọn endpoint có tên
+  com.amazonaws.us-east-1.s3. Đảm bảo rằng cột Type có giá trị
+  Interface.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint2.png}
+\caption{service}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Đối với VPC, chọn VPC Cloud từ drop-down.
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Mở rộng \textbf{Additional settings} và đảm bảo rằng Enable DNS name
+  \emph{không} được chọn (sẽ sử dụng điều này trong phần tiếp theo của
+  workshop)
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint3.png}
+\caption{vpc}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Chọn 2 subnets trong AZs sau: us-east-1a and us-east-1b
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint4.png}
+\caption{subnets}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Đối với Security group, chọn SGforS3Endpoint:
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint5.png}
+\caption{sg}
+\end{figure}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Giữ default policy - full access và click Create endpoint
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics{5-Workshop/5.4-S3-onprem/s3-interface-endpoint-success.png}
+\caption{success}
+\end{figure}
+
+Chúc mừng bạn đã tạo thành công S3 interface endpoint. Ở bước tiếp theo,
+chúng ta sẽ kiểm tra interface endpoint.

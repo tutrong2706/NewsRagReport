@@ -1,0 +1,141 @@
+\hypertarget{week-7-objectives}{%
+\subsubsection{Week 7 Objectives:}}
+
+\begin{itemize}
+\tightlist
+\item
+  Run integration tests across the full pipeline: Crawl \(\rightarrow\)
+  ETL \(\rightarrow\) Vectorize \(\rightarrow\) RAG API.
+\item
+  Debug and handle edge cases during crawling (author, date, encoding).
+\item
+  Study the Ragas evaluation framework and compare NewsRAG with
+  FlashRAG.
+\item
+  Optimize crawling performance and error handling.
+\end{itemize}
+
+\hypertarget{tasks-for-this-week}{%
+\subsubsection{Tasks for this week:}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0120}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.7149}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0482}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0602}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1647}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Day
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tasks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Start Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+End Date
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resources
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mon & - Integration test: run full pipeline
+\texttt{python\ main.py\ -\/-mode\ full} - Verify flow: Spider
+\(\rightarrow\) Kafka \(\rightarrow\) Consumer \(\rightarrow\)
+PostgreSQL \(\rightarrow\) ETL \(\rightarrow\) Vectorize - Monitor
+CloudWatch logs & 14/07/2026 & 14/07/2026 & \\
+Tue & - Debug edge cases in spider: \qquad  + Author containing URLs,
+dates, special chars \qquad  + Articles with no title or content
+\textless{} 100 chars \qquad  + Non-standard date formats from different
+newspapers \qquad  + UTF-8 encoding issues with Vietnamese & 15/07/2026
+& 15/07/2026 & \\
+Wed & - Improve author validation in spider: \qquad  + Add
+\texttt{fake\_authors} list (vietnamnet news, ban bien tap,\ldots)
+\qquad  + Enhance \texttt{is\_valid\_author()}: filter names with
+bad\_words (weekdays, dates,\ldots) \qquad  + Add bottom paragraph
+scanning for ``Theo: \ldots{}'' pattern & 16/07/2026 & 16/07/2026 & \\
+Thu & - Study Ragas evaluation framework: \qquad  + Faithfulness:
+truthfulness against context \qquad  + Answer Relevancy: relevance to
+question \qquad  + Context Precision: document ranking \qquad  + Context
+Recall: document coverage - Compare NewsRAG vs FlashRAG results &
+17/07/2026 & 17/07/2026 & Pipeline\_v3.md \\
+Fri & - Optimize Crawler: \qquad  + Adjust CONCURRENT\_REQUESTS,
+DOWNLOAD\_DELAY per OS \qquad  + Improve retry handling on request
+failure \qquad  + Add ROBOTSTXT\_OBEY config - Re-test full pipeline
+after optimization & 18/07/2026 & 18/07/2026 & \\
+\end{longtable}
+\endgroup
+
+\hypertarget{week-7-results}{%
+\subsubsection{Week 7 Results:}}
+
+\begin{itemize}
+\item
+  Successful integration test on full pipeline:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Crawls \textasciitilde500 articles per run from 3 newspapers
+  \item
+    ETL processes: clean HTML \(\rightarrow\) chunk 800 chars (overlap
+    150) \(\rightarrow\) insert Star Schema
+  \item
+    Vectorize: embedding with \texttt{BAAI/bge-small-en-v1.5}
+    \(\rightarrow\) upsert to Qdrant
+  \item
+    RAG API: query \(\rightarrow\) embed \(\rightarrow\) search top-k
+    \(\rightarrow\) LLM generates answer
+  \end{itemize}
+\item
+  Handled critical edge cases:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Invalid author}: Detected and removed 15+ types of fake
+    authors (URLs, dates, newspaper names, special chars)
+  \item
+    \textbf{Date parsing}: Supports 3 formats (ISO, VN dd/mm/yyyy,
+    date-only) + fallback through 10 CSS selectors
+  \item
+    \textbf{Empty content}: Skips articles with content \textless{} 100
+    characters
+  \item
+    \textbf{ETL author cleanup}: Removes authors \textgreater{} 40
+    chars, containing http/\textbar/@
+  \end{itemize}
+\item
+  Ragas evaluation results: \textbar{} Metric \textbar{} NewsRAG
+  \textbar{} FlashRAG \textbar{}
+  \textbar----------------------\textbar----------------\textbar----------------\textbar{}
+  \textbar{} \textbf{Context Precision} \textbar{} \textbf{Higher}
+  \textbar{} Average \textbar{} \textbar{} \textbf{Context Recall}
+  \textbar{} Average \textbar{} \textbf{Higher} \textbar{} \textbar{}
+  \textbf{Faithfulness} \textbar{} Average \textbar{} \textbf{Higher}
+  \textbar{} \textbar{} \textbf{Answer Relevancy} \textbar{} Comparable
+  \textbar{} Comparable \textbar{}
+
+  \begin{quote}
+  Overall metrics are modest (below 0.5) because the RAG prompt is
+  configured to provide detailed, comprehensive answers \(\rightarrow\)
+  reduces cosine similarity when Ragas reverse-translates to questions.
+  \end{quote}
+\item
+  Crawler performance optimization:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Windows: CONCURRENT\_REQUESTS=16, DOWNLOAD\_DELAY=1.0
+  \item
+    Linux (Fargate): CONCURRENT\_REQUESTS=32, DOWNLOAD\_DELAY=0.5
+  \item
+    OS-specific User-Agent customization
+  \end{itemize}
+\end{itemize}

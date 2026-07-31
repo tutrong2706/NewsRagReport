@@ -1,0 +1,292 @@
+\hypertarget{hux1ea1-tux1ea7ng-dux1b0ux1edbi-dux1ea1ng-code-terraform}{%
+\section{Hạ tầng dưới dạng Code
+(Terraform)}}
+
+Phần này mô tả việc định nghĩa và triển khai toàn bộ hạ tầng AWS cho
+News RAG Pipeline bằng Terraform.
+
+\hypertarget{kiux1ebfn-truxfac-terraform}{%
+\subsection{Kiến trúc Terraform}}
+
+File chính: \texttt{main.tf} --- định nghĩa tất cả tài nguyên AWS:
+
+\begin{verbatim}
+VPC & Network $\rightarrow$ Security Groups $\rightarrow$ RDS Aurora $\rightarrow$ ECR $\rightarrow$ ECS Cluster $\rightarrow$ IAM Roles $\rightarrow$ CloudWatch Logs $\rightarrow$ Task Definitions $\rightarrow$ EventBridge Scheduler
+\end{verbatim}
+
+\hypertarget{vpc-network-main.tf40-80}{%
+\subsection{\texorpdfstring{1. VPC \& Network
+(\texttt{main.tf:40-80})}{1. VPC \& Network (main.tf:40-80)}}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Kết quả:} VPC \texttt{newsrag-vpc} với 2 public subnet ở 2 AZ,
+Internet Gateway, Route Table cho phép traffic ra Internet.
+
+\hypertarget{security-groups-main.tf82-114}{%
+\subsection{\texorpdfstring{2. Security Groups
+(\texttt{main.tf:82-114})}{2. Security Groups (main.tf:82-114)}}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{aurora-postgresql-serverless-v2-main.tf116-144}{%
+\subsection{\texorpdfstring{3. Aurora PostgreSQL Serverless v2
+(\texttt{main.tf:116-144})}{3. Aurora PostgreSQL Serverless v2 (main.tf:116-144)}}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Lưu ý quan trọng:} - \texttt{db.t4g.medium} = 2 ACU (Aurora
+Capacity Units) \textasciitilde{} \$15-20/tháng -
+\texttt{skip\_final\_snapshot\ =\ true} chỉ dùng cho dev/test.
+Production nên bật snapshot. - Sau khi deploy, chạy
+\texttt{database/warehouse.sql} để tạo schema Star Schema + pgvector.
+
+\hypertarget{ecr-repository-main.tf147}{%
+\subsection{\texorpdfstring{4. ECR Repository
+(\texttt{main.tf:147})}{4. ECR Repository (main.tf:147)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_ecr\_repository" "api" \{ name = "newsrag{-}api" \}}
+\end{Highlighting}
+\end{Shaded}
+
+Chứa Docker image cho cả Crawler, ETL, và Vectorize tasks.
+
+\hypertarget{ecs-cluster-main.tf150}{%
+\subsection{\texorpdfstring{5. ECS Cluster
+(\texttt{main.tf:150})}{5. ECS Cluster (main.tf:150)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_ecs\_cluster" "cluster" \{ name = "newsrag{-}cluster" \}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{iam-roles-main.tf152-180}{%
+\subsection{\texorpdfstring{6. IAM Roles
+(\texttt{main.tf:152-180})}{6. IAM Roles (main.tf:152-180)}}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cloudwatch-log-group-main.tf183-186}{%
+\subsection{\texorpdfstring{7. CloudWatch Log Group
+(\texttt{main.tf:183-186})}{7. CloudWatch Log Group (main.tf:183-186)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resource "aws\_cloudwatch\_log\_group" "logs" \{}
+\NormalTok{  name              = "/ecs/newsrag{-}project"}
+\NormalTok{  retention\_in\_days = 7}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{biux1ebfn-muxf4i-trux1b0ux1eddng-chung-main.tf189-218}{%
+\subsection{\texorpdfstring{8. Biến môi trường chung
+(\texttt{main.tf:189-218})}{8. Biến môi trường chung (main.tf:189-218)}}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{quote}
+\textbf{Lưu ý:} Trên AWS production, \texttt{QDRANT\_*} và
+\texttt{KAFKA\_*} không dùng (thay bằng SQS + Aurora pgvector). Giữ lại
+cho tương thích code local.
+\end{quote}
+
+\hypertarget{ecs-task-definitions-main.tf222-292}{%
+\subsection{\texorpdfstring{9. ECS Task Definitions
+(\texttt{main.tf:222-292})}{9. ECS Task Definitions (main.tf:222-292)}}}
+
+Ba task definitions dùng chung Docker image:
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2143}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1786}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2857}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3214}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Task
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+CPU
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Memory
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Command
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{crawler} & 256 (0.25 vCPU) & 512 MB &
+\texttt{python\ main.py\ -\/-mode\ crawl} \\
+\textbf{etl} & 512 (0.5 vCPU) & 1024 MB &
+\texttt{python\ main.py\ -\/-mode\ etl} \\
+\textbf{vectorize} & 512 & 1024 MB &
+\texttt{python\ main.py\ -\/-mode\ vectorize} \\
+\end{longtable}
+\endgroup
+
+Tất cả dùng: - \texttt{network\_mode\ =\ "awsvpc"} (bắt buộc cho
+Fargate) - \texttt{execution\_role\_arn} = ECS execution role -
+\texttt{task\_role\_arn} = ECS task role (Bedrock permissions) -
+\texttt{awslogs} driver \(\rightarrow\) \texttt{/ecs/newsrag-project}
+
+\hypertarget{eventbridge-scheduler-main.tf294-357}{%
+\subsection{\texorpdfstring{10. EventBridge Scheduler
+(\texttt{main.tf:294-357})}{10. EventBridge Scheduler (main.tf:294-357)}}}
+
+Cron jobs hàng ngày (UTC):
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\textbf{Cron Expression Format:}
+\texttt{cron(minutes\ hours\ day-of-month\ month\ day-of-week\ year)} -
+\texttt{cron(0\ 1\ *\ *\ ?\ *)} = Hàng ngày lúc 01:00 UTC - \texttt{?} =
+không có day-of-week cụ thể (dùng day-of-month thay thế)
+
+\hypertarget{variables-main.tf5-38}{%
+\subsection{\texorpdfstring{11. Variables
+(\texttt{main.tf:5-38})}{11. Variables (main.tf:5-38)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{variable "db\_password" \{ type = string; sensitive = true \}}
+\NormalTok{variable "db\_user" \{ type = string \}}
+\NormalTok{variable "qdrant\_api\_key" \{ type = string; sensitive = true \}}
+\NormalTok{variable "qdrant\_host" \{ type = string \}}
+\NormalTok{variable "model\_1\_api\_key" \{ type = string; sensitive = true \}}
+\NormalTok{variable "model\_2\_api\_key" \{ type = string; sensitive = true \}}
+\NormalTok{variable "model\_3\_api\_key" \{ type = string; sensitive = true \}}
+\end{Highlighting}
+\end{Shaded}
+
+Điền vào \texttt{terraform.tfvars} (không commit lên git):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{db\_password     = "your\_secure\_password\_123!"}
+\NormalTok{db\_user         = "postgres"}
+\NormalTok{qdrant\_api\_key  = ""}
+\NormalTok{qdrant\_host     = ""}
+\NormalTok{model\_1\_api\_key = "gsk\_xxxxxxxxxxxxxxxxxxxx"  \# Groq}
+\NormalTok{model\_2\_api\_key = "gsk\_xxxxxxxxxxxxxxxxxxxx"  \# Groq backup}
+\NormalTok{model\_3\_api\_key = "AIza\_xxxxxxxxxxxxxxxxxxxx" \# Gemini}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{outputs-main.tf360-370}{%
+\subsection{\texorpdfstring{12. Outputs
+(\texttt{main.tf:360-370})}{12. Outputs (main.tf:360-370)}}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{output "rds\_endpoint" \{ value = aws\_rds\_cluster.main.endpoint \}}
+\NormalTok{output "ecr\_repository\_url" \{ value = aws\_ecr\_repository.api.repository\_url \}}
+\NormalTok{output "ecs\_cluster\_name" \{ value = aws\_ecs\_cluster.cluster.name \}}
+\end{Highlighting}
+\end{Shaded}
+
+Sau \texttt{terraform\ apply}, dùng outputs để: - Kết nối database:
+\texttt{psql\ "postgresql://postgres:pass@\$(terraform\ output\ -raw\ rds\_endpoint):5432/newsrag"}
+- Build \& push Docker:
+\texttt{docker\ push\ \$(terraform\ output\ -raw\ ecr\_repository\_url):latest}
+- Chạy task thủ công:
+\texttt{aws\ ecs\ run-task\ -\/-cluster\ \$(terraform\ output\ -raw\ ecs\_cluster\_name)\ ...}
+
+\hypertarget{triux1ec3n-khai}{%
+\subsection{Triển khai}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{khux1edfi-tux1ea1o-database-schema}{%
+\subsection{Khởi tạo Database
+Schema}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\VariableTok{ENDPOINT}\OperatorTok{=}\VariableTok{$(}\ExtensionTok{terraform}\NormalTok{ output }\AttributeTok{{-}raw}\NormalTok{ rds\_endpoint}\VariableTok{)}
+\ExtensionTok{psql} \StringTok{"postgresql://postgres:your\_password@}\VariableTok{$\{ENDPOINT\}}\StringTok{:5432/newsrag"} \AttributeTok{{-}f}\NormalTok{ database/warehouse.sql}
+\end{Highlighting}
+\end{Shaded}
+
+File \texttt{database/warehouse.sql} tạo: - \textbf{Dimension Tables}:
+\texttt{dim\_source}, \texttt{dim\_time}, \texttt{dim\_content},
+\texttt{dim\_author} - \textbf{Fact Tables}: \texttt{fact\_articles},
+\texttt{fact\_article\_authors}, \texttt{fact\_chunks} -
+\textbf{pgvector extension + HNSW index} trên
+\texttt{fact\_chunks.embedding} (vector(1024))
+
+\hypertarget{xuxe1c-minh-triux1ec3n-khai}{%
+\subsection{Xác minh triển khai}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{ux1b0ux1edbc-lux1b0ux1ee3ng-chi-phuxed-huxe0ng-thuxe1ng-ap-southeast-2}{%
+\subsection{Ước lượng chi phí (Hàng tháng,
+ap-southeast-2)}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Resource & Configuration & Est. Cost \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Aurora Serverless v2 & 2 ACU avg (db.t4g.medium) &
+\textasciitilde\$15-20 \\
+ECS Fargate Crawler & 0.25 vCPU, 0.5 GB, 30 min/day &
+\textasciitilde\$0.50 \\
+ECS Fargate ETL & 0.5 vCPU, 1 GB, 30 min/day & \textasciitilde\$1.00 \\
+ECS Fargate Vectorize & 0.5 vCPU, 1 GB, 30 min/day &
+\textasciitilde\$1.00 \\
+ECR & 1 repository, \textasciitilde2 GB storage &
+\textasciitilde\$0.20 \\
+CloudWatch Logs & 7-day retention, \textasciitilde1 GB ingest &
+\textasciitilde\$1.00 \\
+\textbf{Total (Infrastructure)} & &
+\textbf{\textasciitilde\$19-24/month} \\
+\end{longtable}
+\endgroup
+
+\begin{quote}
+\textbf{Note:} Lambda + Bedrock + API Gateway costs (covered in later
+sections) add \textasciitilde\$2-5/month. \textbf{Total
+\textasciitilde\$21-29/month}.
+\end{quote}
+
+\hypertarget{dux1ecdn-dux1eb9p}{%
+\subsection{Dọn dẹp}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{terraform}\NormalTok{ destroy}
+\CommentTok{\# Nhập \textquotesingle{}yes\textquotesingle{} để xác nhận}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+! \textbf{CẢNH BÁO:} Lệnh này xóa Aurora cluster và \textbf{mất toàn bộ
+dữ liệu vĩnh viễn}. Backup trước nếu cần.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Tiếp theo:} \href{5.4-Local-Dev/}{Thiết lập phát triển cục bộ}

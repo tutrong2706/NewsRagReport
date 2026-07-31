@@ -1,0 +1,271 @@
+\hypertarget{testing-monitoring}{%
+\section{Testing \& Monitoring}}
+
+This section covers end-to-end testing, RAG evaluation with RAGAS, and
+production monitoring setup.
+
+\hypertarget{test-suite-overview}{%
+\subsection{Test Suite Overview}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Test Type & Tool & Purpose \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Unit Tests & pytest & Individual function correctness \\
+Integration Tests & pytest + Docker & Pipeline stages locally \\
+E2E Tests & Playwright & Full user flows \\
+RAG Evaluation & RAGAS & Faithfulness, Relevancy, Precision, Recall \\
+Load Testing & Locust & API performance under load \\
+Chaos Testing & AWS FIS & Resilience validation \\
+\end{longtable}
+\endgroup
+
+\hypertarget{unit-integration-tests-local}{%
+\subsection{1. Unit \& Integration Tests
+(Local)}}
+
+\hypertarget{pytest-configuration}{%
+\subsubsection{pytest Configuration}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# pytest.ini}
+\KeywordTok{[pytest]}
+\DataTypeTok{testpaths }\OtherTok{=}\StringTok{ tests}
+\DataTypeTok{python\_files }\OtherTok{=}\StringTok{ test\_*.py}
+\DataTypeTok{python\_functions }\OtherTok{=}\StringTok{ test\_*}
+\DataTypeTok{addopts }\OtherTok{=}\StringTok{ {-}v {-}{-}tb=short {-}{-}strict{-}markers}
+\DataTypeTok{markers }\OtherTok{=}
+\DataTypeTok{    unit: Unit tests}
+\DataTypeTok{    integration: Integration tests (requires Docker)}
+\DataTypeTok{    slow: Slow tests (\textgreater{}10s)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{test-database-fixture}{%
+\subsubsection{Test Database Fixture}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{sample-unit-tests}{%
+\subsubsection{Sample Unit Tests}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{run-tests}{%
+\subsubsection{Run Tests}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Unit tests only}
+\ExtensionTok{pytest} \AttributeTok{{-}m}\NormalTok{ unit}
+
+\CommentTok{\# Integration tests (requires Docker services)}
+\ExtensionTok{docker}\NormalTok{ compose up }\AttributeTok{{-}d}
+\ExtensionTok{pytest} \AttributeTok{{-}m}\NormalTok{ integration}
+
+\CommentTok{\# All tests with coverage}
+\ExtensionTok{pytest} \AttributeTok{{-}{-}cov}\OperatorTok{=}\NormalTok{etl }\AttributeTok{{-}{-}cov}\OperatorTok{=}\NormalTok{vectorize }\AttributeTok{{-}{-}cov}\OperatorTok{=}\NormalTok{search }\AttributeTok{{-}{-}cov{-}report}\OperatorTok{=}\NormalTok{term{-}missing}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{rag-evaluation-with-ragas}{%
+\subsection{2. RAG Evaluation with
+RAGAS}}
+
+\hypertarget{why-ragas}{%
+\subsubsection{Why RAGAS?}}
+
+RAGAS evaluates RAG systems using LLM-as-judge across 4 metrics:
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Metric & What it measures & Target \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Faithfulness} & Answer grounded in retrieved context &
+\textgreater{} 0.8 \\
+\textbf{Answer Relevancy} & Answer addresses the question &
+\textgreater{} 0.8 \\
+\textbf{Context Precision} & Relevant chunks ranked higher &
+\textgreater{} 0.7 \\
+\textbf{Context Recall} & All relevant chunks retrieved & \textgreater{}
+0.7 \\
+\end{longtable}
+\endgroup
+
+\hypertarget{installation}{%
+\subsubsection{Installation}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{pip}\NormalTok{ install ragas langchain{-}openai datasets}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{evaluation-script}{%
+\subsubsection{Evaluation Script}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{expected-output}{%
+\subsubsection{Expected Output}}
+
+\begin{verbatim}
+=== RAGAS Results ===
+Faithfulness:       0.72
+Answer Relevancy:   0.68
+Context Precision:  0.79
+Context Recall:     0.61
+\end{verbatim}
+
+\hypertarget{improving-scores}{%
+\subsubsection{Improving Scores}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5789}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4211}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Low Score
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Action
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Faithfulness & Improve prompt: ``Chỉ trả lời dựa trên ngữ cảnh, không
+bịa đặt'' \\
+Answer Relevancy & Add ``Trả lời trực tiếp, ngắn gọn'' to prompt \\
+Context Precision & Tune HNSW \texttt{ef\_search}, increase top-K, add
+metadata filters \\
+Context Recall & Better chunking (semantic), hybrid search (BM25 +
+vector) \\
+\end{longtable}
+\endgroup
+
+\hypertarget{load-testing-with-locust}{%
+\subsection{3. Load Testing with
+Locust}}
+
+\hypertarget{locustfile.py}{%
+\subsubsection{locustfile.py}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{run-load-test}{%
+\subsubsection{Run Load Test}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Install}
+\ExtensionTok{pip}\NormalTok{ install locust}
+
+\CommentTok{\# Run (headless, 50 users, 2 min)}
+\ExtensionTok{locust} \AttributeTok{{-}f}\NormalTok{ locustfile.py }\AttributeTok{{-}{-}headless} \AttributeTok{{-}u}\NormalTok{ 50 }\AttributeTok{{-}r}\NormalTok{ 5 }\AttributeTok{{-}{-}run{-}time}\NormalTok{ 2m }\AttributeTok{{-}{-}html}\NormalTok{ report.html}
+
+\CommentTok{\# Or with UI}
+\ExtensionTok{locust} \AttributeTok{{-}f}\NormalTok{ locustfile.py}
+\CommentTok{\# Open http://localhost:8089}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{target-metrics}{%
+\subsubsection{Target Metrics}}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Metric & Target \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+p50 Latency & \textless{} 3s \\
+p95 Latency & \textless{} 8s \\
+p99 Latency & \textless{} 15s \\
+Error Rate & \textless{} 0.1\% \\
+Throughput & \textgreater{} 10 RPS \\
+\end{longtable}
+\endgroup
+
+\hypertarget{production-monitoring}{%
+\subsection{4. Production Monitoring}}
+
+\hypertarget{cloudwatch-dashboards}{%
+\subsubsection{CloudWatch Dashboards}}
+
+Create dashboard with these widgets:
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{cloudwatch-alarms}{%
+\subsubsection{CloudWatch Alarms}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{structured-logging}{%
+\subsubsection{Structured Logging}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{log-insights-queries}{%
+\subsubsection{Log Insights Queries}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\hypertarget{end-to-end-test-playwright}{%
+\subsection{5. End-to-End Test
+(Playwright)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run E2E tests}
+\ExtensionTok{npm}\NormalTok{ install }\AttributeTok{{-}g}\NormalTok{ playwright}
+\ExtensionTok{playwright}\NormalTok{ install}
+\ExtensionTok{pytest}\NormalTok{ tests/e2e/ }\AttributeTok{{-}v}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cicd-pipeline-github-actions}{%
+\subsection{CI/CD Pipeline (GitHub
+Actions)}}
+
+\emph{(Mã nguồn chi tiết đã được lược bỏ để báo cáo ngắn gọn. Vui lòng
+xem trong source code dự án)}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Next:} \href{5.16-Cost/}{Cost Optimization}
