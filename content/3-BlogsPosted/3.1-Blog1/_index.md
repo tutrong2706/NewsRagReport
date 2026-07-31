@@ -31,3 +31,5 @@ To solve this problem while maintaining the "Serverless" philosophy (avoiding 24
 Migrating to ECS Fargate brought absolute stability to our data ingestion pipeline. The crawler can now run continuously for 30-40 minutes every night, fetching hundreds of new articles without any interruptions. Furthermore, the cost for Fargate is highly optimized since we only pay for the exact compute minutes the Crawler actually runs.
 
 *Key takeaway: No single AWS service is a "silver bullet." Understanding the limits of services like Lambda and flexibly switching to more appropriate services like ECS Fargate is a crucial skill in Cloud architecture design.*
+
+![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/blog1.jpeg)

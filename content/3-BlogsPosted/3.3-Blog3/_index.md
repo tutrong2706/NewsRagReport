@@ -30,3 +30,5 @@ Instead of using third-party Vector Databases like Qdrant, Pinecone, or Milvus, 
 ### Conclusion
 
 The architectural combination of Amazon Bedrock and Aurora pgvector provides a closed-loop (End-to-End) RAG solution entirely on AWS. The news data never has to leave the system's VPC to make external calls, ensuring maximum security and reducing network latency. This is the technical highlight we are most proud of in the entire application development process.
+
+![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/blog3.jpeg)

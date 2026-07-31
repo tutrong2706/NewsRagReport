@@ -31,3 +31,5 @@ Khi crawler của chúng tôi quét qua các `sitemap` của các trang báo, s�
 Việc chuyển đổi sang kiến trúc ECS Fargate đã mang lại sự ổn định tuyệt đối cho luồng thu thập dữ liệu. Crawler hiện tại có thể chạy liên tục trong 30-40 phút mỗi đêm để lấy về hàng trăm bài báo mới mà không hề gặp lỗi gián đoạn. Hơn nữa, chi phí cho Fargate lại cực kỳ tối ưu vì chúng tôi chỉ trả tiền cho chính xác số phút tính toán mà Crawler thực sự chạy.
 
 *Đúc kết kinh nghiệm: Không có một dịch vụ AWS nào là "chìa khóa vạn năng". Việc hiểu rõ giới hạn (limits) của từng dịch vụ như Lambda và linh hoạt chuyển đổi sang các dịch vụ phù hợp hơn như ECS Fargate là một kỹ năng quan trọng trong thiết kế kiến trúc Đám mây.*
+
+![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/blog1.jpeg)

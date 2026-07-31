@@ -30,3 +30,5 @@ We decided to completely replace the queue architecture with **Amazon SQS**.
 ### Design Evaluation
 
 By removing Kafka and switching to SQS, the system became not only lighter and easier to maintain but also saved a massive amount in operational budget. This is a practical proof that: **Choosing technology is not about picking the "fanciest" tool, but choosing the most "appropriate" one for the current scale and problem.**
+
+![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/blog2.jpeg)

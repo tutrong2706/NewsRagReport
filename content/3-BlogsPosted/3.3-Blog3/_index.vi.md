@@ -30,3 +30,5 @@ Thay vì dùng các Vector Database bên thứ ba như Qdrant, Pinecone hay Milv
 ### Kết luận
 
 Kiến trúc kết hợp giữa Amazon Bedrock và Aurora pgvector mang lại một giải pháp RAG khép kín (End-to-End) hoàn toàn trên AWS. Dữ liệu tin tức không bao giờ phải rời khỏi VPC của hệ thống để gọi ra bên ngoài, đảm bảo tính bảo mật và giảm độ trễ mạng tối đa. Đây chính là điểm nhấn kỹ thuật mà chúng tôi tâm đắc nhất trong toàn bộ quy trình xây dựng ứng dụng.
+
+![News RAG Pipeline Architecture](/images/5-Workshop/5.1-Workshop-overview/blog3.jpeg)
